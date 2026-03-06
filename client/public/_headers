@@ -6,8 +6,8 @@
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   
   # --- Content Security Policy ---
-  # Allows: self scripts, inline styles (Tailwind), Google Fonts, CDN images, Web Audio (blob:), data: URIs for favicon
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' https://d2xsxph8kpxj0f.cloudfront.net https://images.unsplash.com data: blob:; media-src 'self' blob:; connect-src 'self'; worker-src 'self' blob:; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; upgrade-insecure-requests
+  # Allows: self scripts, inline styles (Tailwind/Framer Motion), Google Fonts, CDN images, Web Audio API
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https://d2xsxph8kpxj0f.cloudfront.net https://images.unsplash.com data: blob:; media-src 'self' blob:; connect-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; worker-src 'self' blob:; frame-src 'none'; frame-ancestors 'none'; object-src 'none'; base-uri 'self'; form-action 'self' mailto:; upgrade-insecure-requests
   
   # --- Anti-Clickjacking ---
   X-Frame-Options: DENY
@@ -21,13 +21,8 @@
   # --- Referrer Policy ---
   Referrer-Policy: strict-origin-when-cross-origin
   
-  # --- Permissions Policy (restrict dangerous APIs) ---
-  Permissions-Policy: accelerometer=(), ambient-light-sensor=(), autoplay=(self), battery=(), camera=(), cross-origin-isolated=(), display-capture=(), document-domain=(), encrypted-media=(), execution-while-not-rendered=(), execution-while-out-of-viewport=(), fullscreen=(self), geolocation=(), gyroscope=(), keyboard-map=(), magnetometer=(), microphone=(), midi=(), navigation-override=(), payment=(), picture-in-picture=(self), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(self), xr-spatial-tracking=()
-  
-  # --- Cross-Origin Policies ---
-  Cross-Origin-Opener-Policy: same-origin
-  Cross-Origin-Embedder-Policy: credentialless
-  Cross-Origin-Resource-Policy: same-origin
+  # --- Permissions Policy (restrict dangerous APIs, allow audio for Web Audio API) ---
+  Permissions-Policy: accelerometer=(), ambient-light-sensor=(), autoplay=(self), battery=(), camera=(), display-capture=(), document-domain=(), encrypted-media=(self), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(self), publickey-credentials-get=(), screen-wake-lock=(), sync-xhr=(), usb=(), web-share=(self), xr-spatial-tracking=()
   
   # --- Cache Control for HTML ---
   Cache-Control: public, max-age=0, must-revalidate
