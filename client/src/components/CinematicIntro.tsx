@@ -103,7 +103,8 @@ function IntroParticles() {
     return () => cancelAnimationFrame(animId);
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0" />;
+  /* pointer-events: none so clicks pass through to the button below */
+  return <canvas ref={canvasRef} className="absolute inset-0" style={{ pointerEvents: "none" }} />;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -172,10 +173,15 @@ export default function CinematicIntro({ onComplete }: { onComplete: () => void 
           style={{ zIndex: 9999, background: "#030308" }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
+          /* Make the ENTIRE overlay clickable when not started */
+          onClick={!started ? handleEnter : undefined}
+          role={!started ? "button" : undefined}
+          tabIndex={!started ? 0 : undefined}
         >
           <IntroParticles />
 
-          <div className="relative flex flex-col items-center gap-6 z-10">
+          {/* Content layer — always above canvas */}
+          <div className="relative flex flex-col items-center gap-6" style={{ zIndex: 10, pointerEvents: "auto" }}>
             {/* Hexagonal logo with orbital dots */}
             <motion.svg
               viewBox="0 0 120 120"
