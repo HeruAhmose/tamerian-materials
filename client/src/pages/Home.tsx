@@ -93,7 +93,7 @@ function HeroSection() {
             className="text-[0.72rem] font-semibold tracking-[0.2em] uppercase"
             style={{ fontFamily: "'JetBrains Mono', monospace", color: "#45e8d8" }}
           >
-            Patent Pending · U.S. App. No. 63/934,269
+            Patent Pending · U.S. App. No. <span data-patent-number>63/934,269</span>
           </span>
         </motion.div>
 
@@ -171,7 +171,7 @@ function HeroSection() {
             style={{ color: "var(--t2)" }}
             whileHover={{ color: "#45e8d8" }}
           >
-            View All 25 Claims →
+            View All <span data-claim-count>25</span> Claims →
             <span className="absolute bottom-3 left-0 w-0 h-[1px] bg-[#45e8d8] group-hover:w-full transition-all duration-400" />
           </motion.a>
         </motion.div>
@@ -1250,7 +1250,7 @@ function AboutSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            Jonathan Peoples
+            <span data-inventor>Jonathan Peoples</span>
           </motion.div>
           <div
             className="text-[0.7rem] font-semibold tracking-[0.18em] uppercase mb-6"
@@ -1370,7 +1370,7 @@ function Footer() {
       style={{ borderTop: "1px solid var(--bd)" }}
     >
       <span className="text-[0.6rem] font-medium" style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}>
-        © 2026 Tamerian Materials. Patent Pending No. 63/934,269.
+        <span data-protected>© 2026 Tamerian Materials. Patent Pending No. <span data-patent-number>63/934,269</span>.</span>
       </span>
       <div className="flex gap-6">
         {["Technology", "Patents", "About", "Contact"].map((label) => (

@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /assets/
+
+# Tamerian Materials — Patent-Pending Technology
+# U.S. Patent Application No. 63/934,269
+# https://tamerian-materials.com
