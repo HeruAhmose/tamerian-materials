@@ -78,9 +78,9 @@
     "@types/react": "^19.2.1",
     "@types/react-dom": "^19.2.1",
     "@vitejs/plugin-react": "^5.0.4",
-    "add": "^2.0.6",
     "autoprefixer": "^10.4.20",
     "esbuild": "^0.27.4",
+    "pnpm": "^10.28.2",
     "postcss": "^8.4.47",
     "prettier": "^3.6.2",
     "tailwindcss": "^4.1.14",
@@ -91,7 +91,7 @@
     "vite-plugin-manus-runtime": "^0.0.57",
     "vitest": "^4.1.0"
   },
-  "packageManager": "pnpm@10.4.1+sha512.c753b6c3ad7afa13af388fa6d808035a008e30ea9993f58c6663e2bc5ff21679aa834db094987129aa4d488b86df57f7b634981b2f827cdcacc698cc0cfb88af",
+  "packageManager": "pnpm@10.28.2",
   "pnpm": {
     "patchedDependencies": {
       "wouter@3.7.1": "patches/wouter@3.7.1.patch"
@@ -100,12 +100,14 @@
       "tailwindcss>nanoid": "3.3.7",
       "tar": ">=7.5.11",
       "rollup": ">=4.59.0",
-      "lodash": ">=4.17.23",
-      "lodash-es": ">=4.17.23",
+      "lodash": ">=4.18.0",
+      "lodash-es": ">=4.18.0",
       "qs": ">=6.14.2",
       "dompurify": ">=3.3.2",
       "mdast-util-to-hast": ">=13.2.1",
-      "esbuild": ">=0.25.0"
+      "esbuild": ">=0.25.0",
+      "path-to-regexp": ">=8.4.0",
+      "picomatch": ">=4.0.4"
     }
   }
 }
