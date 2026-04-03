@@ -27,7 +27,7 @@ export default function SectionIndicator() {
       setShow(window.scrollY > 400);
       const sections = document.querySelectorAll("section[id]");
       let current = "hero";
-      sections.forEach((s) => {
+      sections.forEach(s => {
         if (window.scrollY >= (s as HTMLElement).offsetTop - 300) {
           current = s.id;
         }
@@ -49,7 +49,7 @@ export default function SectionIndicator() {
       animate={{ opacity: show ? 1 : 0, x: show ? 0 : 20 }}
       transition={{ duration: 0.4 }}
     >
-      {SECTIONS.map((s) => {
+      {SECTIONS.map(s => {
         const isActive = active === s.id;
         return (
           <button
@@ -60,7 +60,10 @@ export default function SectionIndicator() {
           >
             <span
               className="text-[0.55rem] font-semibold tracking-[0.1em] uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap"
-              style={{ fontFamily: "'JetBrains Mono', monospace", color: isActive ? "#45e8d8" : "var(--t3)" }}
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                color: isActive ? "#45e8d8" : "var(--t3)",
+              }}
             >
               {s.label}
             </span>

@@ -54,7 +54,11 @@ class SoundEngine {
   setVolume(v: number) {
     this._volume = Math.max(0, Math.min(1, v));
     if (this.masterGain) {
-      this.masterGain.gain.setTargetAtTime(this._muted ? 0 : this._volume, this.ctx!.currentTime, 0.05);
+      this.masterGain.gain.setTargetAtTime(
+        this._muted ? 0 : this._volume,
+        this.ctx!.currentTime,
+        0.05
+      );
     }
   }
 
@@ -124,7 +128,9 @@ class SoundEngine {
     if (this.ambientOsc) {
       try {
         this.ambientOsc.stop();
-      } catch { /* already stopped */ }
+      } catch {
+        /* already stopped */
+      }
       this.ambientOsc = null;
     }
     if (this.ambientGain) {
@@ -486,7 +492,7 @@ class SoundEngine {
     const data = buffer.getChannelData(0);
 
     for (let i = 0; i < bufferSize; i++) {
-      data[i] = (Math.random() * 2 - 1);
+      data[i] = Math.random() * 2 - 1;
     }
 
     const source = ctx.createBufferSource();

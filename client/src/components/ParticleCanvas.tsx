@@ -23,7 +23,8 @@ export default function ParticleCanvas() {
     const ctx = c.getContext("2d");
     if (!ctx) return;
 
-    let w = 0, h = 0;
+    let w = 0,
+      h = 0;
     let particles: Particle[] = [];
     let animId: number;
     const hues = [174, 268, 43, 330];

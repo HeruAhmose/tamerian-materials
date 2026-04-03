@@ -15,7 +15,15 @@ interface Props {
   className?: string;
 }
 
-export default function AnimatedCounter({ end, duration = 1500, prefix = "", suffix = "", trigger, color = "var(--qg)", className = "" }: Props) {
+export default function AnimatedCounter({
+  end,
+  duration = 1500,
+  prefix = "",
+  suffix = "",
+  trigger,
+  color = "var(--qg)",
+  className = "",
+}: Props) {
   const [count, setCount] = useState(0);
   const started = useRef(false);
 
@@ -36,10 +44,14 @@ export default function AnimatedCounter({ end, duration = 1500, prefix = "", suf
     <motion.span
       className={`tabular-nums ${className}`}
       style={{ color }}
-      animate={trigger ? { opacity: 1, scale: 1 } : { opacity: 0.3, scale: 0.9 }}
+      animate={
+        trigger ? { opacity: 1, scale: 1 } : { opacity: 0.3, scale: 0.9 }
+      }
       transition={{ duration: 0.5 }}
     >
-      {prefix}{count}{suffix}
+      {prefix}
+      {count}
+      {suffix}
     </motion.span>
   );
 }

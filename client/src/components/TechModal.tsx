@@ -31,7 +31,10 @@ export default function TechModal({ card, onClose }: Props) {
       {card && (
         <motion.div
           className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-8"
-          style={{ background: "rgba(3,3,8,0.94)", backdropFilter: "blur(20px)" }}
+          style={{
+            background: "rgba(3,3,8,0.94)",
+            backdropFilter: "blur(20px)",
+          }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -48,12 +51,14 @@ export default function TechModal({ card, onClose }: Props) {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.85, opacity: 0, y: 40 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
             {/* Animated top border */}
             <motion.div
               className="absolute top-0 left-0 right-0 h-[2px]"
-              style={{ background: `linear-gradient(90deg, transparent, ${card.color}, transparent)` }}
+              style={{
+                background: `linear-gradient(90deg, transparent, ${card.color}, transparent)`,
+              }}
               initial={{ scaleX: 0 }}
               animate={{ scaleX: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
@@ -64,8 +69,11 @@ export default function TechModal({ card, onClose }: Props) {
               onClick={handleClose}
               className="absolute top-4 right-5 text-2xl border-0 bg-transparent transition-colors duration-200"
               style={{ color: "var(--t2)" }}
-              onMouseEnter={(e) => { e.currentTarget.style.color = "var(--qu)"; play("hover"); }}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "var(--t2)")}
+              onMouseEnter={e => {
+                e.currentTarget.style.color = "var(--qu)";
+                play("hover");
+              }}
+              onMouseLeave={e => (e.currentTarget.style.color = "var(--t2)")}
             >
               ✕
             </button>
@@ -104,7 +112,10 @@ export default function TechModal({ card, onClose }: Props) {
             {/* Title */}
             <motion.h2
               className="text-3xl font-bold mb-4"
-              style={{ fontFamily: "'Playfair Display', serif", color: "var(--qg)" }}
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                color: "var(--qg)",
+              }}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 }}
@@ -126,7 +137,10 @@ export default function TechModal({ card, onClose }: Props) {
             {/* Specs */}
             <motion.div
               className="text-[0.65rem] font-semibold tracking-[0.15em] uppercase mb-3"
-              style={{ fontFamily: "'JetBrains Mono', monospace", color: "#45e8d8" }}
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                color: "#45e8d8",
+              }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
@@ -147,13 +161,19 @@ export default function TechModal({ card, onClose }: Props) {
                 >
                   <span
                     className="text-[0.62rem] font-semibold uppercase tracking-[0.05em]"
-                    style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}
+                    style={{
+                      fontFamily: "'JetBrains Mono', monospace",
+                      color: "var(--t3)",
+                    }}
                   >
                     {key}
                   </span>
                   <span
                     className="text-[0.78rem] font-semibold"
-                    style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--qu)" }}
+                    style={{
+                      fontFamily: "'JetBrains Mono', monospace",
+                      color: "var(--qu)",
+                    }}
                   >
                     {val}
                   </span>
@@ -164,7 +184,10 @@ export default function TechModal({ card, onClose }: Props) {
             {/* Claims */}
             <motion.div
               className="text-[0.65rem] font-semibold tracking-[0.15em] uppercase mb-3"
-              style={{ fontFamily: "'JetBrains Mono', monospace", color: "#e8c44a" }}
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                color: "#e8c44a",
+              }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
@@ -192,7 +215,10 @@ export default function TechModal({ card, onClose }: Props) {
             {/* Insight */}
             <motion.div
               className="text-[0.65rem] font-semibold tracking-[0.15em] uppercase mb-3"
-              style={{ fontFamily: "'JetBrains Mono', monospace", color: "#a485ff" }}
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                color: "#a485ff",
+              }}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.7 }}

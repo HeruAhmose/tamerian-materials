@@ -14,7 +14,14 @@ interface Props {
   onClick?: () => void;
 }
 
-export default function TiltCard({ children, className = "", style, intensity = 10, glare = true, onClick }: Props) {
+export default function TiltCard({
+  children,
+  className = "",
+  style,
+  intensity = 10,
+  glare = true,
+  onClick,
+}: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
   const [glarePos, setGlarePos] = useState({ x: 50, y: 50 });

@@ -10,7 +10,12 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useSound } from "@/contexts/SoundContext";
 import { soundEngine } from "@/lib/soundEngine";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  AnimatePresence,
+} from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CinematicIntro from "@/components/CinematicIntro";
@@ -31,14 +36,28 @@ import TypewriterText from "@/components/TypewriterText";
 import AnimatedCounter from "@/components/AnimatedCounter";
 import { useInView } from "@/hooks/useInView";
 import {
-  TECH_CARDS, MFG_STEPS, APPS, CLAIMS, COMPOSITION,
-  ORBITAL_NODES, IMAGES, STATS,
+  TECH_CARDS,
+  MFG_STEPS,
+  APPS,
+  CLAIMS,
+  COMPOSITION,
+  ORBITAL_NODES,
+  IMAGES,
+  STATS,
 } from "@/lib/data";
 
 gsap.registerPlugin(ScrollTrigger);
 
 // ─── Stagger Reveal Wrapper ───
-function StaggerReveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+function StaggerReveal({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  delay?: number;
+}) {
   const [ref, inView] = useInView({ threshold: 0.1 });
   return (
     <motion.div
@@ -66,21 +85,34 @@ function HeroSection() {
   const textY = useTransform(scrollYProgress, [0, 1], [0, -80]);
 
   return (
-    <section id="hero" ref={heroRef} className="relative min-h-screen flex flex-col justify-center overflow-hidden">
+    <section
+      id="hero"
+      ref={heroRef}
+      className="relative min-h-screen flex flex-col justify-center overflow-hidden"
+    >
       {/* Parallax background image */}
       <motion.div className="absolute inset-0 z-0" style={{ y, scale }}>
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${IMAGES.hero})`, opacity: 0.3 }}
         />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(180deg, rgba(3,3,8,0.3) 0%, rgba(3,3,8,0.6) 40%, rgba(3,3,8,0.95) 100%)" }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(180deg, rgba(3,3,8,0.3) 0%, rgba(3,3,8,0.6) 40%, rgba(3,3,8,0.95) 100%)",
+          }}
+        />
       </motion.div>
 
       {/* Floating ambient hexagons */}
       <FloatingElements count={8} color="#45e8d8" type="hex" />
       <FloatingElements count={5} color="#a485ff" type="ring" />
 
-      <motion.div className="relative z-10 px-[5vw] md:px-[7vw] max-w-[900px]" style={{ opacity, y: textY }}>
+      <motion.div
+        className="relative z-10 px-[5vw] md:px-[7vw] max-w-[900px]"
+        style={{ opacity, y: textY }}
+      >
         {/* Eyebrow */}
         <motion.div
           className="flex items-center gap-2.5 mb-6"
@@ -88,10 +120,16 @@ function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 4.2 }}
         >
-          <span className="w-2 h-2 rounded-full inline-block animate-pulse" style={{ background: "#45e8d8", boxShadow: "0 0 14px #45e8d8" }} />
+          <span
+            className="w-2 h-2 rounded-full inline-block animate-pulse"
+            style={{ background: "#45e8d8", boxShadow: "0 0 14px #45e8d8" }}
+          />
           <span
             className="text-[0.72rem] font-semibold tracking-[0.2em] uppercase"
-            style={{ fontFamily: "'JetBrains Mono', monospace", color: "#45e8d8" }}
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              color: "#45e8d8",
+            }}
           >
             Patent Pending · U.S. App. No. 63/934,269
           </span>
@@ -107,9 +145,21 @@ function HeroSection() {
             className="text-5xl md:text-6xl lg:text-[5.5rem] font-bold leading-[1.06] mb-6"
             style={{ fontFamily: "'Playfair Display', serif" }}
           >
-            <TextReveal text="Where Carbon" style={{ color: "var(--qg)" }} delay={4.4} stagger={0.03} force />
+            <TextReveal
+              text="Where Carbon"
+              style={{ color: "var(--qg)" }}
+              delay={4.4}
+              stagger={0.03}
+              force
+            />
             <br />
-            <TextReveal text="Meets " style={{ color: "var(--qg)" }} delay={4.7} stagger={0.03} force />
+            <TextReveal
+              text="Meets "
+              style={{ color: "var(--qg)" }}
+              delay={4.7}
+              stagger={0.03}
+              force
+            />
             <TextReveal
               text="Crystal"
               delay={4.9}
@@ -117,7 +167,8 @@ function HeroSection() {
               force
               style={{ fontStyle: "italic" }}
               charStyle={{
-                background: "linear-gradient(135deg, #45e8d8, #a485ff, #ff7eb6)",
+                background:
+                  "linear-gradient(135deg, #45e8d8, #a485ff, #ff7eb6)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
               }}
@@ -133,7 +184,10 @@ function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 5.5 }}
         >
-          Hemp-derived carbon matrices with embedded piezoelectric, thermoelectric, magnetic, and quantum-active crystalline phases — a single composite for simultaneous energy harvesting and room-temperature quantum sensing.
+          Hemp-derived carbon matrices with embedded piezoelectric,
+          thermoelectric, magnetic, and quantum-active crystalline phases — a
+          single composite for simultaneous energy harvesting and
+          room-temperature quantum sensing.
         </motion.p>
 
         {/* Buttons */}
@@ -145,16 +199,28 @@ function HeroSection() {
         >
           <motion.a
             href="#tech"
-            onClick={(e) => { e.preventDefault(); document.querySelector("#tech")?.scrollIntoView({ behavior: "smooth" }); }}
+            onClick={e => {
+              e.preventDefault();
+              document
+                .querySelector("#tech")
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
             className="inline-flex items-center gap-2 text-sm font-bold tracking-[0.08em] uppercase px-8 py-4 relative overflow-hidden group"
             style={{
               background: "linear-gradient(135deg, #45e8d8, #28c8b8)",
               color: "var(--void)",
               boxShadow: "0 4px 20px rgba(69,232,216,0.3)",
             }}
-            whileHover={{ y: -3, boxShadow: "0 12px 40px rgba(69,232,216,0.5)" }}
+            whileHover={{
+              y: -3,
+              boxShadow: "0 12px 40px rgba(69,232,216,0.5)",
+            }}
             whileTap={{ scale: 0.97 }}
-            onMouseEnter={() => { try { soundEngine.play("hover"); } catch {} }}
+            onMouseEnter={() => {
+              try {
+                soundEngine.play("hover");
+              } catch {}
+            }}
           >
             <span className="relative z-10">Explore the Science ↓</span>
             <motion.span
@@ -166,7 +232,12 @@ function HeroSection() {
           </motion.a>
           <motion.a
             href="#ip"
-            onClick={(e) => { e.preventDefault(); document.querySelector("#ip")?.scrollIntoView({ behavior: "smooth" }); }}
+            onClick={e => {
+              e.preventDefault();
+              document
+                .querySelector("#ip")
+                ?.scrollIntoView({ behavior: "smooth" });
+            }}
             className="text-sm font-semibold tracking-[0.06em] uppercase py-4 relative group"
             style={{ color: "var(--t2)" }}
             whileHover={{ color: "#45e8d8" }}
@@ -184,12 +255,20 @@ function HeroSection() {
         animate={{ opacity: 1 }}
         transition={{ delay: 5.8, duration: 1 }}
       >
-        <span className="text-[0.6rem] tracking-[0.2em] uppercase" style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}>
+        <span
+          className="text-[0.6rem] tracking-[0.2em] uppercase"
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            color: "var(--t3)",
+          }}
+        >
           Scroll to Explore
         </span>
         <motion.div
           className="w-[1px] h-10"
-          style={{ background: "linear-gradient(to bottom, #45e8d8, transparent)" }}
+          style={{
+            background: "linear-gradient(to bottom, #45e8d8, transparent)",
+          }}
           animate={{ scaleY: [1, 0.3, 1], opacity: [0.8, 0.2, 0.8] }}
           transition={{ duration: 2, repeat: Infinity }}
         />
@@ -205,7 +284,12 @@ function PatentBar() {
     <motion.div
       ref={ref}
       className="relative z-10 flex items-center justify-center gap-4 md:gap-7 flex-wrap px-[4vw] py-5"
-      style={{ borderTop: "1px solid var(--bd)", borderBottom: "1px solid var(--bd)", background: "rgba(10,10,18,0.7)", backdropFilter: "blur(12px)" }}
+      style={{
+        borderTop: "1px solid var(--bd)",
+        borderBottom: "1px solid var(--bd)",
+        background: "rgba(10,10,18,0.7)",
+        backdropFilter: "blur(12px)",
+      }}
       initial={{ opacity: 0, y: 20 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.8 }}
@@ -224,13 +308,27 @@ function PatentBar() {
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: i * 0.08, duration: 0.5 }}
         >
-          {i > 0 && <span className="w-1 h-1 rounded-full" style={{ background: "var(--tmd)" }} />}
-          <span className="text-[0.6rem] font-medium tracking-[0.1em] uppercase" style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}>
+          {i > 0 && (
+            <span
+              className="w-1 h-1 rounded-full"
+              style={{ background: "var(--tmd)" }}
+            />
+          )}
+          <span
+            className="text-[0.6rem] font-medium tracking-[0.1em] uppercase"
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              color: "var(--t3)",
+            }}
+          >
             {k}
           </span>
           <span
             className="text-[0.75rem] font-semibold ml-1"
-            style={{ fontFamily: "'JetBrains Mono', monospace", color: k === "Status" ? "#45e8d8" : "var(--qu)" }}
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              color: k === "Status" ? "#45e8d8" : "var(--qu)",
+            }}
           >
             {v}
           </span>
@@ -254,16 +352,28 @@ function StatsRow() {
         <motion.div
           key={i}
           className="text-center py-6 px-3 relative group cursor-default"
-          style={{ borderRight: i < STATS.length - 1 ? "1px solid var(--bd)" : "none" }}
+          style={{
+            borderRight: i < STATS.length - 1 ? "1px solid var(--bd)" : "none",
+          }}
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: i * 0.12 }}
         >
           {/* Hover glow */}
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-            style={{ background: "radial-gradient(circle at center, rgba(69,232,216,0.04), transparent 70%)" }}
+          <div
+            className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+            style={{
+              background:
+                "radial-gradient(circle at center, rgba(69,232,216,0.04), transparent 70%)",
+            }}
           />
-          <div className="text-3xl md:text-4xl font-semibold relative" style={{ fontFamily: "'Playfair Display', serif", color: "var(--qg)" }}>
+          <div
+            className="text-3xl md:text-4xl font-semibold relative"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              color: "var(--qg)",
+            }}
+          >
             {stat.isStatic ? (
               <motion.span
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -274,22 +384,41 @@ function StatsRow() {
               </motion.span>
             ) : stat.countFrom ? (
               <span>
-                <AnimatedCounter end={stat.countFrom} trigger={inView} color="var(--qg)" />
+                <AnimatedCounter
+                  end={stat.countFrom}
+                  trigger={inView}
+                  color="var(--qg)"
+                />
                 –
-                <AnimatedCounter end={stat.countTo!} trigger={inView} color="var(--qg)" suffix="%" />
+                <AnimatedCounter
+                  end={stat.countTo!}
+                  trigger={inView}
+                  color="var(--qg)"
+                  suffix="%"
+                />
               </span>
             ) : (
-              <AnimatedCounter end={stat.countTo!} trigger={inView} color="var(--qg)" />
+              <AnimatedCounter
+                end={stat.countTo!}
+                trigger={inView}
+                color="var(--qg)"
+              />
             )}
           </div>
           <div
             className="text-[0.6rem] font-medium tracking-[0.1em] uppercase mt-2"
-            style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              color: "var(--t3)",
+            }}
           >
             {stat.label}
           </div>
           {/* Bottom accent line on hover */}
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] group-hover:w-12 transition-all duration-400" style={{ background: "#45e8d8" }} />
+          <div
+            className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[2px] group-hover:w-12 transition-all duration-400"
+            style={{ background: "#45e8d8" }}
+          />
         </motion.div>
       ))}
     </div>
@@ -299,18 +428,37 @@ function StatsRow() {
 // ─── Tech Cards Section ───
 function TechSection({ onCardClick }: { onCardClick: (idx: number) => void }) {
   return (
-    <Section id="tech" eyebrow="Core Innovation" title="Four Technologies, One Material" subtitle="Click any card to explore specs, patent claims, and performance data." dark>
+    <Section
+      id="tech"
+      eyebrow="Core Innovation"
+      title="Four Technologies, One Material"
+      subtitle="Click any card to explore specs, patent claims, and performance data."
+      dark
+    >
       <FloatingElements count={4} color="#45e8d8" type="hex" />
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
         {TECH_CARDS.map((card, i) => (
-          <TechCard key={card.id} card={card} index={i} onClick={() => onCardClick(i)} />
+          <TechCard
+            key={card.id}
+            card={card}
+            index={i}
+            onClick={() => onCardClick(i)}
+          />
         ))}
       </div>
     </Section>
   );
 }
 
-function TechCard({ card, index, onClick }: { card: typeof TECH_CARDS[number]; index: number; onClick: () => void }) {
+function TechCard({
+  card,
+  index,
+  onClick,
+}: {
+  card: (typeof TECH_CARDS)[number];
+  index: number;
+  onClick: () => void;
+}) {
   const [ref, inView] = useInView();
   const [hovered, setHovered] = useState(false);
   const { play } = useSound();
@@ -337,7 +485,10 @@ function TechCard({ card, index, onClick }: { card: typeof TECH_CARDS[number]; i
         intensity={8}
       >
         <div
-          onMouseEnter={() => { setHovered(true); play("hover"); }}
+          onMouseEnter={() => {
+            setHovered(true);
+            play("hover");
+          }}
           onMouseLeave={() => setHovered(false)}
         >
           {/* Background glow on hover */}
@@ -363,8 +514,15 @@ function TechCard({ card, index, onClick }: { card: typeof TECH_CARDS[number]; i
           {/* Animated dot */}
           <motion.div
             className="w-10 h-10 rounded-full flex items-center justify-center mb-4"
-            style={{ background: card.color + "14", border: `1px solid ${card.color}30` }}
-            animate={hovered ? { scale: 1.1, boxShadow: `0 0 20px ${card.color}30` } : { scale: 1, boxShadow: "none" }}
+            style={{
+              background: card.color + "14",
+              border: `1px solid ${card.color}30`,
+            }}
+            animate={
+              hovered
+                ? { scale: 1.1, boxShadow: `0 0 20px ${card.color}30` }
+                : { scale: 1, boxShadow: "none" }
+            }
             transition={{ duration: 0.3 }}
           >
             <motion.span
@@ -375,23 +533,39 @@ function TechCard({ card, index, onClick }: { card: typeof TECH_CARDS[number]; i
             />
           </motion.div>
 
-          <h3 className="text-xl font-semibold mb-2" style={{ fontFamily: "'Playfair Display', serif", color: "var(--qu)" }}>
+          <h3
+            className="text-xl font-semibold mb-2"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              color: "var(--qu)",
+            }}
+          >
             {card.title}
           </h3>
-          <p className="text-base leading-[1.75] mb-4" style={{ color: "var(--t2)" }}>
+          <p
+            className="text-base leading-[1.75] mb-4"
+            style={{ color: "var(--t2)" }}
+          >
             {card.short}
           </p>
 
           <div className="flex justify-between items-center">
             <span
               className="text-[0.6rem] font-semibold tracking-[0.06em] uppercase px-2 py-1"
-              style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--tmd)", border: "1px solid rgba(69,232,216,0.15)" }}
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                color: "var(--tmd)",
+                border: "1px solid rgba(69,232,216,0.15)",
+              }}
             >
               {card.claim} · {card.vol}
             </span>
             <motion.span
               className="text-[0.65rem] font-semibold tracking-[0.06em]"
-              style={{ fontFamily: "'JetBrains Mono', monospace", color: "#45e8d8" }}
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                color: "#45e8d8",
+              }}
               animate={{ x: hovered ? 6 : 0 }}
             >
               EXPLORE →
@@ -407,10 +581,18 @@ function TechCard({ card, index, onClick }: { card: typeof TECH_CARDS[number]; i
 function CompositionSection() {
   const [active, setActive] = useState<string | null>(null);
   const { play: playSound } = useSound();
-  const toggle = (m: string) => { setActive(active === m ? null : m); playSound("click"); };
+  const toggle = (m: string) => {
+    setActive(active === m ? null : m);
+    playSound("click");
+  };
 
   return (
-    <Section id="comp" eyebrow="Composite Architecture — Claim 15" title="Engineered at Every Scale" subtitle="Click any material or orbital node to highlight its role.">
+    <Section
+      id="comp"
+      eyebrow="Composite Architecture — Claim 15"
+      title="Engineered at Every Scale"
+      subtitle="Click any material or orbital node to highlight its role."
+    >
       <FloatingElements count={5} color="#a485ff" type="ring" />
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-8 items-start">
         {/* Orbital visualization */}
@@ -418,9 +600,24 @@ function CompositionSection() {
           <div className="relative aspect-square max-w-[420px] mx-auto lg:mx-0">
             {/* Rings with glow */}
             {[
-              { inset: "0%", color: "rgba(69,232,216,0.1)", dur: 50, glow: "rgba(69,232,216,0.03)" },
-              { inset: "15%", color: "rgba(164,133,255,0.1)", dur: 35, glow: "rgba(164,133,255,0.03)" },
-              { inset: "32%", color: "rgba(232,196,74,0.12)", dur: 24, glow: "rgba(232,196,74,0.04)" },
+              {
+                inset: "0%",
+                color: "rgba(69,232,216,0.1)",
+                dur: 50,
+                glow: "rgba(69,232,216,0.03)",
+              },
+              {
+                inset: "15%",
+                color: "rgba(164,133,255,0.1)",
+                dur: 35,
+                glow: "rgba(164,133,255,0.03)",
+              },
+              {
+                inset: "32%",
+                color: "rgba(232,196,74,0.12)",
+                dur: 24,
+                glow: "rgba(232,196,74,0.04)",
+              },
             ].map((ring, i) => (
               <div
                 key={i}
@@ -438,14 +635,27 @@ function CompositionSection() {
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               >
-                <b className="block text-xl font-semibold" style={{ fontFamily: "'Playfair Display', serif", color: "var(--qg)" }}>
+                <b
+                  className="block text-xl font-semibold"
+                  style={{
+                    fontFamily: "'Playfair Display', serif",
+                    color: "var(--qg)",
+                  }}
+                >
                   Tamerian
                 </b>
                 <small
                   className="text-[0.55rem] font-medium tracking-[0.15em] uppercase"
-                  style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    color: "var(--t3)",
+                  }}
                 >
                   Multi-Phase
                 </small>
@@ -468,7 +678,9 @@ function CompositionSection() {
                     opacity: isDim ? 0.08 : 1,
                     scale: isHighlighted ? 1.6 : isDim ? 0.3 : 1,
                     background: node.c,
-                    boxShadow: isHighlighted ? `0 0 20px ${node.c}, 0 0 40px ${node.c}50` : `0 0 12px ${node.c}`,
+                    boxShadow: isHighlighted
+                      ? `0 0 20px ${node.c}, 0 0 40px ${node.c}50`
+                      : `0 0 12px ${node.c}`,
                   }}
                   whileHover={{ scale: 1.8 }}
                   onClick={() => toggle(node.m)}
@@ -497,27 +709,56 @@ function CompositionSection() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08, duration: 0.5 }}
-                whileHover={{ paddingLeft: "1.5rem", background: "rgba(255,255,255,0.01)" }}
+                whileHover={{
+                  paddingLeft: "1.5rem",
+                  background: "rgba(255,255,255,0.01)",
+                }}
                 layout
               >
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-lg font-semibold" style={{ fontFamily: "'Playfair Display', serif", color: isActive ? comp.c : "var(--qu)" }}>
+                  <span
+                    className="text-lg font-semibold"
+                    style={{
+                      fontFamily: "'Playfair Display', serif",
+                      color: isActive ? comp.c : "var(--qu)",
+                    }}
+                  >
                     {comp.n}
                   </span>
-                  <span className="text-[0.72rem] font-semibold" style={{ fontFamily: "'JetBrains Mono', monospace", color: comp.c }}>
+                  <span
+                    className="text-[0.72rem] font-semibold"
+                    style={{
+                      fontFamily: "'JetBrains Mono', monospace",
+                      color: comp.c,
+                    }}
+                  >
                     {comp.p}
                   </span>
                 </div>
-                <p className="text-sm leading-[1.7]" style={{ color: "var(--t2)" }}>{comp.d}</p>
+                <p
+                  className="text-sm leading-[1.7]"
+                  style={{ color: "var(--t2)" }}
+                >
+                  {comp.d}
+                </p>
                 {/* Animated bar */}
-                <div className="h-[3px] mt-3 rounded overflow-hidden" style={{ background: "var(--lat)" }}>
+                <div
+                  className="h-[3px] mt-3 rounded overflow-hidden"
+                  style={{ background: "var(--lat)" }}
+                >
                   <motion.div
                     className="h-full rounded"
-                    style={{ background: `linear-gradient(90deg, ${comp.c}, ${comp.c}80)` }}
+                    style={{
+                      background: `linear-gradient(90deg, ${comp.c}, ${comp.c}80)`,
+                    }}
                     initial={{ width: 0 }}
                     whileInView={{ width: `${comp.w}%` }}
                     viewport={{ once: true }}
-                    transition={{ duration: 1.4, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{
+                      duration: 1.4,
+                      delay: i * 0.1,
+                      ease: [0.16, 1, 0.3, 1],
+                    }}
                   />
                 </div>
               </motion.div>
@@ -532,7 +773,13 @@ function CompositionSection() {
 // ─── Energy Section ───
 function EnergySection() {
   return (
-    <Section id="energy" eyebrow="Energy Harvesting — Claim 6" title="Three Conversion Modes" subtitle="Hover chart data points for exact values." dark>
+    <Section
+      id="energy"
+      eyebrow="Energy Harvesting — Claim 6"
+      title="Three Conversion Modes"
+      subtitle="Hover chart data points for exact values."
+      dark
+    >
       <FloatingElements count={4} color="#e8c44a" type="dot" />
 
       {/* Cinematic image with parallax */}
@@ -552,16 +799,49 @@ function EnergySection() {
           viewport={{ once: true }}
           transition={{ duration: 2 }}
         />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to right, var(--carbon), transparent 30%, transparent 70%, var(--carbon))" }} />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, var(--carbon), transparent 20%, transparent 80%, var(--carbon))" }} />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to right, var(--carbon), transparent 30%, transparent 70%, var(--carbon))",
+          }}
+        />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(to bottom, var(--carbon), transparent 20%, transparent 80%, var(--carbon))",
+          }}
+        />
       </motion.div>
 
       {/* Three mechanism cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {[
-          { icon: "⚡", title: "Piezoelectric", range: "50–500 μW/cm²", desc: "Quartz + tourmaline under 10–100 MPa cyclic stress at 0.1–100 Hz", color: "#45e8d8", detail: "d₃₃ ~2.3–10 pC/N" },
-          { icon: "🔥", title: "Thermoelectric", range: "ZT 1.0–2.5", desc: "Carbon-crystal interfaces at 250–350K with spin-Seebeck enhancement", color: "#a485ff", detail: "5–10× Bi₂Te₃" },
-          { icon: "🧲", title: "Spin-Seebeck", range: "+40–60%", desc: "Magnetite nanoparticle network adds thermal conversion beyond conventional", color: "#e8c44a", detail: "Fe₃O₄ 10–200nm" },
+          {
+            icon: "⚡",
+            title: "Piezoelectric",
+            range: "50–500 μW/cm²",
+            desc: "Quartz + tourmaline under 10–100 MPa cyclic stress at 0.1–100 Hz",
+            color: "#45e8d8",
+            detail: "d₃₃ ~2.3–10 pC/N",
+          },
+          {
+            icon: "🔥",
+            title: "Thermoelectric",
+            range: "ZT 1.0–2.5",
+            desc: "Carbon-crystal interfaces at 250–350K with spin-Seebeck enhancement",
+            color: "#a485ff",
+            detail: "5–10× Bi₂Te₃",
+          },
+          {
+            icon: "🧲",
+            title: "Spin-Seebeck",
+            range: "+40–60%",
+            desc: "Magnetite nanoparticle network adds thermal conversion beyond conventional",
+            color: "#e8c44a",
+            detail: "Fe₃O₄ 10–200nm",
+          },
         ].map((mech, i) => (
           <motion.div
             key={i}
@@ -574,29 +854,72 @@ function EnergySection() {
             whileHover={{ y: -4, borderColor: "var(--bdh)" }}
           >
             {/* Top accent */}
-            <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: `linear-gradient(90deg, transparent, ${mech.color}60, transparent)` }} />
+            <div
+              className="absolute top-0 left-0 right-0 h-[2px]"
+              style={{
+                background: `linear-gradient(90deg, transparent, ${mech.color}60, transparent)`,
+              }}
+            />
             <div className="text-3xl mb-3">{mech.icon}</div>
-            <div className="text-sm font-semibold tracking-[0.06em] uppercase mb-1" style={{ fontFamily: "'JetBrains Mono', monospace", color: mech.color }}>
+            <div
+              className="text-sm font-semibold tracking-[0.06em] uppercase mb-1"
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                color: mech.color,
+              }}
+            >
               {mech.title}
             </div>
-            <div className="text-3xl font-bold mb-2" style={{ fontFamily: "'Playfair Display', serif", color: "var(--qg)" }}>
+            <div
+              className="text-3xl font-bold mb-2"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                color: "var(--qg)",
+              }}
+            >
               {mech.range}
             </div>
-            <p className="text-xs leading-[1.65] mb-2" style={{ color: "var(--t3)" }}>{mech.desc}</p>
-            <span className="text-[0.55rem] font-semibold tracking-[0.08em] uppercase px-2 py-0.5 inline-block" style={{ fontFamily: "'JetBrains Mono', monospace", color: mech.color, border: `1px solid ${mech.color}30`, background: `${mech.color}08` }}>
+            <p
+              className="text-xs leading-[1.65] mb-2"
+              style={{ color: "var(--t3)" }}
+            >
+              {mech.desc}
+            </p>
+            <span
+              className="text-[0.55rem] font-semibold tracking-[0.08em] uppercase px-2 py-0.5 inline-block"
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                color: mech.color,
+                border: `1px solid ${mech.color}30`,
+                background: `${mech.color}08`,
+              }}
+            >
               {mech.detail}
             </span>
             {/* Hover glow */}
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-              style={{ background: `radial-gradient(circle at center, ${mech.color}06, transparent 70%)` }}
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+              style={{
+                background: `radial-gradient(circle at center, ${mech.color}06, transparent 70%)`,
+              }}
             />
           </motion.div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <ChartBox title="Piezoelectric — Claim 6(a)" color="#45e8d8" note="Formulation D (30% quartz, 15% tourmaline, optimized)" type="piezo" />
-        <ChartBox title="Thermoelectric — Claim 6(b)" color="#a485ff" note="12% magnetite optimized vs Bi₂Te₃ reference" type="thermo" />
+        <ChartBox
+          title="Piezoelectric — Claim 6(a)"
+          color="#45e8d8"
+          note="Formulation D (30% quartz, 15% tourmaline, optimized)"
+          type="piezo"
+        />
+        <ChartBox
+          title="Thermoelectric — Claim 6(b)"
+          color="#a485ff"
+          note="12% magnetite optimized vs Bi₂Te₃ reference"
+          type="thermo"
+        />
       </div>
 
       {/* Combined output */}
@@ -604,7 +927,8 @@ function EnergySection() {
         className="mt-8 p-6 md:p-8 flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden"
         style={{
           border: "1px solid var(--bd)",
-          background: "linear-gradient(135deg, rgba(69,232,216,0.03), rgba(164,133,255,0.02))",
+          background:
+            "linear-gradient(135deg, rgba(69,232,216,0.03), rgba(164,133,255,0.02))",
         }}
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -614,15 +938,25 @@ function EnergySection() {
         {/* Animated border glow */}
         <motion.div
           className="absolute top-0 left-0 right-0 h-[2px]"
-          style={{ background: "linear-gradient(90deg, #45e8d8, #a485ff, #e8c44a)" }}
+          style={{
+            background: "linear-gradient(90deg, #45e8d8, #a485ff, #e8c44a)",
+          }}
           animate={{ opacity: [0.4, 1, 0.4] }}
           transition={{ duration: 3, repeat: Infinity }}
         />
         <div>
-          <h3 className="text-2xl font-semibold" style={{ fontFamily: "'Playfair Display', serif", color: "var(--qg)" }}>
+          <h3
+            className="text-2xl font-semibold"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              color: "var(--qg)",
+            }}
+          >
             Combined Output — Claim 6(c)
           </h3>
-          <p className="text-base" style={{ color: "var(--t2)" }}>Simultaneous mechanical + thermal loading</p>
+          <p className="text-base" style={{ color: "var(--t2)" }}>
+            Simultaneous mechanical + thermal loading
+          </p>
         </div>
         <div className="text-right">
           <div
@@ -638,7 +972,10 @@ function EnergySection() {
           </div>
           <div
             className="text-[0.55rem] font-semibold tracking-[0.12em] uppercase mt-1"
-            style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              color: "var(--t3)",
+            }}
           >
             μW/cm² Combined
           </div>
@@ -648,9 +985,23 @@ function EnergySection() {
   );
 }
 
-function ChartBox({ title, color, note, type }: { title: string; color: string; note: string; type: "piezo" | "thermo" }) {
+function ChartBox({
+  title,
+  color,
+  note,
+  type,
+}: {
+  title: string;
+  color: string;
+  note: string;
+  type: "piezo" | "thermo";
+}) {
   const [ref, inView] = useInView();
-  const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
+  const [tooltip, setTooltip] = useState<{
+    x: number;
+    y: number;
+    text: string;
+  } | null>(null);
   const { play: playSound } = useSound();
   const [animProgress, setAnimProgress] = useState(0);
 
@@ -666,30 +1017,95 @@ function ChartBox({ title, color, note, type }: { title: string; color: string; 
     requestAnimationFrame(animate);
   }, [inView]);
 
-  const w = 360, h = 220, px = 48, py = 24;
-  const cw = w - px - 14, ch = h - py - 30;
+  const w = 360,
+    h = 220,
+    px = 48,
+    py = 24;
+  const cw = w - px - 14,
+    ch = h - py - 30;
 
   const isPiezo = type === "piezo";
   const data = isPiezo
-    ? [[0,0],[0.1,0.8],[0.2,2.2],[0.3,3.5],[0.4,5.5],[0.5,7.8],[0.6,9.5],[0.7,11],[0.8,12.5],[0.9,14],[1,15]]
-    : [[0,0.95],[0.125,1.05],[0.25,1.15],[0.375,1.35],[0.5,1.55],[0.625,1.75],[0.75,1.9],[0.875,2.05],[1,2.2]];
+    ? [
+        [0, 0],
+        [0.1, 0.8],
+        [0.2, 2.2],
+        [0.3, 3.5],
+        [0.4, 5.5],
+        [0.5, 7.8],
+        [0.6, 9.5],
+        [0.7, 11],
+        [0.8, 12.5],
+        [0.9, 14],
+        [1, 15],
+      ]
+    : [
+        [0, 0.95],
+        [0.125, 1.05],
+        [0.25, 1.15],
+        [0.375, 1.35],
+        [0.5, 1.55],
+        [0.625, 1.75],
+        [0.75, 1.9],
+        [0.875, 2.05],
+        [1, 2.2],
+      ];
   const labels = isPiezo
-    ? ["0V @ 0 MPa","0.8V @ 10","2.2V @ 20","3.5V @ 30","5.5V @ 40","7.8V @ 50","9.5V @ 60","11V @ 70","12.5V @ 80","14V @ 90","15V @ 100"]
-    : ["ZT 0.95 @ 250K","ZT 1.05 @ 275K","ZT 1.15 @ 300K","ZT 1.35 @ 325K","ZT 1.55 @ 350K","ZT 1.75 @ 375K","ZT 1.9 @ 400K","ZT 2.05 @ 425K","ZT 2.2 @ 450K"];
+    ? [
+        "0V @ 0 MPa",
+        "0.8V @ 10",
+        "2.2V @ 20",
+        "3.5V @ 30",
+        "5.5V @ 40",
+        "7.8V @ 50",
+        "9.5V @ 60",
+        "11V @ 70",
+        "12.5V @ 80",
+        "14V @ 90",
+        "15V @ 100",
+      ]
+    : [
+        "ZT 0.95 @ 250K",
+        "ZT 1.05 @ 275K",
+        "ZT 1.15 @ 300K",
+        "ZT 1.35 @ 325K",
+        "ZT 1.55 @ 350K",
+        "ZT 1.75 @ 375K",
+        "ZT 1.9 @ 400K",
+        "ZT 2.05 @ 425K",
+        "ZT 2.2 @ 450K",
+      ];
   const yMax = isPiezo ? 15 : 2.5;
   const xLabels = isPiezo ? ["0", "100 MPa"] : ["250K", "450K"];
   const yLabel = isPiezo ? "PIEZOELECTRIC VOLTAGE" : "THERMOELECTRIC ZT";
 
-  const refData = !isPiezo ? [[0,0.12],[0.25,0.18],[0.5,0.24],[0.75,0.32],[1,0.4]] : null;
+  const refData = !isPiezo
+    ? [
+        [0, 0.12],
+        [0.25, 0.18],
+        [0.5, 0.24],
+        [0.75, 0.32],
+        [1, 0.4],
+      ]
+    : null;
 
   // Animate points appearing based on progress
   const visibleCount = Math.floor(animProgress * data.length);
   const visibleData = data.slice(0, visibleCount + 1);
 
-  const pts = visibleData.map(d => `${px + d[0] * cw},${py + ch - (d[1] / yMax) * ch}`).join(" ");
-  const areaPoints = visibleData.length > 1 ? `${px},${py + ch} ${pts} ${px + visibleData[visibleData.length - 1][0] * cw},${py + ch}` : "";
+  const pts = visibleData
+    .map(d => `${px + d[0] * cw},${py + ch - (d[1] / yMax) * ch}`)
+    .join(" ");
+  const areaPoints =
+    visibleData.length > 1
+      ? `${px},${py + ch} ${pts} ${px + visibleData[visibleData.length - 1][0] * cw},${py + ch}`
+      : "";
 
-  const refPts = refData ? refData.map(d => `${px + d[0] * cw},${py + ch - (d[1] / yMax) * ch}`).join(" ") : "";
+  const refPts = refData
+    ? refData
+        .map(d => `${px + d[0] * cw},${py + ch - (d[1] / yMax) * ch}`)
+        .join(" ")
+    : "";
 
   // Grid lines
   const gridLines = Array.from({ length: 5 }, (_, i) => {
@@ -709,7 +1125,12 @@ function ChartBox({ title, color, note, type }: { title: string; color: string; 
       whileHover={{ borderColor: "var(--bdh)" }}
     >
       {/* Top accent */}
-      <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: `linear-gradient(90deg, transparent, ${color}40, transparent)` }} />
+      <div
+        className="absolute top-0 left-0 right-0 h-[2px]"
+        style={{
+          background: `linear-gradient(90deg, transparent, ${color}40, transparent)`,
+        }}
+      />
 
       <h4
         className="text-[0.65rem] font-semibold tracking-[0.1em] uppercase mb-4"
@@ -721,46 +1142,119 @@ function ChartBox({ title, color, note, type }: { title: string; color: string; 
       <div className="relative">
         <svg viewBox={`0 0 ${w} ${h}`} className="w-full">
           {/* Y label */}
-          <text x={px + cw / 2} y="14" textAnchor="middle" fill="#a8a0b8" fontSize="8.5" fontFamily="'JetBrains Mono', monospace" fontWeight="600" letterSpacing="0.5">
+          <text
+            x={px + cw / 2}
+            y="14"
+            textAnchor="middle"
+            fill="#a8a0b8"
+            fontSize="8.5"
+            fontFamily="'JetBrains Mono', monospace"
+            fontWeight="600"
+            letterSpacing="0.5"
+          >
             {yLabel}
           </text>
           {/* Grid lines */}
           {gridLines.map((gl, i) => (
             <g key={i}>
-              <line x1={px} y1={gl.yPos} x2={px + cw} y2={gl.yPos} stroke="#706888" strokeWidth="0.3" strokeDasharray="2,4" />
-              <text x={px - 6} y={gl.yPos + 3} textAnchor="end" fill="#706888" fontSize="7.5" fontWeight="500">{gl.label}</text>
+              <line
+                x1={px}
+                y1={gl.yPos}
+                x2={px + cw}
+                y2={gl.yPos}
+                stroke="#706888"
+                strokeWidth="0.3"
+                strokeDasharray="2,4"
+              />
+              <text
+                x={px - 6}
+                y={gl.yPos + 3}
+                textAnchor="end"
+                fill="#706888"
+                fontSize="7.5"
+                fontWeight="500"
+              >
+                {gl.label}
+              </text>
             </g>
           ))}
           {/* Axes */}
-          <line x1={px} y1={py} x2={px} y2={py + ch} stroke="#706888" strokeWidth="0.6" />
-          <line x1={px} y1={py + ch} x2={px + cw} y2={py + ch} stroke="#706888" strokeWidth="0.6" />
+          <line
+            x1={px}
+            y1={py}
+            x2={px}
+            y2={py + ch}
+            stroke="#706888"
+            strokeWidth="0.6"
+          />
+          <line
+            x1={px}
+            y1={py + ch}
+            x2={px + cw}
+            y2={py + ch}
+            stroke="#706888"
+            strokeWidth="0.6"
+          />
           {/* X labels */}
-          <text x={px} y={py + ch + 14} fill="#a8a0b8" fontSize="8">{xLabels[0]}</text>
-          <text x={px + cw} y={py + ch + 14} textAnchor="end" fill="#a8a0b8" fontSize="8">{xLabels[1]}</text>
+          <text x={px} y={py + ch + 14} fill="#a8a0b8" fontSize="8">
+            {xLabels[0]}
+          </text>
+          <text
+            x={px + cw}
+            y={py + ch + 14}
+            textAnchor="end"
+            fill="#a8a0b8"
+            fontSize="8"
+          >
+            {xLabels[1]}
+          </text>
 
           {/* Reference line for thermo */}
           {refData && (
             <>
-              <polyline fill="none" stroke="#706888" strokeWidth="1" strokeDasharray="4,3" points={refPts} />
-              <text x={px + cw - 25} y={py + ch - (refData[refData.length - 1][1] / yMax) * ch - 6} fill="#706888" fontSize="7" fontWeight="500">
+              <polyline
+                fill="none"
+                stroke="#706888"
+                strokeWidth="1"
+                strokeDasharray="4,3"
+                points={refPts}
+              />
+              <text
+                x={px + cw - 25}
+                y={py + ch - (refData[refData.length - 1][1] / yMax) * ch - 6}
+                fill="#706888"
+                fontSize="7"
+                fontWeight="500"
+              >
                 Bi₂Te₃ ref
               </text>
             </>
           )}
 
           {/* Area fill */}
-          {areaPoints && (
-            <polygon fill={color + "12"} points={areaPoints} />
-          )}
+          {areaPoints && <polygon fill={color + "12"} points={areaPoints} />}
 
           {/* Line */}
           {visibleData.length > 1 && (
-            <polyline fill="none" stroke={color} strokeWidth="2" points={pts} strokeLinejoin="round" />
+            <polyline
+              fill="none"
+              stroke={color}
+              strokeWidth="2"
+              points={pts}
+              strokeLinejoin="round"
+            />
           )}
 
           {/* Glow line */}
           {visibleData.length > 1 && (
-            <polyline fill="none" stroke={color} strokeWidth="4" points={pts} strokeLinejoin="round" opacity="0.15" />
+            <polyline
+              fill="none"
+              stroke={color}
+              strokeWidth="4"
+              points={pts}
+              strokeLinejoin="round"
+              opacity="0.15"
+            />
           )}
 
           {/* Data points */}
@@ -780,12 +1274,12 @@ function ChartBox({ title, color, note, type }: { title: string; color: string; 
                   strokeWidth="2"
                   className="cursor-pointer"
                   style={{ transition: "r 0.2s" }}
-                  onMouseEnter={(e) => {
+                  onMouseEnter={e => {
                     (e.target as SVGCircleElement).setAttribute("r", "7");
                     setTooltip({ x: cx, y: cy - 18, text: labels[i] });
                     playSound("data_point");
                   }}
-                  onMouseLeave={(e) => {
+                  onMouseLeave={e => {
                     (e.target as SVGCircleElement).setAttribute("r", "4.5");
                     setTooltip(null);
                   }}
@@ -823,7 +1317,9 @@ function ChartBox({ title, color, note, type }: { title: string; color: string; 
         </svg>
       </div>
 
-      <p className="text-sm mt-2" style={{ color: "var(--t3)" }}>{note}</p>
+      <p className="text-sm mt-2" style={{ color: "var(--t3)" }}>
+        {note}
+      </p>
     </motion.div>
   );
 }
@@ -834,7 +1330,12 @@ function ManufacturingSection() {
   const { play: playSound } = useSound();
 
   return (
-    <Section id="mfg" eyebrow="Manufacturing — Claim 16" title="Seven Steps to Finished Composite" subtitle="Click each step for details.">
+    <Section
+      id="mfg"
+      eyebrow="Manufacturing — Claim 16"
+      title="Seven Steps to Finished Composite"
+      subtitle="Click each step for details."
+    >
       <FloatingElements count={3} color="#45e8d8" type="hex" />
 
       {/* Step tabs */}
@@ -849,7 +1350,10 @@ function ManufacturingSection() {
               border: `1px solid ${i === step ? "var(--tmd)" : "var(--bd)"}`,
               color: i === step ? "#45e8d8" : "var(--t2)",
             }}
-            onClick={() => { setStep(i); playSound("step"); }}
+            onClick={() => {
+              setStep(i);
+              playSound("step");
+            }}
             whileHover={{ y: -2, borderColor: "var(--bdh)" }}
             whileTap={{ scale: 0.97 }}
           >
@@ -879,18 +1383,38 @@ function ManufacturingSection() {
           {/* Step number watermark */}
           <div
             className="absolute top-2 right-4 text-7xl font-bold pointer-events-none"
-            style={{ fontFamily: "'Playfair Display', serif", color: "rgba(69,232,216,0.04)" }}
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              color: "rgba(69,232,216,0.04)",
+            }}
           >
             {MFG_STEPS[step].n}
           </div>
 
-          <h4 className="text-xl font-semibold mb-3 flex items-center gap-3" style={{ fontFamily: "'Playfair Display', serif", color: "var(--qg)" }}>
-            <span className="text-2xl font-bold px-2 py-0.5" style={{ fontFamily: "'JetBrains Mono', monospace", color: "#45e8d8", background: "rgba(69,232,216,0.08)", border: "1px solid rgba(69,232,216,0.2)" }}>
+          <h4
+            className="text-xl font-semibold mb-3 flex items-center gap-3"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              color: "var(--qg)",
+            }}
+          >
+            <span
+              className="text-2xl font-bold px-2 py-0.5"
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                color: "#45e8d8",
+                background: "rgba(69,232,216,0.08)",
+                border: "1px solid rgba(69,232,216,0.2)",
+              }}
+            >
               {MFG_STEPS[step].n}
             </span>
             {MFG_STEPS[step].t}
           </h4>
-          <p className="text-base leading-[1.85] max-w-[680px]" style={{ color: "var(--t2)" }}>
+          <p
+            className="text-base leading-[1.85] max-w-[680px]"
+            style={{ color: "var(--t2)" }}
+          >
             {MFG_STEPS[step].d}
           </p>
           {/* Progress */}
@@ -900,7 +1424,10 @@ function ManufacturingSection() {
                 key={i}
                 className="h-1.5 flex-1 rounded-full cursor-pointer"
                 style={{ background: i <= step ? "#45e8d8" : "var(--lat)" }}
-                onClick={() => { setStep(i); playSound("step"); }}
+                onClick={() => {
+                  setStep(i);
+                  playSound("step");
+                }}
                 whileHover={{ scale: 1.3 }}
                 animate={{ background: i <= step ? "#45e8d8" : "var(--lat)" }}
                 transition={{ duration: 0.3 }}
@@ -908,7 +1435,13 @@ function ManufacturingSection() {
             ))}
           </div>
           {/* Step counter */}
-          <div className="mt-3 text-[0.55rem] font-semibold tracking-[0.1em] uppercase" style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}>
+          <div
+            className="mt-3 text-[0.55rem] font-semibold tracking-[0.1em] uppercase"
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              color: "var(--t3)",
+            }}
+          >
             Step {step + 1} of {MFG_STEPS.length}
           </div>
         </motion.div>
@@ -920,7 +1453,11 @@ function ManufacturingSection() {
 // ─── Quantum Sensing Section ───
 function QuantumSection() {
   return (
-    <Section id="quantum" eyebrow="Quantum Sensing — Claim 7" title="Room-Temperature Quantum Coherence">
+    <Section
+      id="quantum"
+      eyebrow="Quantum Sensing — Claim 7"
+      title="Room-Temperature Quantum Coherence"
+    >
       <FloatingElements count={6} color="#ff7eb6" type="ring" />
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-10 mt-8 items-center">
         {/* Quantum image */}
@@ -940,7 +1477,13 @@ function QuantumSection() {
             viewport={{ once: true }}
             transition={{ duration: 2 }}
           />
-          <div className="absolute inset-0" style={{ background: "radial-gradient(circle at center, transparent 25%, var(--void) 100%)" }} />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at center, transparent 25%, var(--void) 100%)",
+            }}
+          />
           {/* Floating labels with pulse */}
           {[
             { label: "Eu³⁺", top: "18%", left: "22%", color: "#ff7eb6" },
@@ -963,8 +1506,15 @@ function QuantumSection() {
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.4 + i * 0.15, type: "spring", stiffness: 200 }}
-              whileHover={{ scale: 1.15, boxShadow: `0 0 20px ${item.color}30` }}
+              transition={{
+                delay: 0.4 + i * 0.15,
+                type: "spring",
+                stiffness: 200,
+              }}
+              whileHover={{
+                scale: 1.15,
+                boxShadow: `0 0 20px ${item.color}30`,
+              }}
             >
               {item.label}
               {/* Pulse ring */}
@@ -987,9 +1537,11 @@ function QuantumSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            Rare-earth doped crystalline particles embedded in the composite host quantum spin centers
-            that exhibit coherence at room temperature. Because the composite itself harvests energy,
-            the quantum sensors are entirely self-powered — no external batteries or cables required.
+            Rare-earth doped crystalline particles embedded in the composite
+            host quantum spin centers that exhibit coherence at room
+            temperature. Because the composite itself harvests energy, the
+            quantum sensors are entirely self-powered — no external batteries or
+            cables required.
           </motion.p>
 
           {/* Specs grid */}
@@ -1012,10 +1564,19 @@ function QuantumSection() {
                 transition={{ delay: i * 0.06 }}
                 whileHover={{ background: "rgba(255,255,255,0.04)" }}
               >
-                <div className="text-[0.55rem] font-semibold tracking-[0.08em] uppercase mb-0.5" style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}>
+                <div
+                  className="text-[0.55rem] font-semibold tracking-[0.08em] uppercase mb-0.5"
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    color: "var(--t3)",
+                  }}
+                >
                   {spec.label}
                 </div>
-                <div className="text-sm font-medium" style={{ color: "var(--qu)" }}>
+                <div
+                  className="text-sm font-medium"
+                  style={{ color: "var(--qu)" }}
+                >
                   {spec.value}
                 </div>
                 {/* Left accent on hover */}
@@ -1037,10 +1598,11 @@ function QuantumSection() {
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
           >
-            Europium ions substituted into the quartz lattice create optically addressable quantum centers.
-            Under optical pumping, these centers exhibit spin coherence sensitive to local magnetic fields,
-            temperature shifts, and mechanical strain — enabling quantum-limited sensing powered by the
-            composite's own energy harvesting.
+            Europium ions substituted into the quartz lattice create optically
+            addressable quantum centers. Under optical pumping, these centers
+            exhibit spin coherence sensitive to local magnetic fields,
+            temperature shifts, and mechanical strain — enabling quantum-limited
+            sensing powered by the composite's own energy harvesting.
           </motion.div>
         </div>
       </div>
@@ -1051,7 +1613,12 @@ function QuantumSection() {
 // ─── Applications Section ───
 function ApplicationsSection() {
   return (
-    <Section id="apps" eyebrow="Applications — Claims 19–25" title="From Infrastructure to Wearables" dark>
+    <Section
+      id="apps"
+      eyebrow="Applications — Claims 19–25"
+      title="From Infrastructure to Wearables"
+      dark
+    >
       <FloatingElements count={4} color="#45e8d8" type="dot" />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
         {APPS.map((app, i) => (
@@ -1063,10 +1630,15 @@ function ApplicationsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: i * 0.1 }}
-            whileHover={{ y: -5, borderColor: "var(--bdh)", boxShadow: "0 14px 40px rgba(0,0,0,0.4)" }}
+            whileHover={{
+              y: -5,
+              borderColor: "var(--bdh)",
+              boxShadow: "0 14px 40px rgba(0,0,0,0.4)",
+            }}
           >
             {/* Top gradient accent */}
-            <div className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-400"
+            <div
+              className="absolute top-0 left-0 right-0 h-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-400"
               style={{ background: "linear-gradient(90deg, #45e8d8, #a485ff)" }}
             />
             <motion.div
@@ -1076,13 +1648,27 @@ function ApplicationsSection() {
             >
               {app.icon}
             </motion.div>
-            <h4 className="text-lg font-semibold mb-2" style={{ fontFamily: "'Playfair Display', serif", color: "var(--qu)" }}>
+            <h4
+              className="text-lg font-semibold mb-2"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                color: "var(--qu)",
+              }}
+            >
               {app.t}
             </h4>
-            <p className="text-sm leading-[1.75] mb-3" style={{ color: "var(--t2)" }}>{app.d}</p>
+            <p
+              className="text-sm leading-[1.75] mb-3"
+              style={{ color: "var(--t2)" }}
+            >
+              {app.d}
+            </p>
             <span
               className="text-[0.6rem] font-semibold tracking-[0.08em] uppercase"
-              style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--tmd)" }}
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                color: "var(--tmd)",
+              }}
             >
               {app.cl}
             </span>
@@ -1099,28 +1685,66 @@ function PatentsSection() {
   const { play: playSound } = useSound();
 
   const groups = [
-    { k: "composition" as const, t: "Composition & Material Claims (1–15)", c: "#45e8d8", count: 15 },
-    { k: "methods" as const, t: "Manufacturing Method Claims (16–18)", c: "#a485ff", count: 3 },
-    { k: "devices" as const, t: "Device & System Claims (19–25)", c: "#e8c44a", count: 7 },
+    {
+      k: "composition" as const,
+      t: "Composition & Material Claims (1–15)",
+      c: "#45e8d8",
+      count: 15,
+    },
+    {
+      k: "methods" as const,
+      t: "Manufacturing Method Claims (16–18)",
+      c: "#a485ff",
+      count: 3,
+    },
+    {
+      k: "devices" as const,
+      t: "Device & System Claims (19–25)",
+      c: "#e8c44a",
+      count: 7,
+    },
   ];
 
   return (
-    <Section id="ip" eyebrow="Intellectual Property" title="25 Claims, Patent Pending" subtitle="Expand each category below to read every claim.">
+    <Section
+      id="ip"
+      eyebrow="Intellectual Property"
+      title="25 Claims, Patent Pending"
+      subtitle="Expand each category below to read every claim."
+    >
       {/* Patent cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
         <TiltCard
           className="relative overflow-hidden"
-          style={{ border: "1px solid var(--bd)", background: "var(--gra)", padding: "1.5rem" }}
+          style={{
+            border: "1px solid var(--bd)",
+            background: "var(--gra)",
+            padding: "1.5rem",
+          }}
           intensity={6}
         >
-          <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "linear-gradient(90deg, #45e8d8, #a485ff)" }} />
+          <div
+            className="absolute top-0 left-0 right-0 h-[3px]"
+            style={{ background: "linear-gradient(90deg, #45e8d8, #a485ff)" }}
+          />
           <span
             className="text-[0.6rem] font-semibold tracking-[0.1em] uppercase px-2 py-1 inline-block mb-3"
-            style={{ fontFamily: "'JetBrains Mono', monospace", color: "#45e8d8", border: "1px solid rgba(69,232,216,0.25)", background: "rgba(69,232,216,0.06)" }}
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              color: "#45e8d8",
+              border: "1px solid rgba(69,232,216,0.25)",
+              background: "rgba(69,232,216,0.06)",
+            }}
           >
             USPTO Filed
           </span>
-          <h3 className="text-lg font-semibold leading-[1.35] mb-3" style={{ fontFamily: "'Playfair Display', serif", color: "var(--qu)" }}>
+          <h3
+            className="text-lg font-semibold leading-[1.35] mb-3"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              color: "var(--qu)",
+            }}
+          >
             Multi-Modal Energy Harvesting Composite from Hemp-Derived Carbon
           </h3>
           <div className="flex flex-col gap-1.5">
@@ -1132,8 +1756,18 @@ function PatentsSection() {
               ["Confirm.", "#6305 · Micro Entity"],
             ].map(([l, v]) => (
               <div key={l} className="flex gap-2 text-sm">
-                <span className="text-[0.6rem] font-semibold tracking-[0.06em] uppercase min-w-[85px]" style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}>{l}</span>
-                <span className="font-medium" style={{ color: "var(--qu)" }}>{v}</span>
+                <span
+                  className="text-[0.6rem] font-semibold tracking-[0.06em] uppercase min-w-[85px]"
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    color: "var(--t3)",
+                  }}
+                >
+                  {l}
+                </span>
+                <span className="font-medium" style={{ color: "var(--qu)" }}>
+                  {v}
+                </span>
               </div>
             ))}
           </div>
@@ -1141,17 +1775,35 @@ function PatentsSection() {
 
         <TiltCard
           className="relative overflow-hidden"
-          style={{ border: "1px solid var(--bd)", background: "var(--gra)", padding: "1.5rem" }}
+          style={{
+            border: "1px solid var(--bd)",
+            background: "var(--gra)",
+            padding: "1.5rem",
+          }}
           intensity={6}
         >
-          <div className="absolute top-0 left-0 right-0 h-[3px]" style={{ background: "linear-gradient(90deg, #e8c44a, #ff7eb6)" }} />
+          <div
+            className="absolute top-0 left-0 right-0 h-[3px]"
+            style={{ background: "linear-gradient(90deg, #e8c44a, #ff7eb6)" }}
+          />
           <span
             className="text-[0.6rem] font-semibold tracking-[0.1em] uppercase px-2 py-1 inline-block mb-3"
-            style={{ fontFamily: "'JetBrains Mono', monospace", color: "#e8c44a", border: "1px solid rgba(232,196,74,0.25)", background: "rgba(232,196,74,0.06)" }}
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              color: "#e8c44a",
+              border: "1px solid rgba(232,196,74,0.25)",
+              background: "rgba(232,196,74,0.06)",
+            }}
           >
             In Development
           </span>
-          <h3 className="text-lg font-semibold leading-[1.35] mb-3" style={{ fontFamily: "'Playfair Display', serif", color: "var(--qu)" }}>
+          <h3
+            className="text-lg font-semibold leading-[1.35] mb-3"
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              color: "var(--qu)",
+            }}
+          >
             Hemp-Derived Carbon Substrates for DNA Data Storage with CRISPR
           </h3>
           <div className="flex flex-col gap-1.5">
@@ -1160,8 +1812,18 @@ function PatentsSection() {
               ["Inventor", "Jonathan Peoples"],
             ].map(([l, v]) => (
               <div key={l} className="flex gap-2 text-sm">
-                <span className="text-[0.6rem] font-semibold tracking-[0.06em] uppercase min-w-[85px]" style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}>{l}</span>
-                <span className="font-medium" style={{ color: "var(--qu)" }}>{v}</span>
+                <span
+                  className="text-[0.6rem] font-semibold tracking-[0.06em] uppercase min-w-[85px]"
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    color: "var(--t3)",
+                  }}
+                >
+                  {l}
+                </span>
+                <span className="font-medium" style={{ color: "var(--qu)" }}>
+                  {v}
+                </span>
               </div>
             ))}
           </div>
@@ -1170,7 +1832,7 @@ function PatentsSection() {
 
       {/* Accordion */}
       <div className="flex flex-col gap-2 mt-8">
-        {groups.map((g) => (
+        {groups.map(g => (
           <div key={g.k}>
             <motion.button
               className="w-full px-5 py-4 text-left flex justify-between items-center relative overflow-hidden"
@@ -1183,12 +1845,23 @@ function PatentsSection() {
                 borderLeft: `3px solid ${g.c}50`,
                 color: "var(--qu)",
               }}
-              onClick={() => { setOpenAcc(openAcc === g.k ? null : g.k); playSound("accordion"); }}
+              onClick={() => {
+                setOpenAcc(openAcc === g.k ? null : g.k);
+                playSound("accordion");
+              }}
               whileHover={{ background: "var(--lat)" }}
             >
               <span className="flex items-center gap-3">
                 {g.t}
-                <span className="text-[0.55rem] font-semibold tracking-[0.08em] uppercase px-1.5 py-0.5" style={{ fontFamily: "'JetBrains Mono', monospace", color: g.c, border: `1px solid ${g.c}30`, background: `${g.c}08` }}>
+                <span
+                  className="text-[0.55rem] font-semibold tracking-[0.08em] uppercase px-1.5 py-0.5"
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    color: g.c,
+                    border: `1px solid ${g.c}30`,
+                    background: `${g.c}08`,
+                  }}
+                >
                   {g.count}
                 </span>
               </span>
@@ -1205,7 +1878,10 @@ function PatentsSection() {
               {openAcc === g.k && (
                 <motion.div
                   className="flex flex-col gap-1 overflow-hidden"
-                  style={{ borderLeft: `3px solid ${g.c}50`, borderBottom: "1px solid var(--bd)" }}
+                  style={{
+                    borderLeft: `3px solid ${g.c}50`,
+                    borderBottom: "1px solid var(--bd)",
+                  }}
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
@@ -1223,7 +1899,10 @@ function PatentsSection() {
                         whileHover={{ background: "rgba(255,255,255,0.03)" }}
                       >
                         {claim}
-                        <div className="absolute left-0 top-0 bottom-0 w-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: g.c }} />
+                        <div
+                          className="absolute left-0 top-0 bottom-0 w-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                          style={{ background: g.c }}
+                        />
                       </motion.div>
                     ))}
                   </div>
@@ -1240,12 +1919,20 @@ function PatentsSection() {
 // ─── About Section ───
 function AboutSection() {
   return (
-    <Section id="about" eyebrow="Founder" title="Built by an Engineer-Inventor" dark>
+    <Section
+      id="about"
+      eyebrow="Founder"
+      title="Built by an Engineer-Inventor"
+      dark
+    >
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.5fr] gap-12 mt-8 items-start">
         <div>
           <motion.div
             className="text-3xl font-bold mb-1"
-            style={{ fontFamily: "'Playfair Display', serif", color: "var(--qg)" }}
+            style={{
+              fontFamily: "'Playfair Display', serif",
+              color: "var(--qg)",
+            }}
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -1254,12 +1941,18 @@ function AboutSection() {
           </motion.div>
           <div
             className="text-[0.7rem] font-semibold tracking-[0.18em] uppercase mb-6"
-            style={{ fontFamily: "'JetBrains Mono', monospace", color: "#45e8d8" }}
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              color: "#45e8d8",
+            }}
           >
             <TypewriterText text="Founder & Chief Engineer" speed={50} />
           </div>
           {[
-            { c: "#45e8d8", t: "U.S. Navy Veteran · Operation Enduring Freedom" },
+            {
+              c: "#45e8d8",
+              t: "U.S. Navy Veteran · Operation Enduring Freedom",
+            },
             { c: "#a485ff", t: "IT & Cybersecurity Specialist · NPower NC" },
             { c: "#e8c44a", t: "CompTIA Security+ Candidate (Current Cohort)" },
             { c: "#ff7eb6", t: "CompTIA A+ · CompTIA Tech+ Certified" },
@@ -1280,17 +1973,28 @@ function AboutSection() {
                 style={{ background: item.c }}
                 whileHover={{ scale: 1.5, boxShadow: `0 0 10px ${item.c}` }}
               />
-              <span className="group-hover:text-[var(--qu)] transition-colors duration-200">{item.t}</span>
+              <span className="group-hover:text-[var(--qu)] transition-colors duration-200">
+                {item.t}
+              </span>
             </motion.div>
           ))}
         </div>
 
         <div className="flex flex-col gap-4">
           {[
-            { text: "Tamerian Materials was founded on one conviction: advanced functional materials should begin with the earth, not a petroleum refinery.", highlight: true },
-            { text: "Jonathan Peoples brings U.S. Navy service (Operation Enduring Freedom), IT, and cybersecurity — currently in cohort for CompTIA Security+ alongside materials science research. He applies operational discipline to rational composite design." },
-            { text: "His research produced patent application No. 63/934,269 — 25 claims with no prior art combining all four technologies, validated across 51 peer-reviewed papers." },
-            { text: "Every Tamerian composite starts carbon-negative. Hemp sequesters CO₂ during growth; the composite locks it into stable material with net sequestration exceeding 0.5 tons CO₂ per ton produced." },
+            {
+              text: "Tamerian Materials was founded on one conviction: advanced functional materials should begin with the earth, not a petroleum refinery.",
+              highlight: true,
+            },
+            {
+              text: "Jonathan Peoples brings U.S. Navy service (Operation Enduring Freedom), IT, and cybersecurity — currently in cohort for CompTIA Security+ alongside materials science research. He applies operational discipline to rational composite design.",
+            },
+            {
+              text: "His research produced patent application No. 63/934,269 — 25 claims with no prior art combining all four technologies, validated across 51 peer-reviewed papers.",
+            },
+            {
+              text: "Every Tamerian composite starts carbon-negative. Hemp sequesters CO₂ during growth; the composite locks it into stable material with net sequestration exceeding 0.5 tons CO₂ per ton produced.",
+            },
           ].map((p, i) => (
             <motion.p
               key={i}
@@ -1317,7 +2021,13 @@ function AboutSection() {
 // ─── Contact / CTA Section ───
 function ContactSection() {
   return (
-    <Section id="contact" eyebrow="Connect" title="Partnerships & Collaboration" subtitle="Universities, national labs, industry, and investors." className="text-center">
+    <Section
+      id="contact"
+      eyebrow="Connect"
+      title="Partnerships & Collaboration"
+      subtitle="Universities, national labs, industry, and investors."
+      className="text-center"
+    >
       <div className="flex flex-col items-center mt-6">
         <motion.a
           href="mailto:aitconsult22@gmail.com"
@@ -1338,11 +2048,20 @@ function ContactSection() {
             transition={{ duration: 0.6 }}
           />
         </motion.a>
-        <div className="mt-6 text-sm flex flex-wrap items-center justify-center gap-2" style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}>
+        <div
+          className="mt-6 text-sm flex flex-wrap items-center justify-center gap-2"
+          style={{
+            fontFamily: "'JetBrains Mono', monospace",
+            color: "var(--t3)",
+          }}
+        >
           <motion.a
             href="mailto:aitconsult22@gmail.com"
             className="font-semibold transition-colors duration-300"
-            style={{ color: "#45e8d8", borderBottom: "1px solid rgba(69,232,216,0.3)" }}
+            style={{
+              color: "#45e8d8",
+              borderBottom: "1px solid rgba(69,232,216,0.3)",
+            }}
             whileHover={{ color: "#6ff0e4" }}
           >
             aitconsult22@gmail.com
@@ -1351,7 +2070,10 @@ function ContactSection() {
           <motion.a
             href="tel:+12163070174"
             className="font-semibold transition-colors duration-300"
-            style={{ color: "#45e8d8", borderBottom: "1px solid rgba(69,232,216,0.3)" }}
+            style={{
+              color: "#45e8d8",
+              borderBottom: "1px solid rgba(69,232,216,0.3)",
+            }}
             whileHover={{ color: "#6ff0e4" }}
           >
             (216) 307-0174
@@ -1369,23 +2091,39 @@ function Footer() {
       className="relative z-10 flex flex-col md:flex-row justify-between items-center px-[7vw] py-8 gap-4"
       style={{ borderTop: "1px solid var(--bd)" }}
     >
-      <span className="text-[0.6rem] font-medium" style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}>
+      <span
+        className="text-[0.6rem] font-medium"
+        style={{
+          fontFamily: "'JetBrains Mono', monospace",
+          color: "var(--t3)",
+        }}
+      >
         © 2026 Tamerian Materials. Patent Pending No. 63/934,269.
       </span>
       <div className="flex gap-6">
-        {["Technology", "Patents", "About", "Contact"].map((label) => (
+        {["Technology", "Patents", "About", "Contact"].map(label => (
           <a
             key={label}
             href={`#${label.toLowerCase()}`}
-            onClick={(e) => {
+            onClick={e => {
               e.preventDefault();
-              const id = label === "Technology" ? "tech" : label === "Patents" ? "ip" : label.toLowerCase();
-              document.querySelector(`#${id}`)?.scrollIntoView({ behavior: "smooth" });
+              const id =
+                label === "Technology"
+                  ? "tech"
+                  : label === "Patents"
+                    ? "ip"
+                    : label.toLowerCase();
+              document
+                .querySelector(`#${id}`)
+                ?.scrollIntoView({ behavior: "smooth" });
             }}
             className="text-[0.58rem] font-semibold tracking-[0.06em] uppercase transition-colors duration-300 relative group"
-            style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = "#45e8d8")}
-            onMouseLeave={(e) => (e.currentTarget.style.color = "var(--t3)")}
+            style={{
+              fontFamily: "'JetBrains Mono', monospace",
+              color: "var(--t3)",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.color = "#45e8d8")}
+            onMouseLeave={e => (e.currentTarget.style.color = "var(--t3)")}
           >
             {label}
             <span className="absolute bottom-[-2px] left-0 w-0 h-[1px] bg-[#45e8d8] group-hover:w-full transition-all duration-300" />
@@ -1415,7 +2153,13 @@ function ImageDivider({ src, alt }: { src: string; alt: string }) {
         viewport={{ once: true }}
         transition={{ duration: 2.5 }}
       />
-      <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, var(--void), transparent 25%, transparent 75%, var(--void))" }} />
+      <div
+        className="absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(to bottom, var(--void), transparent 25%, transparent 75%, var(--void))",
+        }}
+      />
     </motion.div>
   );
 }
@@ -1463,7 +2207,7 @@ export default function Home() {
       <HeroSection />
       <PatentBar />
       <StatsRow />
-      <TechSection onCardClick={(i) => setModalCard(i)} />
+      <TechSection onCardClick={i => setModalCard(i)} />
       <GlowDivider variant="circuit" color="#45e8d8" />
       <ImageDivider src={IMAGES.hemp} alt="Hemp-derived carbon fiber matrix" />
       <CompositionSection />

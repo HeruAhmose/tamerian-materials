@@ -1,7 +1,14 @@
 /*
  * Sound Context — Global sound management with mute toggle
  */
-import { createContext, useContext, useCallback, useEffect, useRef, useState } from "react";
+import {
+  createContext,
+  useContext,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { soundEngine, type SoundType } from "@/lib/soundEngine";
 
 interface SoundContextValue {
@@ -33,9 +40,9 @@ export function SoundProvider({ children }: { children: React.ReactNode }) {
     };
 
     const events = ["click", "touchstart", "keydown"];
-    events.forEach((e) => window.addEventListener(e, initSound, { once: true }));
+    events.forEach(e => window.addEventListener(e, initSound, { once: true }));
     return () => {
-      events.forEach((e) => window.removeEventListener(e, initSound));
+      events.forEach(e => window.removeEventListener(e, initSound));
     };
   }, []);
 

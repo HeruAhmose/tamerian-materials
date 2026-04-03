@@ -27,7 +27,13 @@ export default function ScrollToTop() {
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Scroll to top"
         >
-          <svg viewBox="0 0 20 20" className="w-4 h-4" fill="none" stroke="#45e8d8" strokeWidth="2">
+          <svg
+            viewBox="0 0 20 20"
+            className="w-4 h-4"
+            fill="none"
+            stroke="#45e8d8"
+            strokeWidth="2"
+          >
             <path d="M10 16V4M4 10l6-6 6 6" />
           </svg>
         </motion.button>

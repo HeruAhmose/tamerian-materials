@@ -11,8 +11,8 @@ function IntroParticles() {
     const ctx = c.getContext("2d");
     if (!ctx) return;
 
-    const w = c.width = window.innerWidth;
-    const h = c.height = window.innerHeight;
+    const w = (c.width = window.innerWidth);
+    const h = (c.height = window.innerHeight);
     const cx = w / 2;
     const cy = h / 2;
 
@@ -55,7 +55,10 @@ function IntroParticles() {
         // Trail
         if (p.progress > 0 && p.progress < 0.95) {
           ctx!.beginPath();
-          ctx!.moveTo(p.x + (p.tx - p.x) * Math.max(0, ease - 0.25), p.y + (p.ty - p.y) * Math.max(0, ease - 0.25));
+          ctx!.moveTo(
+            p.x + (p.tx - p.x) * Math.max(0, ease - 0.25),
+            p.y + (p.ty - p.y) * Math.max(0, ease - 0.25)
+          );
           ctx!.lineTo(px, py);
           ctx!.strokeStyle = `hsla(${p.hu},60%,65%,${0.2 * (1 - p.progress)})`;
           ctx!.lineWidth = 0.5;
@@ -110,7 +113,11 @@ function IntroParticles() {
   return <canvas ref={canvasRef} className="absolute inset-0" />;
 }
 
-export default function CinematicIntro({ onComplete }: { onComplete: () => void }) {
+export default function CinematicIntro({
+  onComplete,
+}: {
+  onComplete: () => void;
+}) {
   const [phase, setPhase] = useState(0);
   const [show, setShow] = useState(true);
   const onCompleteRef = useRef(onComplete);
@@ -158,7 +165,10 @@ export default function CinematicIntro({ onComplete }: { onComplete: () => void 
       onCompleteRef.current();
     }, 3800);
     return () => {
-      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); clearTimeout(t4);
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
+      clearTimeout(t4);
       window.removeEventListener("click", handleInteraction);
       window.removeEventListener("touchstart", handleInteraction);
     };
@@ -214,20 +224,34 @@ export default function CinematicIntro({ onComplete }: { onComplete: () => void 
               />
               {/* Pulsing center */}
               <motion.circle
-                cx="60" cy="60" r="8"
+                cx="60"
+                cy="60"
+                r="8"
                 fill="none"
                 stroke="#45e8d8"
                 strokeWidth="0.5"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: [1, 1.4, 1], opacity: [0.15, 0.3, 0.15] }}
-                transition={{ duration: 2, delay: 0.9, repeat: Infinity, ease: "easeInOut" }}
+                transition={{
+                  duration: 2,
+                  delay: 0.9,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
               />
               <motion.circle
-                cx="60" cy="60" r="5"
+                cx="60"
+                cy="60"
+                r="5"
                 fill="#45e8d8"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.8, type: "spring", stiffness: 200 }}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.8,
+                  type: "spring",
+                  stiffness: 200,
+                }}
               />
               {/* Orbital dots */}
               {[0, 72, 144, 216, 288].map((angle, i) => {
@@ -235,7 +259,13 @@ export default function CinematicIntro({ onComplete }: { onComplete: () => void 
                 const rad = (angle * Math.PI) / 180;
                 const dotCx = 60 + Math.cos(rad) * r;
                 const dotCy = 60 + Math.sin(rad) * r;
-                const colors = ["#45e8d8", "#a485ff", "#e8c44a", "#ff7eb6", "#f0e8d8"];
+                const colors = [
+                  "#45e8d8",
+                  "#a485ff",
+                  "#e8c44a",
+                  "#ff7eb6",
+                  "#f0e8d8",
+                ];
                 return (
                   <motion.circle
                     key={i}
@@ -245,7 +275,12 @@ export default function CinematicIntro({ onComplete }: { onComplete: () => void 
                     fill={colors[i]}
                     initial={{ scale: 0, opacity: 0 }}
                     animate={{ scale: 1, opacity: 0.8 }}
-                    transition={{ duration: 0.5, delay: 1.1 + i * 0.12, type: "spring", stiffness: 300 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: 1.1 + i * 0.12,
+                      type: "spring",
+                      stiffness: 300,
+                    }}
                   />
                 );
               })}
@@ -270,7 +305,10 @@ export default function CinematicIntro({ onComplete }: { onComplete: () => void 
               >
                 <span
                   className="block text-3xl font-semibold tracking-[0.15em]"
-                  style={{ fontFamily: "'Playfair Display', serif", color: "#faf3e3" }}
+                  style={{
+                    fontFamily: "'Playfair Display', serif",
+                    color: "#faf3e3",
+                  }}
                 >
                   TAMERIAN
                 </span>
@@ -283,7 +321,10 @@ export default function CinematicIntro({ onComplete }: { onComplete: () => void 
               >
                 <span
                   className="block text-xs tracking-[0.35em] mt-3 uppercase"
-                  style={{ fontFamily: "'JetBrains Mono', monospace", color: "#45e8d8" }}
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    color: "#45e8d8",
+                  }}
                 >
                   Where Carbon Meets Crystal
                 </span>
@@ -297,14 +338,20 @@ export default function CinematicIntro({ onComplete }: { onComplete: () => void 
             >
               <motion.div
                 className="h-full absolute inset-0"
-                style={{ background: "linear-gradient(90deg, #45e8d8, #a485ff, #e8c44a, #ff7eb6)" }}
+                style={{
+                  background:
+                    "linear-gradient(90deg, #45e8d8, #a485ff, #e8c44a, #ff7eb6)",
+                }}
                 initial={{ width: "0%" }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 3.3, ease: [0.16, 1, 0.3, 1] }}
               />
               <motion.div
                 className="absolute top-0 h-full w-12"
-                style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)" }}
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
+                }}
                 animate={{ left: ["-20%", "120%"] }}
                 transition={{ duration: 1.5, repeat: 3, ease: "linear" }}
               />

@@ -8,6 +8,10 @@ Inventor: Jonathan Peoples · Concord, NC
 
 **Proprietary:** This repository is not open source. See [`LICENSE`](LICENSE) and [`PROPRIETARY.md`](PROPRIETARY.md).
 
+[![CI](https://github.com/HeruAhmose/tamerian-materials/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/HeruAhmose/tamerian-materials/actions/workflows/ci.yml)
+
+**Security:** [`SECURITY.md`](SECURITY.md) — report vulnerabilities privately (GitHub Security tab or maintainer contact).
+
 ---
 
 ## Overview

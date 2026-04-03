@@ -57,7 +57,7 @@ export default function SoundToggle() {
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.15 }}
           >
-            {[0, 1, 2, 3, 4].map((i) => (
+            {[0, 1, 2, 3, 4].map(i => (
               <motion.div
                 key={i}
                 className="w-[2px] rounded-full"

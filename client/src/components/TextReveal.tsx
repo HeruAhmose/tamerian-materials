@@ -6,7 +6,12 @@
  */
 import { motion } from "framer-motion";
 import { useInView } from "@/hooks/useInView";
-import { useState, useEffect, type CSSProperties, type ElementType } from "react";
+import {
+  useState,
+  useEffect,
+  type CSSProperties,
+  type ElementType,
+} from "react";
 
 interface Props {
   text: string;
@@ -19,7 +24,16 @@ interface Props {
   force?: boolean;
 }
 
-export default function TextReveal({ text, as: Tag = "span", className = "", style, charStyle, stagger = 0.02, delay = 0, force = false }: Props) {
+export default function TextReveal({
+  text,
+  as: Tag = "span",
+  className = "",
+  style,
+  charStyle,
+  stagger = 0.02,
+  delay = 0,
+  force = false,
+}: Props) {
   const [ref, inView] = useInView({ threshold: 0.05 });
   const [forceVisible, setForceVisible] = useState(false);
 
@@ -39,17 +53,22 @@ export default function TextReveal({ text, as: Tag = "span", className = "", sty
       {words.map((word, wi) => (
         <span key={wi} className="inline-block whitespace-nowrap">
           {word.split("").map((char, ci) => {
-            const globalIndex = words.slice(0, wi).reduce((acc, w) => acc + w.length, 0) + ci;
+            const globalIndex =
+              words.slice(0, wi).reduce((acc, w) => acc + w.length, 0) + ci;
             return (
               <motion.span
                 key={`${wi}-${ci}`}
                 className="inline-block"
                 style={charStyle}
                 initial={{ opacity: 0, y: 20, filter: "blur(4px)" }}
-                animate={shouldAnimate ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
+                animate={
+                  shouldAnimate ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}
+                }
                 transition={{
                   duration: 0.4,
-                  delay: force ? globalIndex * stagger : delay + globalIndex * stagger,
+                  delay: force
+                    ? globalIndex * stagger
+                    : delay + globalIndex * stagger,
                   ease: [0.16, 1, 0.3, 1],
                 }}
               >
@@ -57,7 +76,9 @@ export default function TextReveal({ text, as: Tag = "span", className = "", sty
               </motion.span>
             );
           })}
-          {wi < words.length - 1 && <span className="inline-block">&nbsp;</span>}
+          {wi < words.length - 1 && (
+            <span className="inline-block">&nbsp;</span>
+          )}
         </span>
       ))}
     </Tag>

@@ -51,7 +51,10 @@ export default function MagneticCursor() {
     };
   }, [visible]);
 
-  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) {
+  if (
+    typeof window !== "undefined" &&
+    window.matchMedia("(pointer: coarse)").matches
+  ) {
     return null;
   }
 

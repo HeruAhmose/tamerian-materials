@@ -13,7 +13,13 @@ interface Props {
   color?: string;
 }
 
-export default function TypewriterText({ text, speed = 40, delay = 0, className = "", color = "#45e8d8" }: Props) {
+export default function TypewriterText({
+  text,
+  speed = 40,
+  delay = 0,
+  className = "",
+  color = "#45e8d8",
+}: Props) {
   const [ref, inView] = useInView({ threshold: 0.5 });
   const [displayed, setDisplayed] = useState("");
   const [started, setStarted] = useState(false);
@@ -44,7 +50,7 @@ export default function TypewriterText({ text, speed = 40, delay = 0, className 
 
   useEffect(() => {
     if (!started) return;
-    const blink = setInterval(() => setShowCursor((v) => !v), 530);
+    const blink = setInterval(() => setShowCursor(v => !v), 530);
     return () => clearInterval(blink);
   }, [started]);
 
@@ -55,7 +61,14 @@ export default function TypewriterText({ text, speed = 40, delay = 0, className 
       style={{ fontFamily: "'JetBrains Mono', monospace", color }}
     >
       {displayed}
-      <span style={{ opacity: showCursor && started ? 1 : 0, transition: "opacity 0.1s" }}>▌</span>
+      <span
+        style={{
+          opacity: showCursor && started ? 1 : 0,
+          transition: "opacity 0.1s",
+        }}
+      >
+        ▌
+      </span>
     </span>
   );
 }
