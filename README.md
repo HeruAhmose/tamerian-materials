@@ -6,6 +6,8 @@ U.S. Patent Application No. 63/934,269 · Filed December 11, 2025 · 25 Claims �
 
 Inventor: Jonathan Peoples · Concord, NC
 
+**Proprietary:** This repository is not open source. See [`LICENSE`](LICENSE) and [`PROPRIETARY.md`](PROPRIETARY.md).
+
 ---
 
 ## Overview
