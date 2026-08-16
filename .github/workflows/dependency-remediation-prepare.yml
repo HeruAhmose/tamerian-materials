@@ -28,20 +28,26 @@ jobs:
       - name: Regenerate lockfile
         run: pnpm install --lockfile-only
 
-      - name: Persist regenerated lockfile
+      - name: Install frozen graph
+        run: pnpm install --frozen-lockfile
+
+      - name: Normalize lockfile
+        run: pnpm exec prettier --write pnpm-lock.yaml
+
+      - name: Persist normalized lockfile
         shell: bash
         run: |
           if git diff --quiet -- pnpm-lock.yaml; then
-            echo "Lockfile already current."
+            echo "Lockfile already normalized."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add pnpm-lock.yaml
-          git commit -m "fix(security): regenerate dependency lockfile"
+          git commit -m "fix(security): normalize dependency lockfile"
           git push origin HEAD:agent/dependency-zero-audit-20260816
 
-      - name: Install frozen graph
+      - name: Verify frozen graph after normalization
         run: pnpm install --frozen-lockfile
 
       - name: Verify zero dependency audit
