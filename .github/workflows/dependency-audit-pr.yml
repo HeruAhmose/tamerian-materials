@@ -27,5 +27,75 @@ jobs:
       - name: Install exact lockfile
         run: pnpm install --frozen-lockfile
 
-      - name: Full dependency audit
-        run: pnpm audit --audit-level=low --json
+      - name: Compact full dependency audit evidence
+        shell: bash
+        run: |
+          set +e
+          pnpm audit --audit-level=low --json > audit.json
+          audit_status=$?
+          set -e
+
+          node <<'NODE'
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('audit.json', 'utf8'));
+          const sev = data.metadata?.vulnerabilities || {};
+          const order = ['critical', 'high', 'moderate', 'low', 'info'];
+          const total = order.reduce((n, k) => n + Number(sev[k] || 0), 0);
+
+          console.log('=== AUDIT SEVERITY TOTALS ===');
+          for (const k of order) console.log(`${k.toUpperCase()}=${Number(sev[k] || 0)}`);
+          console.log(`TOTAL=${total}`);
+          console.log('=== UNIQUE ADVISORIES ===');
+
+          const advisories = data.advisories && typeof data.advisories === 'object'
+            ? Object.entries(data.advisories)
+            : [];
+
+          if (advisories.length) {
+            advisories
+              .sort((a, b) => String(a[1].module_name || '').localeCompare(String(b[1].module_name || '')) || String(a[0]).localeCompare(String(b[0])))
+              .forEach(([id, a]) => {
+                const paths = (a.findings || []).flatMap(f => Array.isArray(f.paths) ? f.paths : []);
+                const versions = [...new Set((a.findings || []).map(f => f.version).filter(Boolean))].sort();
+                console.log([
+                  `ID=${id}`,
+                  `PACKAGE=${a.module_name || 'unknown'}`,
+                  `SEVERITY=${a.severity || 'unknown'}`,
+                  `VULNERABLE=${a.vulnerable_versions || 'unknown'}`,
+                  `PATCHED=${a.patched_versions || 'unknown'}`,
+                  `INSTALLED=${versions.join(',') || 'unknown'}`,
+                  `OCCURRENCES=${paths.length}`,
+                  `TITLE=${String(a.title || '').replace(/\s+/g, ' ').trim()}`,
+                  `URL=${a.url || 'unknown'}`
+                ].join(' | '));
+                for (const p of [...new Set(paths)].sort()) console.log(`  PATH=${p}`);
+              });
+          } else if (data.vulnerabilities && typeof data.vulnerabilities === 'object') {
+            for (const [pkg, v] of Object.entries(data.vulnerabilities).sort(([a], [b]) => a.localeCompare(b))) {
+              const via = Array.isArray(v.via) ? v.via : [];
+              const details = via.filter(x => x && typeof x === 'object');
+              if (!details.length) {
+                console.log(`PACKAGE=${pkg} | SEVERITY=${v.severity || 'unknown'} | RANGE=${v.range || 'unknown'} | FIX=${JSON.stringify(v.fixAvailable ?? null)}`);
+              }
+              for (const a of details) {
+                console.log([
+                  `ID=${a.source ?? 'unknown'}`,
+                  `PACKAGE=${a.name || pkg}`,
+                  `SEVERITY=${a.severity || v.severity || 'unknown'}`,
+                  `VULNERABLE=${a.range || v.range || 'unknown'}`,
+                  `PATCHED=derive-from-fix` ,
+                  `FIX=${JSON.stringify(v.fixAvailable ?? null)}`,
+                  `TITLE=${String(a.title || '').replace(/\s+/g, ' ').trim()}`,
+                  `URL=${a.url || 'unknown'}`
+                ].join(' | '));
+              }
+              for (const n of (v.nodes || [])) console.log(`  PATH=${n}`);
+            }
+          } else {
+            console.log('NO_ADVISORY_STRUCTURE_FOUND');
+          }
+
+          if (total > 0) process.exitCode = 1;
+          NODE
+
+          test "$audit_status" -ne 0 || true
