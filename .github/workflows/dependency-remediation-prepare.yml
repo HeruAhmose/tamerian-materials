@@ -1,0 +1,51 @@
+name: dependency-remediation-prepare
+
+on:
+  push:
+    branches: [agent/dependency-zero-audit-20260816]
+
+permissions:
+  contents: write
+
+jobs:
+  prepare-and-verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: agent/dependency-zero-audit-20260816
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Regenerate lockfile
+        run: pnpm install --lockfile-only
+
+      - name: Persist regenerated lockfile
+        shell: bash
+        run: |
+          if git diff --quiet -- pnpm-lock.yaml; then
+            echo "Lockfile already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pnpm-lock.yaml
+          git commit -m "fix(security): regenerate dependency lockfile"
+          git push origin HEAD:agent/dependency-zero-audit-20260816
+
+      - name: Install frozen graph
+        run: pnpm install --frozen-lockfile
+
+      - name: Verify zero dependency audit
+        run: pnpm audit --audit-level=low
+
+      - name: Native CI
+        run: pnpm run ci
