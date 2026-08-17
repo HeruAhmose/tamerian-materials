@@ -22,8 +22,9 @@ async function startServer() {
 
   app.use(express.static(staticPath));
 
-  // Handle client-side routing from an in-memory SPA shell.
-  app.get("*", (_req, res) => {
+  // Express 5 requires named wildcards. The brace form also matches the root
+  // path, preserving SPA fallback behavior for every client-side route.
+  app.get("/{*splat}", (_req, res) => {
     res.status(200).type("html").send(indexHtml);
   });
 
