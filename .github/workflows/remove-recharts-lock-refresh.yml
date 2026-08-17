@@ -27,7 +27,7 @@ jobs:
           cache: pnpm
 
       - name: Remove unused Recharts dependency
-        run: pnpm remove recharts --ignore-scripts
+        run: pnpm remove recharts
 
       - name: Materialize graph without lifecycle scripts
         run: pnpm install --ignore-scripts
