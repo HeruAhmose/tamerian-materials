@@ -72,3 +72,4 @@ jobs:
           curl --fail --show-error --silent http://127.0.0.1:18000/remembered/world >/tmp/tamerian-spa.html
           grep -qi '<html' /tmp/tamerian-root.html
           grep -qi '<html' /tmp/tamerian-spa.html
+          cmp --silent /tmp/tamerian-root.html /tmp/tamerian-spa.html
