@@ -37,3 +37,57 @@ jobs:
 
       - name: CI
         run: pnpm run ci
+
+      - name: Production SPA server smoke
+        run: |
+          set -euo pipefail
+          NODE_ENV=production PORT=18000 node dist/index.js >/tmp/tamerian-server.log 2>&1 &
+          pid=$!
+          cleanup() {
+            kill "$pid" 2>/dev/null || true
+            wait "$pid" 2>/dev/null || true
+          }
+          trap cleanup EXIT
+
+          ready=0
+          for _ in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:18000/ >/tmp/tamerian-root.html; then
+              ready=1
+              break
+            fi
+            if ! kill -0 "$pid" 2>/dev/null; then
+              cat /tmp/tamerian-server.log
+              exit 1
+            fi
+            sleep 1
+          done
+
+          if [ "$ready" -ne 1 ]; then
+            cat /tmp/tamerian-server.log
+            echo "Production server did not become ready" >&2
+            exit 1
+          fi
+
+          curl --fail --show-error --silent http://127.0.0.1:18000/ >/tmp/tamerian-root.html
+          curl --fail --show-error --silent http://127.0.0.1:18000/remembered/world >/tmp/tamerian-spa.html
+          grep -qi '<html' /tmp/tamerian-root.html
+          grep -qi '<html' /tmp/tamerian-spa.html
+          cmp --silent /tmp/tamerian-root.html /tmp/tamerian-spa.html
+
+          asset_path="$(grep -oE '/assets/[^[:space:]\"]+\.(js|css)' /tmp/tamerian-root.html | head -n 1)"
+          test -n "$asset_path"
+          asset_type="$(curl --fail --show-error --silent \
+            --write-out '%{content_type}' \
+            "http://127.0.0.1:18000${asset_path}" \
+            --output /tmp/tamerian-asset)"
+          test -s /tmp/tamerian-asset
+          case "$asset_type" in
+            text/html*)
+              echo "Static asset was incorrectly served as SPA HTML: $asset_path" >&2
+              exit 1
+              ;;
+          esac
+          if grep -qi '<html' /tmp/tamerian-asset; then
+            echo "Static asset payload contains HTML shell: $asset_path" >&2
+            exit 1
+          fi
