@@ -18,6 +18,20 @@ Inventor: Jonathan Peoples · Concord, NC
 
 Tamerian Materials is a cinematic, immersive website showcasing a patent-pending multi-modal energy harvesting composite made from hemp-derived carbon matrices with embedded piezoelectric, thermoelectric, magnetic, and quantum-active crystalline phases.
 
+## Part of TRAI
+
+Tamerian Materials is organ 01 (Skeleton) of TRAI — the Tamerian Renaissance Alliance Initiative — one regenerative organism framed as seven ventures. [`peoples-portfolio`](https://github.com/HeruAhmose/peoples-portfolio) is the entry gate that names and links all seven.
+
+| #      | Organ · role                        | Venture                | Status                           | Where it lives                                                                                                                       |
+| ------ | ----------------------------------- | ---------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| **01** | **Skeleton — material sovereignty** | **Tamerian Materials** | **U.S. provisional filed**       | **you are here** · also linked from the gate: [`peoples-portfolio`](https://github.com/HeruAhmose/peoples-portfolio) at `/materials` |
+| 02     | Heart — biological sovereignty      | True Melange Φ         | Formulation set · entity pending | own repo: [`blue-gold-daily`](https://github.com/HeruAhmose/blue-gold-daily) → heruahmose.github.io/blue-gold-daily/layers.html      |
+| 03     | Brain — cognitive sovereignty       | Queen Califia          | Demo standing                    | own repo: [`QueenCalifia-CyberAI`](https://github.com/HeruAhmose/QueenCalifia-CyberAI) → queencalifia-cyberai.web.app                |
+| 04     | Vessels — mobility sovereignty      | Mela Nation            | EIN filed · early development    | a page inside [`trai-portfolio`](https://github.com/HeruAhmose/trai-portfolio) (the estate) — no separate repo                       |
+| 05     | Skin — identity sovereignty         | MeLaNiNa               | EIN filed · early development    | a page inside [`trai-portfolio`](https://github.com/HeruAhmose/trai-portfolio) (the estate) — no separate repo                       |
+| 06     | Hands — community reach             | TechBridge Collective  | Designed · not yet operating     | own repo: [`techbridge-collective`](https://github.com/HeruAhmose/techbridge-collective) → techbridge-collective.org                 |
+| 07     | Lymphatic — regenerative return     | The Peoples Foundation | EIN obtained · exemption pending | a page inside [`trai-portfolio`](https://github.com/HeruAhmose/trai-portfolio) (the estate) — no separate repo                       |
+
 ## Features
 
 - **Cinematic Intro** — Particle crystallization animation with hexagonal logo reveal
