@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useId, useRef } from "react";
 import { useSound } from "@/contexts/SoundContext";
 import type { TECH_CARDS } from "@/lib/data";
 
@@ -10,19 +10,74 @@ interface Props {
   onClose: () => void;
 }
 
+// ARIA APG dialog pattern: elements a Tab-trap should cycle between.
+const FOCUSABLE_SELECTOR =
+  'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export default function TechModal({ card, onClose }: Props) {
   const { play } = useSound();
-
-  useEffect(() => {
-    if (card) {
-      play("modal_open");
-    }
-  }, [card, play]);
+  const titleId = useId();
+  const panelRef = useRef<HTMLDivElement>(null);
+  const previouslyFocused = useRef<HTMLElement | null>(null);
 
   const handleClose = () => {
     play("modal_close");
     onClose();
   };
+
+  // Move focus into the dialog on open, and restore it to whatever
+  // triggered the dialog once it closes — standard ARIA APG dialog focus
+  // management (also covers WCAG 2.4.3 Focus Order).
+  useEffect(() => {
+    if (!card) return;
+    previouslyFocused.current = document.activeElement as HTMLElement | null;
+    play("modal_open");
+
+    const panel = panelRef.current;
+    const focusable = panel?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR);
+    (focusable?.[0] ?? panel)?.focus();
+
+    return () => {
+      previouslyFocused.current?.focus?.();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [card]);
+
+  // Escape closes the dialog; Tab is trapped inside it while open so
+  // keyboard focus can't silently escape to the page behind it.
+  useEffect(() => {
+    if (!card) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        handleClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const panel = panelRef.current;
+      if (!panel) return;
+      const focusable = Array.from(
+        panel.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR)
+      ).filter(el => el.offsetParent !== null);
+      if (focusable.length === 0) {
+        e.preventDefault();
+        panel.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [card]);
 
   if (!card) return null;
 
@@ -41,11 +96,17 @@ export default function TechModal({ card, onClose }: Props) {
           onClick={handleClose}
         >
           <motion.div
+            ref={panelRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby={titleId}
+            tabIndex={-1}
             className="relative w-full max-w-[860px] max-h-[85vh] overflow-y-auto"
             style={{
               background: "var(--gra)",
               border: "1px solid var(--bdh)",
               padding: "2.5rem",
+              outline: "none",
             }}
             initial={{ scale: 0.85, opacity: 0, y: 40 }}
             animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -67,6 +128,7 @@ export default function TechModal({ card, onClose }: Props) {
             {/* Close button */}
             <button
               onClick={handleClose}
+              aria-label="Close"
               className="absolute top-4 right-5 text-2xl border-0 bg-transparent transition-colors duration-200"
               style={{ color: "var(--t2)" }}
               onMouseEnter={e => {
@@ -111,6 +173,7 @@ export default function TechModal({ card, onClose }: Props) {
 
             {/* Title */}
             <motion.h2
+              id={titleId}
               className="text-3xl font-bold mb-4"
               style={{
                 fontFamily: "'Playfair Display', serif",
