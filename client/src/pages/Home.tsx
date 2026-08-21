@@ -482,6 +482,7 @@ function TechCard({
           transition: "background 0.3s, border-color 0.3s",
         }}
         onClick={onClick}
+        aria-label={`${card.num}. ${card.title} — view technical specifications and patent claims`}
         intensity={8}
       >
         <div

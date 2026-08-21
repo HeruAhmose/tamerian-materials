@@ -12,6 +12,7 @@ interface Props {
   intensity?: number;
   glare?: boolean;
   onClick?: () => void;
+  "aria-label"?: string;
 }
 
 export default function TiltCard({
@@ -21,6 +22,7 @@ export default function TiltCard({
   intensity = 10,
   glare = true,
   onClick,
+  "aria-label": ariaLabel,
 }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -62,6 +64,22 @@ export default function TiltCard({
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={handleLeave}
       onClick={onClick}
+      // A div with only a mouse onClick is invisible to keyboard users
+      // (WCAG 2.1.1). When this card is clickable, make it a real
+      // keyboard-operable control instead of a mouse-only trap.
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-label={onClick ? ariaLabel : undefined}
+      onKeyDown={
+        onClick
+          ? e => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
     >
       {children}
       {glare && (

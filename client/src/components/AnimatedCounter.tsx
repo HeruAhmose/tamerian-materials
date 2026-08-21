@@ -30,6 +30,17 @@ export default function AnimatedCounter({
   useEffect(() => {
     if (!trigger || started.current) return;
     started.current = true;
+
+    // WCAG 2.3.3: users who ask for reduced motion get the final value
+    // immediately instead of an animated roll-up.
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      setCount(end);
+      return;
+    }
+
     const start = performance.now();
     const step = (now: number) => {
       const progress = Math.min((now - start) / duration, 1);
