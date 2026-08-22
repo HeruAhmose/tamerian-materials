@@ -1,0 +1,30 @@
+# pnpm 11 requires dependency build scripts to be allowed explicitly.
+# esbuild ships prebuilt per-platform binaries, so its build is optional,
+# but allowing it keeps behaviour identical to pnpm 10.
+allowBuilds:
+  esbuild: true
+
+# pnpm 11 no longer reads settings from the "pnpm" field in package.json.
+# These overrides are security pins.
+overrides:
+  "@babel/core": ">=7.29.6"
+  body-parser: ">=2.3.0"
+  follow-redirects: ">=1.16.0"
+  form-data: ">=4.0.6"
+  "postcss>nanoid": ">=3.3.18"
+  "tailwindcss>nanoid": ">=3.3.18"
+  tar: ">=7.5.11"
+  rollup: ">=4.59.0"
+  lodash: ">=4.18.0"
+  lodash-es: ">=4.18.0"
+  qs: ">=6.15.2"
+  dompurify: ">=3.3.2"
+  mdast-util-to-hast: ">=13.2.1"
+  esbuild: ">=0.28.1"
+  path-to-regexp: ">=8.4.0"
+  picomatch: ">=4.0.4"
+
+# Patched dependency. pnpm 11 reads this from here, not package.json.
+# Without it the patch silently stops applying.
+patchedDependencies:
+  "wouter@3.7.1": patches/wouter@3.7.1.patch
