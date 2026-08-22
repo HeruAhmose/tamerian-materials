@@ -238,9 +238,6 @@ importers:
       vite:
         specifier: ^8.0.16
         version: 8.2.1(@types/node@24.7.0)(esbuild@0.28.2)(jiti@2.6.1)(tsx@4.20.6)
-      vite-plugin-manus-runtime:
-        specifier: ^0.0.57
-        version: 0.0.57
       vitest:
         specifier: ^4.1.0
         version: 4.1.0(@types/node@24.7.0)(vite@8.2.1(@types/node@24.7.0)(esbuild@0.28.2)(jiti@2.6.1)(tsx@4.20.6))
@@ -596,12 +593,6 @@ packages:
     resolution:
       {
         integrity: sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==,
-      }
-
-  "@medv/finder@4.0.2":
-    resolution:
-      {
-        integrity: sha512-RraNY9SCcx4KZV0Dh6BEW6XEW2swkqYca74pkFFRw6hHItSHiy+O/xMnpbofjYbzXj0tSpBGthUF1hHTsr3vIQ==,
       }
 
   "@oxc-project/types@0.144.0":
@@ -3234,12 +3225,6 @@ packages:
         integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==,
       }
 
-  modern-screenshot@4.6.6:
-    resolution:
-      {
-        integrity: sha512-8tF0xEpe7yx37mK95UcIghSCWYeu628K2hLJl+ZNY2ANmRzYLlRLpquPHAQcL8keF6BoeEzTEw4GrgmUpGuZ8w==,
-      }
-
   motion-dom@12.23.21:
     resolution:
       {
@@ -3981,12 +3966,6 @@ packages:
         integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==,
       }
 
-  vite-plugin-manus-runtime@0.0.57:
-    resolution:
-      {
-        integrity: sha512-AqJm43Mq/zA3nFdwRxAzsyXYy+YPPHa0oUPlWSge0f+zUBxKoDQj3kUB/61I1yEUD0ap7YSkRxmk09FCaSErtw==,
-      }
-
   vite@8.2.1:
     resolution:
       {
@@ -4259,8 +4238,6 @@ snapshots:
     dependencies:
       "@jridgewell/resolve-uri": 3.1.2
       "@jridgewell/sourcemap-codec": 1.5.5
-
-  "@medv/finder@4.0.2": {}
 
   "@oxc-project/types@0.144.0": {}
 
@@ -6146,8 +6123,6 @@ snapshots:
 
   mitt@3.0.1: {}
 
-  modern-screenshot@4.6.6: {}
-
   motion-dom@12.23.21:
     dependencies:
       motion-utils: 12.23.6
@@ -6629,16 +6604,6 @@ snapshots:
     dependencies:
       "@types/unist": 3.0.3
       vfile-message: 4.0.3
-
-  vite-plugin-manus-runtime@0.0.57:
-    dependencies:
-      "@medv/finder": 4.0.2
-      clsx: 2.1.1
-      modern-screenshot: 4.6.6
-      nanoid: 5.1.16
-      react: 19.2.1
-      react-dom: 19.2.1(react@19.2.1)
-      tailwind-merge: 3.3.1
 
   vite@8.2.1(@types/node@24.7.0)(esbuild@0.28.2)(jiti@2.6.1)(tsx@4.20.6):
     dependencies:
