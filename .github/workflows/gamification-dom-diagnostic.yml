@@ -1,0 +1,68 @@
+name: Gamification DOM Diagnostic
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.head_ref == 'probe/full-production-cert-20260823'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Inspect panel DOM and mission persistence
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --remote-debugging-port=9222 --user-data-dir=/tmp/tamerian-gamification-debug about:blank >/tmp/chrome.log 2>&1 &
+          chrome_pid=$!
+          trap 'kill $chrome_pid 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do curl --fail --silent http://127.0.0.1:9222/json/version >/dev/null 2>&1 && break; sleep 1; done
+          cat >/tmp/debug.mjs <<'NODE'
+          const list=await (await fetch('http://127.0.0.1:9222/json/list')).json();
+          const page=list.find(x=>x.type==='page');
+          const ws=new WebSocket(page.webSocketDebuggerUrl); let id=0; const pending=new Map();
+          ws.onmessage=e=>{const m=JSON.parse(e.data); if(m.id&&pending.has(m.id)){const p=pending.get(m.id); pending.delete(m.id); m.error?p.reject(new Error(JSON.stringify(m.error))):p.resolve(m.result)}};
+          await new Promise((r,j)=>{ws.onopen=r;ws.onerror=j});
+          const send=(method,params={})=>new Promise((resolve,reject)=>{const callId=++id;pending.set(callId,{resolve,reject});ws.send(JSON.stringify({id:callId,method,params}))});
+          const ev=async expression=>(await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true})).result?.value;
+          await send('Page.enable'); await send('Runtime.enable'); await send('Page.navigate',{url:'https://tamerian-materials.com/'}); await new Promise(r=>setTimeout(r,12000));
+          const opened=await ev(`(() => { const b=document.querySelector('button[aria-label="Open Tamerian research progress"]'); if(!b)return {button:false}; b.click(); return {button:true}; })()`);
+          console.log('OPENED='+JSON.stringify(opened)); await new Promise(r=>setTimeout(r,1200));
+          const dom=await ev(`(() => {
+            const aside=document.querySelector('aside[aria-label="Tamerian research progress"]');
+            const buttons=aside?Array.from(aside.querySelectorAll('button')):[];
+            return {
+              aside:!!aside,
+              asideText:aside?.textContent||'',
+              buttonTexts:buttons.map(b=>(b.textContent||'').replace(/\\s+/g,' ').trim()),
+              sectionIds:['tech','comp','energy','mfg','quantum','apps','ip'].map(id=>({id,present:!!document.getElementById(id),height:document.getElementById(id)?.getBoundingClientRect().height||0}))
+            };
+          })()`);
+          console.log('DOM='+JSON.stringify(dom,null,2));
+          const required=['Core Innovation','Composite Architecture','Energy Harvesting','Manufacturing','Quantum Sensing','Applications','Patent Intelligence'];
+          if(!dom.aside) throw new Error('panel missing');
+          for(const label of required) if(!dom.asideText.includes(label)) throw new Error('panel DOM missing '+label);
+          if(!/0\/7 missions|[1-7]\/7 missions/.test(dom.asideText)) throw new Error('panel DOM missing /7 missions framing');
+          const click=await ev(`(() => {
+            const aside=document.querySelector('aside[aria-label="Tamerian research progress"]');
+            const target=Array.from(aside?.querySelectorAll('button')||[]).find(b=>(b.textContent||'').includes('Core Innovation'));
+            if(!target)return {clicked:false}; target.click(); return {clicked:true};
+          })()`);
+          console.log('CLICK='+JSON.stringify(click));
+          await new Promise(r=>setTimeout(r,5000));
+          const after=await ev(`(() => {
+            let stored=[]; try{stored=JSON.parse(localStorage.getItem('tamerian-research-progress-v1')||'[]')}catch{}
+            const tech=document.getElementById('tech'); const r=tech?.getBoundingClientRect();
+            return {stored,scrollY:window.scrollY,techRect:r?{top:r.top,bottom:r.bottom,height:r.height}:null,viewport:window.innerHeight};
+          })()`);
+          console.log('AFTER='+JSON.stringify(after,null,2));
+          if(!Array.isArray(after.stored)||!after.stored.includes('tech')) throw new Error('Core Innovation did not persist after mission-button navigation');
+          console.log('TAMERIAN_PUBLIC_GAMIFICATION_DOM=PASS');
+          ws.close();
+          NODE
+          node /tmp/debug.mjs
