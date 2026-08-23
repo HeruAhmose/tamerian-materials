@@ -1,0 +1,89 @@
+name: Visual Semantic Helper
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.head_ref == 'fix/visual-semantic-gamification-20260822'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+
+      - name: Apply semantic visual ownership and gamification integration
+        shell: python
+        run: |
+          from pathlib import Path
+
+          p = Path('client/src/pages/Home.tsx')
+          s = p.read_text()
+
+          s = s.replace(
+              'import AnimatedCounter from "@/components/AnimatedCounter";\n',
+              'import AnimatedCounter from "@/components/AnimatedCounter";\nimport ResearchProgress from "@/components/ResearchProgress";\n',
+          )
+
+          marker = '''          {/* Animated dot */}\n'''
+          visual = '''          {/* Topic-owned visual: the image is bound to this exact technology. */}\n          <div\n            className="relative w-full h-36 md:h-40 mb-5 overflow-hidden"\n            style={{ border: `1px solid ${card.color}24`, background: "var(--void)" }}\n          >\n            <motion.img\n              src={\n                card.id === "matrix"\n                  ? IMAGES.hemp\n                  : card.id === "crystals"\n                    ? IMAGES.crystal\n                    : card.id === "harvest"\n                      ? IMAGES.energy\n                      : IMAGES.quantum\n              }\n              alt={`${card.title} visualization`}\n              className="w-full h-full object-cover"\n              style={{ opacity: hovered ? 0.78 : 0.58 }}\n              animate={{ scale: hovered ? 1.04 : 1 }}\n              transition={{ duration: 0.45 }}\n            />\n            <div\n              className="absolute inset-0 pointer-events-none"\n              style={{\n                background: `linear-gradient(to top, var(--gra), transparent 58%), radial-gradient(circle at 75% 25%, ${card.color}18, transparent 38%)`,\n              }}\n            />\n            <span\n              className="absolute bottom-3 left-3 text-[0.55rem] font-semibold tracking-[0.12em] uppercase px-2 py-1"\n              style={{\n                fontFamily: "'JetBrains Mono', monospace",\n                color: card.color,\n                background: "rgba(3,3,8,0.78)",\n                border: `1px solid ${card.color}30`,\n              }}\n            >\n              {card.title}\n            </span>\n          </div>\n\n          {/* Animated dot */}\n'''
+          if marker not in s:
+              raise SystemExit('tech card insertion marker not found')
+          s = s.replace(marker, visual, 1)
+
+          old_quantum = '''            src={IMAGES.crystal}\n            alt="Crystal structure visualization"'''
+          new_quantum = '''            src={IMAGES.quantum}\n            alt="Rare-earth quantum sensing visualization"'''
+          if old_quantum not in s:
+              raise SystemExit('quantum image marker not found')
+          s = s.replace(old_quantum, new_quantum, 1)
+
+          s = s.replace(
+              '''      <GlowDivider variant="circuit" color="#45e8d8" />\n      <ImageDivider src={IMAGES.hemp} alt="Hemp-derived carbon fiber matrix" />\n      <CompositionSection />''',
+              '''      <GlowDivider variant="circuit" color="#45e8d8" />\n      <CompositionSection />''',
+          )
+          s = s.replace(
+              '''      <ManufacturingSection />\n      <GlowDivider variant="hex" color="#ff7eb6" />\n      <ImageDivider src={IMAGES.quantum} alt="Quantum sensing visualization" />\n      <QuantumSection />''',
+              '''      <ManufacturingSection />\n      <GlowDivider variant="hex" color="#ff7eb6" />\n      <QuantumSection />''',
+          )
+
+          sound = '''      <SoundToggle />\n\n      {/* Content */}'''
+          if sound not in s:
+              raise SystemExit('sound toggle marker not found')
+          s = s.replace(
+              sound,
+              '''      <SoundToggle />\n      <ResearchProgress enabled={introComplete} />\n\n      {/* Content */}''',
+              1,
+          )
+
+          p.write_text(s)
+
+      - name: Verify semantic ownership contract
+        run: |
+          set -euo pipefail
+          grep -q 'card.id === "matrix"' client/src/pages/Home.tsx
+          grep -q '? IMAGES.hemp' client/src/pages/Home.tsx
+          grep -q '? IMAGES.crystal' client/src/pages/Home.tsx
+          grep -q '? IMAGES.energy' client/src/pages/Home.tsx
+          grep -q ': IMAGES.quantum' client/src/pages/Home.tsx
+          grep -q 'src={IMAGES.quantum}' client/src/pages/Home.tsx
+          ! grep -q '<ImageDivider src={IMAGES.hemp}' client/src/pages/Home.tsx
+          ! grep -q '<ImageDivider src={IMAGES.quantum}' client/src/pages/Home.tsx
+          grep -q '<ResearchProgress enabled={introComplete}' client/src/pages/Home.tsx
+
+      - name: Commit source patch
+        run: |
+          set -euo pipefail
+          if git diff --quiet; then
+            echo 'No patch needed.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add client/src/pages/Home.tsx
+          git commit -m 'fix(ui): bind visuals to topics and enable research progression'
+          git push origin HEAD:${{ github.head_ref }}
