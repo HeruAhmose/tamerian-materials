@@ -516,7 +516,10 @@ function TechCard({
           {/* Topic-owned visual: the image is bound to this exact technology. */}
           <div
             className="relative w-full h-36 md:h-40 mb-5 overflow-hidden"
-            style={{ border: `1px solid ${card.color}24`, background: "var(--void)" }}
+            style={{
+              border: `1px solid ${card.color}24`,
+              background: "var(--void)",
+            }}
           >
             <motion.img
               src={

@@ -68,8 +68,8 @@ export default function ResearchProgress({ enabled }: { enabled: boolean }) {
       if (Array.isArray(parsed)) {
         setCompleted(
           parsed.filter((id): id is string =>
-            MISSIONS.some(mission => mission.id === id),
-          ),
+            MISSIONS.some(mission => mission.id === id)
+          )
         );
       }
     } catch {
@@ -88,9 +88,9 @@ export default function ResearchProgress({ enabled }: { enabled: boolean }) {
   useEffect(() => {
     if (!enabled) return;
 
-    const observed = MISSIONS.map(mission => document.getElementById(mission.id)).filter(
-      (element): element is HTMLElement => Boolean(element),
-    );
+    const observed = MISSIONS.map(mission =>
+      document.getElementById(mission.id)
+    ).filter((element): element is HTMLElement => Boolean(element));
 
     const observer = new IntersectionObserver(
       entries => {
@@ -102,10 +102,10 @@ export default function ResearchProgress({ enabled }: { enabled: boolean }) {
         const id = visible.target.id;
         setActiveId(id);
         setCompleted(previous =>
-          previous.includes(id) ? previous : [...previous, id],
+          previous.includes(id) ? previous : [...previous, id]
         );
       },
-      { threshold: [0.35, 0.55] },
+      { threshold: [0.35, 0.55] }
     );
 
     observed.forEach(element => observer.observe(element));
@@ -117,13 +117,15 @@ export default function ResearchProgress({ enabled }: { enabled: boolean }) {
   const progress = Math.round((completed.length / MISSIONS.length) * 100);
   const currentMission = useMemo(
     () => MISSIONS.find(mission => mission.id === activeId) ?? MISSIONS[0],
-    [activeId],
+    [activeId]
   );
 
   if (!enabled) return null;
 
   const navigate = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document
+      .getElementById(id)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   const reset = () => {
@@ -158,13 +160,19 @@ export default function ResearchProgress({ enabled }: { enabled: boolean }) {
                 <div>
                   <div
                     className="text-[0.58rem] font-semibold tracking-[0.16em] uppercase"
-                    style={{ fontFamily: "'JetBrains Mono', monospace", color: "#45e8d8" }}
+                    style={{
+                      fontFamily: "'JetBrains Mono', monospace",
+                      color: "#45e8d8",
+                    }}
                   >
                     Research Console · Level {level}
                   </div>
                   <div
                     className="text-lg font-semibold mt-1"
-                    style={{ fontFamily: "'Playfair Display', serif", color: "var(--qg)" }}
+                    style={{
+                      fontFamily: "'Playfair Display', serif",
+                      color: "var(--qg)",
+                    }}
                   >
                     {RANKS[level - 1]}
                   </div>
@@ -181,17 +189,33 @@ export default function ResearchProgress({ enabled }: { enabled: boolean }) {
               </div>
 
               <div className="mt-3 flex items-center justify-between text-[0.58rem] font-semibold tracking-[0.08em] uppercase">
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t2)" }}>
+                <span
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    color: "var(--t2)",
+                  }}
+                >
                   {completed.length}/{MISSIONS.length} missions · {xp} XP
                 </span>
-                <span style={{ fontFamily: "'JetBrains Mono', monospace", color: currentMission.color }}>
+                <span
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    color: currentMission.color,
+                  }}
+                >
                   {progress}%
                 </span>
               </div>
-              <div className="h-1.5 mt-2 overflow-hidden" style={{ background: "var(--lat)" }}>
+              <div
+                className="h-1.5 mt-2 overflow-hidden"
+                style={{ background: "var(--lat)" }}
+              >
                 <motion.div
                   className="h-full"
-                  style={{ background: "linear-gradient(90deg, #45e8d8, #a485ff, #ff7eb6)" }}
+                  style={{
+                    background:
+                      "linear-gradient(90deg, #45e8d8, #a485ff, #ff7eb6)",
+                  }}
                   animate={{ width: `${progress}%` }}
                   transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
                 />
@@ -227,17 +251,26 @@ export default function ResearchProgress({ enabled }: { enabled: boolean }) {
                     <span className="min-w-0 flex-1">
                       <span
                         className="block text-[0.62rem] font-semibold tracking-[0.08em] uppercase"
-                        style={{ fontFamily: "'JetBrains Mono', monospace", color: mission.color }}
+                        style={{
+                          fontFamily: "'JetBrains Mono', monospace",
+                          color: mission.color,
+                        }}
                       >
                         {mission.label}
                       </span>
-                      <span className="block text-xs mt-0.5 truncate" style={{ color: "var(--t2)" }}>
+                      <span
+                        className="block text-xs mt-0.5 truncate"
+                        style={{ color: "var(--t2)" }}
+                      >
                         {mission.detail}
                       </span>
                     </span>
                     <span
                       className="text-[0.52rem] font-semibold tracking-[0.06em] uppercase"
-                      style={{ fontFamily: "'JetBrains Mono', monospace", color: done ? mission.color : "var(--t3)" }}
+                      style={{
+                        fontFamily: "'JetBrains Mono', monospace",
+                        color: done ? mission.color : "var(--t3)",
+                      }}
                     >
                       {done ? "+125" : "OPEN"}
                     </span>
@@ -246,7 +279,10 @@ export default function ResearchProgress({ enabled }: { enabled: boolean }) {
               })}
             </div>
 
-            <div className="px-4 py-3 flex items-center justify-between border-t" style={{ borderColor: "var(--bd)" }}>
+            <div
+              className="px-4 py-3 flex items-center justify-between border-t"
+              style={{ borderColor: "var(--bd)" }}
+            >
               <span className="text-[0.55rem]" style={{ color: "var(--t3)" }}>
                 Progress is stored only in this browser.
               </span>
@@ -254,7 +290,10 @@ export default function ResearchProgress({ enabled }: { enabled: boolean }) {
                 type="button"
                 onClick={reset}
                 className="text-[0.55rem] font-semibold tracking-[0.08em] uppercase"
-                style={{ fontFamily: "'JetBrains Mono', monospace", color: "var(--t3)" }}
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  color: "var(--t3)",
+                }}
               >
                 Reset
               </button>
@@ -292,17 +331,26 @@ export default function ResearchProgress({ enabled }: { enabled: boolean }) {
             <span className="min-w-0 flex-1 text-left">
               <span
                 className="block text-[0.58rem] font-semibold tracking-[0.12em] uppercase"
-                style={{ fontFamily: "'JetBrains Mono', monospace", color: "#45e8d8" }}
+                style={{
+                  fontFamily: "'JetBrains Mono', monospace",
+                  color: "#45e8d8",
+                }}
               >
                 Research Progress
               </span>
-              <span className="block text-xs truncate" style={{ color: "var(--t2)" }}>
+              <span
+                className="block text-xs truncate"
+                style={{ color: "var(--t2)" }}
+              >
                 {completed.length}/{MISSIONS.length} missions · {xp} XP
               </span>
             </span>
             <span
               className="text-[0.58rem] font-semibold"
-              style={{ fontFamily: "'JetBrains Mono', monospace", color: currentMission.color }}
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                color: currentMission.color,
+              }}
             >
               {progress}%
             </span>
