@@ -105,7 +105,7 @@ export default function ResearchProgress({ enabled }: { enabled: boolean }) {
           previous.includes(id) ? previous : [...previous, id]
         );
       },
-      { threshold: [0.35, 0.55] }
+      { threshold: [0.15, 0.25] }
     );
 
     observed.forEach(element => observer.observe(element));
