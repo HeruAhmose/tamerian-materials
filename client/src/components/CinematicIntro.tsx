@@ -144,15 +144,15 @@ export default function CinematicIntro({
 
     const t1 = setTimeout(() => {
       setPhase(1);
-    }, 500);
+    }, 650);
     const t2 = setTimeout(() => {
       setPhase(2);
       // Crystallize sound when text appears
       if (soundEngine.initialized) soundEngine.play("crystallize");
-    }, 1800);
+    }, 2150);
     const t3 = setTimeout(() => {
       setPhase(3);
-    }, 3000);
+    }, 3500);
     const t4 = setTimeout(() => {
       // Whoosh + reveal sound on exit
       if (soundEngine.initialized) {
@@ -163,7 +163,7 @@ export default function CinematicIntro({
       }
       setShow(false);
       onCompleteRef.current();
-    }, 3800);
+    }, 4600);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
