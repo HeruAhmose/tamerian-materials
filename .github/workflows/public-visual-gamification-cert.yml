@@ -1,0 +1,138 @@
+name: Public Visual Gamification Certification
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  certify:
+    if: github.head_ref == 'probe/public-visual-gamification-cert-20260822'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 0b79e9593a3358f72ec24cd152f3a58fef536d01
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.22.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build exact merged main
+        run: pnpm build
+      - name: Wait for public immutable assets to equal exact merge
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://tamerian-materials.com'
+          built_js="$(grep -oE '/assets/[^\" ]+\.js' dist/public/index.html | head -n1)"
+          built_css="$(grep -oE '/assets/[^\" ]+\.css' dist/public/index.html | head -n1)"
+          test -n "$built_js" && test -n "$built_css"
+
+          matched=0
+          for attempt in $(seq 1 30); do
+            curl --fail --silent --show-error --location "$base/" > /tmp/live-index.html
+            live_js="$(grep -oE '/assets/[^\" ]+\.js' /tmp/live-index.html | head -n1 || true)"
+            live_css="$(grep -oE '/assets/[^\" ]+\.css' /tmp/live-index.html | head -n1 || true)"
+            echo "ATTEMPT=$attempt BUILT_JS=$built_js LIVE_JS=$live_js BUILT_CSS=$built_css LIVE_CSS=$live_css"
+            if [ "$built_js" = "$live_js" ] && [ "$built_css" = "$live_css" ]; then
+              curl --fail --silent --show-error --location "$base$live_js" > /tmp/live.js
+              curl --fail --silent --show-error --location "$base$live_css" > /tmp/live.css
+              if cmp -s "dist/public${built_js}" /tmp/live.js && cmp -s "dist/public${built_css}" /tmp/live.css; then
+                matched=1
+                break
+              fi
+            fi
+            sleep 10
+          done
+          test "$matched" = 1
+          echo 'TAMERIAN_DEPLOYED_REVISION_EQUALS_MERGED_MAIN=PASS'
+      - name: Public Chrome semantic and gamification certification
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome"
+          "$chrome" --headless=new --no-sandbox --disable-gpu --remote-debugging-port=9222 --user-data-dir=/tmp/tamerian-chrome about:blank >/tmp/chrome.log 2>&1 &
+          chrome_pid=$!
+          trap 'kill $chrome_pid 2>/dev/null || true' EXIT
+
+          for _ in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:9222/json/version >/tmp/version.json; then break; fi
+            sleep 1
+          done
+
+          node <<'NODE'
+          const version = await fetch('http://127.0.0.1:9222/json/version').then(r => r.json());
+          const ws = new WebSocket(version.webSocketDebuggerUrl);
+          let id = 0;
+          const pending = new Map();
+          const events = new Map();
+          ws.onmessage = event => {
+            const msg = JSON.parse(event.data);
+            if (msg.id && pending.has(msg.id)) {
+              const {resolve, reject} = pending.get(msg.id);
+              pending.delete(msg.id);
+              msg.error ? reject(new Error(JSON.stringify(msg.error))) : resolve(msg.result);
+            } else if (msg.method && events.has(msg.method)) {
+              for (const fn of events.get(msg.method)) fn(msg.params);
+            }
+          };
+          await new Promise((resolve, reject) => { ws.onopen = resolve; ws.onerror = reject; });
+          const send = (method, params={}) => new Promise((resolve, reject) => {
+            const callId = ++id;
+            pending.set(callId, {resolve, reject});
+            ws.send(JSON.stringify({id: callId, method, params}));
+          });
+          const once = method => new Promise(resolve => {
+            const list = events.get(method) ?? [];
+            const fn = params => { events.set(method, list.filter(x => x !== fn)); resolve(params); };
+            events.set(method, [...list, fn]);
+          });
+          await send('Page.enable');
+          await send('Runtime.enable');
+          const loaded = once('Page.loadEventFired');
+          await send('Page.navigate', {url: 'https://tamerian-materials.com/'});
+          await loaded;
+          await new Promise(r => setTimeout(r, 9000));
+
+          const expression = `(() => {
+            const expected = [
+              ['Hemp-Carbon Matrix visualization', 'hemp-carbon-'],
+              ['Crystalline Phases visualization', 'crystal-structure-'],
+              ['Multi-Modal Harvesting visualization', 'energy-harvest-'],
+              ['Quantum Sensing visualization', 'quantum-sense-'],
+              ['Rare-earth quantum sensing visualization', 'quantum-sense-']
+            ];
+            const checks = expected.map(([alt, token]) => {
+              const nodes = [...document.querySelectorAll('img')].filter(img => img.alt === alt);
+              return {alt, count: nodes.length, src: nodes[0]?.src ?? '', token, pass: nodes.length === 1 && (nodes[0]?.src ?? '').includes(token)};
+            });
+            const research = [...document.querySelectorAll('button')].find(el => (el.textContent || '').includes('Research Progress'));
+            const headings = ['Hemp-Carbon Matrix','Crystalline Phases','Multi-Modal Harvesting','Quantum Sensing'].map(text => ({text, count: [...document.querySelectorAll('h3')].filter(h => (h.textContent || '').trim() === text).length}));
+            return {
+              title: document.title,
+              checks,
+              headings,
+              researchProgressMounted: Boolean(research),
+              researchText: research?.textContent?.replace(/\\s+/g,' ').trim() ?? '',
+              bodyText: document.body.innerText.slice(0, 1000),
+              pass: checks.every(c => c.pass) && headings.every(h => h.count === 1) && Boolean(research)
+            };
+          })()`;
+          const result = await send('Runtime.evaluate', {expression, returnByValue: true});
+          const value = result.result.value;
+          console.log(JSON.stringify(value, null, 2));
+          if (!value?.pass) process.exit(1);
+          console.log('TAMERIAN_VISUAL_SEMANTIC_OWNERSHIP=PASS');
+          console.log('TAMERIAN_GAMIFIED_RESEARCH_PROGRESS=PASS');
+          console.log('TAMERIAN_PUBLIC_BROWSER_RENDER=PASS');
+          ws.close();
+          NODE
