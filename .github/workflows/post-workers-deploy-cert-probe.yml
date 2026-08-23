@@ -1,0 +1,195 @@
+name: Post-Workers Deploy Certification Probe
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  certify:
+    if: github.head_ref == 'probe/post-workers-deploy-cert-20260823'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 86467b3bbd83384827d78d2d42a3ea00c5ddf515
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.22.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "22"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build exact deployed main
+        run: pnpm build
+
+      - name: Certify custom-domain byte identity after Workers deploy
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://tamerian-materials.com'
+          built_js="$(grep -oE '/assets/[^\" ]+\.js' dist/public/index.html | head -n1)"
+          built_css="$(grep -oE '/assets/[^\" ]+\.css' dist/public/index.html | head -n1)"
+          matched=0
+
+          for attempt in $(seq 1 6); do
+            curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "$base/" > /tmp/live-index.html
+            live_js="$(grep -oE '/assets/[^\" ]+\.js' /tmp/live-index.html | head -n1 || true)"
+            live_css="$(grep -oE '/assets/[^\" ]+\.css' /tmp/live-index.html | head -n1 || true)"
+            echo "ATTEMPT=$attempt BUILT_JS=$built_js LIVE_JS=$live_js BUILT_CSS=$built_css LIVE_CSS=$live_css"
+            if [ "$built_js" = "$live_js" ] && [ "$built_css" = "$live_css" ]; then
+              curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "$base$live_js" > /tmp/live.js
+              curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "$base$live_css" > /tmp/live.css
+              if cmp -s "dist/public${built_js}" /tmp/live.js && cmp -s "dist/public${built_css}" /tmp/live.css; then
+                matched=1
+                break
+              fi
+            fi
+            sleep 10
+          done
+
+          echo "GITHUB_SHA=$(git rev-parse HEAD)"
+          sha256sum "dist/public${built_js}" "dist/public${built_css}"
+          test "$matched" = 1
+          echo 'TAMERIAN_POST_WORKERS_BYTE_IDENTITY=PASS'
+
+      - name: Certify public topic imagery and research progression in Chrome
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome"
+          "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage \
+            --remote-debugging-port=9222 --user-data-dir=/tmp/tamerian-post-workers about:blank \
+            >/tmp/chrome.log 2>&1 &
+          chrome_pid=$!
+          trap 'kill $chrome_pid 2>/dev/null || true' EXIT
+
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:9222/json/version >/tmp/version.json 2>/dev/null; then
+              break
+            fi
+            sleep 1
+          done
+
+          cat > /tmp/cert.mjs <<'NODE'
+          const target = 'https://tamerian-materials.com/';
+          const expected = {
+            'Hemp-Carbon Matrix visualization': 'hemp-carbon-XqwmAz4AyBgZgmkGUnrUBH.webp',
+            'Crystalline Phases visualization': 'crystal-structure-K4PL8jwohk8roJbj9shQ2A.webp',
+            'Multi-Modal Harvesting visualization': 'energy-harvest-PNBq2sGEGtqLx4VHNfzbvQ.webp',
+            'Quantum Sensing visualization': 'quantum-sense-ZraQQjnwG6Xiy9vaPamEwB.webp',
+          };
+
+          const list = await (await fetch('http://127.0.0.1:9222/json/list')).json();
+          const page = list.find(item => item.type === 'page');
+          if (!page?.webSocketDebuggerUrl) throw new Error('No Chrome page target');
+          const ws = new WebSocket(page.webSocketDebuggerUrl);
+          let id = 0;
+          const pending = new Map();
+          ws.onmessage = event => {
+            const msg = JSON.parse(event.data);
+            if (msg.id && pending.has(msg.id)) {
+              const { resolve, reject } = pending.get(msg.id);
+              pending.delete(msg.id);
+              msg.error ? reject(new Error(JSON.stringify(msg.error))) : resolve(msg.result);
+            }
+          };
+          await new Promise((resolve, reject) => {
+            ws.onopen = resolve;
+            ws.onerror = reject;
+          });
+          const send = (method, params = {}) =>
+            new Promise((resolve, reject) => {
+              const callId = ++id;
+              pending.set(callId, { resolve, reject });
+              ws.send(JSON.stringify({ id: callId, method, params }));
+            });
+          await send('Page.enable');
+          await send('Runtime.enable');
+          await send('Page.navigate', { url: target });
+          await new Promise(resolve => setTimeout(resolve, 7000));
+
+          const evaluate = async expression => {
+            const out = await send('Runtime.evaluate', {
+              expression,
+              returnByValue: true,
+              awaitPromise: true,
+            });
+            return out.result?.value;
+          };
+
+          const initial = await evaluate(`(() => {
+            const expected = ${JSON.stringify(expected)};
+            const images = Object.entries(expected).map(([alt, file]) => {
+              const img = document.querySelector('img[alt="' + alt + '"]');
+              return {
+                alt,
+                present: Boolean(img),
+                src: img?.src || '',
+                correct: Boolean(img && img.src.includes(file)),
+                loaded: Boolean(img && img.complete && img.naturalWidth > 0),
+              };
+            });
+            const quantumSectionImages = Array.from(document.querySelectorAll('#quantum img')).map(img => img.src);
+            const bodyText = document.body?.innerText || '';
+            return {
+              title: document.title,
+              heading: bodyText.includes('Where Carbon') && bodyText.includes('Crystal'),
+              images,
+              quantumSectionUsesQuantum: quantumSectionImages.some(src => src.includes('quantum-sense-ZraQQjnwG6Xiy9vaPamEwB.webp')),
+              researchButton: Boolean(document.querySelector('button[aria-label="Open Tamerian research progress"]')),
+            };
+          })()`);
+          console.log('INITIAL=' + JSON.stringify(initial, null, 2));
+          if (!initial?.heading) throw new Error('Tamerian application heading missing');
+          for (const image of initial.images || []) {
+            if (!image.present || !image.correct || !image.loaded) {
+              throw new Error(`Topic image certification failed: ${JSON.stringify(image)}`);
+            }
+          }
+          if (!initial.quantumSectionUsesQuantum) throw new Error('Quantum section is not using the quantum visual');
+          if (!initial.researchButton) throw new Error('Research Progress control missing');
+
+          await evaluate(`(() => {
+            document.querySelector('button[aria-label="Open Tamerian research progress"]')?.click();
+            document.getElementById('tech')?.scrollIntoView({ block: 'center' });
+            return true;
+          })()`);
+          await new Promise(resolve => setTimeout(resolve, 1800));
+
+          const gamification = await evaluate(`(() => {
+            let stored = [];
+            try {
+              stored = JSON.parse(localStorage.getItem('tamerian-research-progress-v1') || '[]');
+            } catch {}
+            const text = document.body?.innerText || '';
+            return {
+              panel: Boolean(document.querySelector('aside[aria-label="Tamerian research progress"]')),
+              hasSevenMissionFraming: text.includes('/7 missions'),
+              missionLabels: ['Core Innovation','Composite Architecture','Energy Harvesting','Manufacturing','Quantum Sensing','Applications','Patent Intelligence'].map(x => [x, text.includes(x)]),
+              techAwarded: Array.isArray(stored) && stored.includes('tech'),
+              stored,
+            };
+          })()`);
+          console.log('GAMIFICATION=' + JSON.stringify(gamification, null, 2));
+          if (!gamification?.panel || !gamification?.hasSevenMissionFraming) {
+            throw new Error('Research Progress panel did not open');
+          }
+          for (const [label, present] of gamification.missionLabels || []) {
+            if (!present) throw new Error(`Missing mission label: ${label}`);
+          }
+          if (!gamification.techAwarded) {
+            throw new Error(`Research mission did not persist after visiting tech section: ${JSON.stringify(gamification.stored)}`);
+          }
+
+          console.log('TAMERIAN_PUBLIC_VISUAL_SEMANTICS=PASS');
+          console.log('TAMERIAN_PUBLIC_GAMIFICATION=PASS');
+          ws.close();
+          NODE
+          node /tmp/cert.mjs
