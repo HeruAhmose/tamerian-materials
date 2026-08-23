@@ -34,6 +34,7 @@ import TextReveal from "@/components/TextReveal";
 import FloatingElements from "@/components/FloatingElements";
 import TypewriterText from "@/components/TypewriterText";
 import AnimatedCounter from "@/components/AnimatedCounter";
+import ResearchProgress from "@/components/ResearchProgress";
 import { useInView } from "@/hooks/useInView";
 import {
   TECH_CARDS,
@@ -510,6 +511,49 @@ function TechCard({
             }}
           >
             {card.num}
+          </div>
+
+          {/* Topic-owned visual: the image is bound to this exact technology. */}
+          <div
+            className="relative w-full h-36 md:h-40 mb-5 overflow-hidden"
+            style={{
+              border: `1px solid ${card.color}24`,
+              background: "var(--void)",
+            }}
+          >
+            <motion.img
+              src={
+                card.id === "matrix"
+                  ? IMAGES.hemp
+                  : card.id === "crystals"
+                    ? IMAGES.crystal
+                    : card.id === "harvest"
+                      ? IMAGES.energy
+                      : IMAGES.quantum
+              }
+              alt={`${card.title} visualization`}
+              className="w-full h-full object-cover"
+              style={{ opacity: hovered ? 0.78 : 0.58 }}
+              animate={{ scale: hovered ? 1.04 : 1 }}
+              transition={{ duration: 0.45 }}
+            />
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: `linear-gradient(to top, var(--gra), transparent 58%), radial-gradient(circle at 75% 25%, ${card.color}18, transparent 38%)`,
+              }}
+            />
+            <span
+              className="absolute bottom-3 left-3 text-[0.55rem] font-semibold tracking-[0.12em] uppercase px-2 py-1"
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                color: card.color,
+                background: "rgba(3,3,8,0.78)",
+                border: `1px solid ${card.color}30`,
+              }}
+            >
+              {card.title}
+            </span>
           </div>
 
           {/* Animated dot */}
@@ -1470,8 +1514,8 @@ function QuantumSection() {
           transition={{ duration: 1 }}
         >
           <motion.img
-            src={IMAGES.crystal}
-            alt="Crystal structure visualization"
+            src={IMAGES.quantum}
+            alt="Rare-earth quantum sensing visualization"
             className="w-full h-full object-cover"
             style={{ opacity: 0.7 }}
             whileInView={{ scale: [1.05, 1] }}
@@ -2203,6 +2247,7 @@ export default function Home() {
       <SectionIndicator />
       <ScrollToTop />
       <SoundToggle />
+      <ResearchProgress enabled={introComplete} />
 
       {/* Content */}
       <HeroSection />
@@ -2210,14 +2255,12 @@ export default function Home() {
       <StatsRow />
       <TechSection onCardClick={i => setModalCard(i)} />
       <GlowDivider variant="circuit" color="#45e8d8" />
-      <ImageDivider src={IMAGES.hemp} alt="Hemp-derived carbon fiber matrix" />
       <CompositionSection />
       <GlowDivider variant="hex" color="#a485ff" />
       <EnergySection />
       <GlowDivider variant="circuit" color="#e8c44a" />
       <ManufacturingSection />
       <GlowDivider variant="hex" color="#ff7eb6" />
-      <ImageDivider src={IMAGES.quantum} alt="Quantum sensing visualization" />
       <QuantumSection />
       <GlowDivider variant="circuit" color="#ff7eb6" />
       <ApplicationsSection />
