@@ -1,0 +1,44 @@
+name: prestige-production-cert-probe
+on:
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.22.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Require live bytes to equal exact current main build
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://tamerian-materials.com'
+          curl --fail --silent --show-error --location "$base/" > /tmp/live-index.html
+          built_js="$(grep -oE '/assets/[^\" ]+\.js' dist/public/index.html | head -n1)"
+          built_css="$(grep -oE '/assets/[^\" ]+\.css' dist/public/index.html | head -n1)"
+          live_js="$(grep -oE '/assets/[^\" ]+\.js' /tmp/live-index.html | head -n1)"
+          live_css="$(grep -oE '/assets/[^\" ]+\.css' /tmp/live-index.html | head -n1)"
+          echo "GITHUB_SHA=$GITHUB_SHA"
+          echo "BUILT_JS=$built_js"
+          echo "LIVE_JS=$live_js"
+          echo "BUILT_CSS=$built_css"
+          echo "LIVE_CSS=$live_css"
+          test "$built_js" = "$live_js"
+          test "$built_css" = "$live_css"
+          curl --fail --silent --show-error --location "$base$live_js" > /tmp/live.js
+          curl --fail --silent --show-error --location "$base$live_css" > /tmp/live.css
+          cmp -s "dist/public$built_js" /tmp/live.js
+          cmp -s "dist/public$built_css" /tmp/live.css
+          sha256sum "dist/public$built_js" /tmp/live.js "dist/public$built_css" /tmp/live.css
+          echo 'TAMERIAN_PRESTIGE_PRODUCTION_BYTES=PASS'
