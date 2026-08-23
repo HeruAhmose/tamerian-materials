@@ -1,0 +1,133 @@
+name: Post Research Fix Production Certification
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  certify:
+    if: github.head_ref == 'probe/post-research-fix-prod-cert-20260823'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 70860a00309b7085e4db9640c5d8528394ec32a0
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.22.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build exact merged main
+        run: pnpm build
+
+      - name: Wait for all production hosts to serve exact merged assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          built_js="$(grep -oE '/assets/[^\" ]+\.js' dist/public/index.html | head -n1)"
+          built_css="$(grep -oE '/assets/[^\" ]+\.css' dist/public/index.html | head -n1)"
+          echo "EXPECTED_SHA=$(git rev-parse HEAD)"
+          echo "EXPECTED_JS=$built_js"
+          echo "EXPECTED_CSS=$built_css"
+          echo "EXPECTED_JS_SHA256=$(sha256sum "dist/public${built_js}" | cut -d' ' -f1)"
+          echo "EXPECTED_CSS_SHA256=$(sha256sum "dist/public${built_css}" | cut -d' ' -f1)"
+          hosts=(
+            'https://tamerian-materials.com'
+            'https://tamerian-materials.pages.dev'
+            'https://tamerian-materials.aitconsult22.workers.dev'
+          )
+          ready=0
+          for attempt in $(seq 1 90); do
+            ready=1
+            echo "ATTEMPT=$attempt"
+            for base in "${hosts[@]}"; do
+              file="/tmp/$(echo "$base" | tr -cd '[:alnum:]').html"
+              if ! curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "$base/?production-cert=$attempt" > "$file"; then
+                echo "$base FETCH_FAIL"
+                ready=0
+                continue
+              fi
+              js="$(grep -oE '/assets/[^\" ]+\.js' "$file" | head -n1 || true)"
+              css="$(grep -oE '/assets/[^\" ]+\.css' "$file" | head -n1 || true)"
+              echo "$base JS=$js CSS=$css"
+              if [ "$js" != "$built_js" ] || [ "$css" != "$built_css" ]; then ready=0; fi
+            done
+            if [ "$ready" -eq 1 ]; then break; fi
+            sleep 5
+          done
+          test "$ready" -eq 1
+          for base in "${hosts[@]}"; do
+            curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "$base$built_js?cert=bytes" > /tmp/live.js
+            curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "$base$built_css?cert=bytes" > /tmp/live.css
+            cmp -s "dist/public${built_js}" /tmp/live.js
+            cmp -s "dist/public${built_css}" /tmp/live.css
+            echo "HOST_BYTE_IDENTITY=PASS $base"
+          done
+          echo 'TAMERIAN_ALL_PRODUCTION_HOSTS=PASS'
+
+      - name: Certify custom-domain SPA fallback
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://tamerian-materials.com'
+          curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "$base/" > /tmp/root.html
+          curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "$base/remembered/world" > /tmp/deep.html
+          grep -qi '<html' /tmp/root.html
+          grep -qi '<html' /tmp/deep.html
+          cmp -s /tmp/root.html /tmp/deep.html
+          echo 'TAMERIAN_PUBLIC_SPA=PASS'
+
+      - name: Certify visuals and all seven research missions on real production
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome"
+          "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --window-size=800,437 --remote-debugging-port=9222 --user-data-dir=/tmp/tamerian-prod-cert about:blank >/tmp/chrome.log 2>&1 &
+          chrome_pid=$!
+          trap 'kill $chrome_pid 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do curl --fail --silent http://127.0.0.1:9222/json/version >/dev/null 2>&1 && break; sleep 1; done
+          cat >/tmp/prod.mjs <<'NODE'
+          const missions=[['tech','Core Innovation'],['comp','Composite Architecture'],['energy','Energy Harvesting'],['mfg','Manufacturing'],['quantum','Quantum Sensing'],['apps','Applications'],['ip','Patent Intelligence']];
+          const images={
+            'Hemp-Carbon Matrix visualization':'hemp-carbon-XqwmAz4AyBgZgmkGUnrUBH.webp',
+            'Crystalline Phases visualization':'crystal-structure-K4PL8jwohk8roJbj9shQ2A.webp',
+            'Multi-Modal Harvesting visualization':'energy-harvest-PNBq2sGEGtqLx4VHNfzbvQ.webp',
+            'Quantum Sensing visualization':'quantum-sense-ZraQQjnwG6Xiy9vaPamEwB.webp'
+          };
+          const list=await (await fetch('http://127.0.0.1:9222/json/list')).json(); const page=list.find(x=>x.type==='page'); if(!page?.webSocketDebuggerUrl) throw new Error('No Chrome page');
+          const ws=new WebSocket(page.webSocketDebuggerUrl); let id=0; const pending=new Map();
+          ws.onmessage=e=>{const m=JSON.parse(e.data);if(m.id&&pending.has(m.id)){const p=pending.get(m.id);pending.delete(m.id);m.error?p.reject(new Error(JSON.stringify(m.error))):p.resolve(m.result)}};
+          await new Promise((r,j)=>{ws.onopen=r;ws.onerror=j});
+          const send=(method,params={})=>new Promise((resolve,reject)=>{const callId=++id;pending.set(callId,{resolve,reject});ws.send(JSON.stringify({id:callId,method,params}))});
+          const ev=async expression=>(await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true})).result?.value;
+          await send('Page.enable'); await send('Runtime.enable'); await send('Network.enable'); await send('Network.setCacheDisabled',{cacheDisabled:true});
+          await send('Page.navigate',{url:'https://tamerian-materials.com/?final-production-cert=70860a0'});
+          for(let i=0;i<40;i++){await new Promise(r=>setTimeout(r,500));const ready=await ev(`Boolean(document.querySelector('button[aria-label="Open Tamerian research progress"]'))`);if(ready)break;if(i===39)throw new Error('Research Progress control unavailable')}
+          const visual=await ev(`(() => {const expected=${JSON.stringify(images)};const imgs=Object.entries(expected).map(([alt,file])=>{const img=document.querySelector('img[alt="'+alt+'"]');return {alt,present:!!img,correct:!!img&&img.src.includes(file),loaded:!!img&&img.complete&&img.naturalWidth>0,src:img?.src||''}});const q=Array.from(document.querySelectorAll('#quantum img')).map(i=>i.src);return {title:document.title,imgs,quantum:q.some(src=>src.includes('quantum-sense-ZraQQjnwG6Xiy9vaPamEwB.webp'))};})()`);
+          console.log('VISUAL='+JSON.stringify(visual,null,2));
+          if(visual.title!=='Tamerian Materials — Where Carbon Meets Crystal') throw new Error('Title mismatch');
+          for(const img of visual.imgs) if(!img.present||!img.correct||!img.loaded) throw new Error('Image failure '+JSON.stringify(img));
+          if(!visual.quantum) throw new Error('Quantum image mismatch');
+          await ev(`localStorage.removeItem('tamerian-research-progress-v1')`); await new Promise(r=>setTimeout(r,300));
+          const opened=await ev(`(() => {const b=document.querySelector('button[aria-label="Open Tamerian research progress"]');if(!b)return false;b.click();return true})()`); if(!opened)throw new Error('Panel did not open'); await new Promise(r=>setTimeout(r,800));
+          const panel=await ev(`(() => {const a=document.querySelector('aside[aria-label="Tamerian research progress"]');return {present:!!a,text:a?.textContent||''}})()`); console.log('PANEL='+JSON.stringify(panel));
+          if(!panel.present||!panel.text.includes('/7 missions')) throw new Error('Panel framing failure'); for(const [,label] of missions)if(!panel.text.includes(label))throw new Error('Missing mission label '+label);
+          for(const [missionId,label] of missions){
+            const clicked=await ev(`(() => {const a=document.querySelector('aside[aria-label="Tamerian research progress"]');const b=Array.from(a?.querySelectorAll('button')||[]).find(x=>(x.textContent||'').includes(${JSON.stringify(label)}));if(!b)return false;b.click();return true})()`); if(!clicked)throw new Error('Could not click '+label);
+            let awarded=false; for(let attempt=0;attempt<30;attempt++){await new Promise(r=>setTimeout(r,200));const stored=await ev(`(() => {try{return JSON.parse(localStorage.getItem('tamerian-research-progress-v1')||'[]')}catch{return []}})()`);if(Array.isArray(stored)&&stored.includes(missionId)){console.log(`MISSION_${missionId}=PASS stored=${JSON.stringify(stored)}`);awarded=true;break}}
+            if(!awarded)throw new Error('Mission persistence failed '+label);
+          }
+          const final=await ev(`(() => {try{return JSON.parse(localStorage.getItem('tamerian-research-progress-v1')||'[]')}catch{return []}})()`); console.log('FINAL_STORED='+JSON.stringify(final));
+          for(const [missionId] of missions)if(!final.includes(missionId))throw new Error('Final storage missing '+missionId);if(final.length!==7)throw new Error('Expected exactly seven missions');
+          console.log('TAMERIAN_PUBLIC_VISUAL_SEMANTICS=PASS'); console.log('TAMERIAN_PUBLIC_GAMIFICATION=PASS'); console.log('TAMERIAN_PUBLIC_FULL_CERTIFICATION=PASS'); ws.close();
+          NODE
+          node /tmp/prod.mjs
