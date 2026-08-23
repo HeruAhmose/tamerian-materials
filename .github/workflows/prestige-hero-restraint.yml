@@ -3,6 +3,8 @@ name: Temporary Prestige Hero Restraint
 on:
   push:
     branches: [style/prestige-hero-restraint-20260823]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: write
