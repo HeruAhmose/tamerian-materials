@@ -1,0 +1,97 @@
+name: Full Production Chrome Recheck
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  chrome:
+    if: github.head_ref == 'probe/full-production-cert-20260823'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Certify production UI semantics and research progression
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome"
+          "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --remote-debugging-port=9222 --user-data-dir=/tmp/tamerian-chrome-recheck about:blank >/tmp/chrome.log 2>&1 &
+          chrome_pid=$!
+          trap 'kill $chrome_pid 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:9222/json/version >/tmp/version.json 2>/dev/null; then break; fi
+            sleep 1
+          done
+          cat > /tmp/recheck.mjs <<'NODE'
+          const expected = {
+            'Hemp-Carbon Matrix visualization': 'hemp-carbon-XqwmAz4AyBgZgmkGUnrUBH.webp',
+            'Crystalline Phases visualization': 'crystal-structure-K4PL8jwohk8roJbj9shQ2A.webp',
+            'Multi-Modal Harvesting visualization': 'energy-harvest-PNBq2sGEGtqLx4VHNfzbvQ.webp',
+            'Quantum Sensing visualization': 'quantum-sense-ZraQQjnwG6Xiy9vaPamEwB.webp',
+          };
+          const list = await (await fetch('http://127.0.0.1:9222/json/list')).json();
+          const page = list.find(x => x.type === 'page');
+          if (!page?.webSocketDebuggerUrl) throw new Error('No Chrome page target');
+          const ws = new WebSocket(page.webSocketDebuggerUrl);
+          let id = 0;
+          const pending = new Map();
+          ws.onmessage = e => {
+            const m = JSON.parse(e.data);
+            if (m.id && pending.has(m.id)) {
+              const p = pending.get(m.id); pending.delete(m.id);
+              m.error ? p.reject(new Error(JSON.stringify(m.error))) : p.resolve(m.result);
+            }
+          };
+          await new Promise((resolve, reject) => { ws.onopen = resolve; ws.onerror = reject; });
+          const send = (method, params = {}) => new Promise((resolve, reject) => {
+            const callId = ++id; pending.set(callId, {resolve, reject}); ws.send(JSON.stringify({id: callId, method, params}));
+          });
+          const evalJS = async expression => (await send('Runtime.evaluate', {expression, returnByValue:true, awaitPromise:true})).result?.value;
+          await send('Page.enable'); await send('Runtime.enable');
+          await send('Page.navigate', {url:'https://tamerian-materials.com/'});
+          await new Promise(r => setTimeout(r, 9000));
+          const initial = await evalJS(`(() => {
+            const expected = ${JSON.stringify(expected)};
+            const images = Object.entries(expected).map(([alt,file]) => {
+              const img = document.querySelector('img[alt="'+alt+'"]');
+              return {alt,present:!!img,src:img?.src||'',correct:!!img&&img.src.includes(file),loaded:!!img&&img.complete&&img.naturalWidth>0};
+            });
+            const quantumSectionImages = Array.from(document.querySelectorAll('#quantum img')).map(img => img.src);
+            return {
+              title: document.title,
+              titleCorrect: document.title === 'Tamerian Materials — Where Carbon Meets Crystal',
+              images,
+              quantumSectionUsesQuantum: quantumSectionImages.some(src => src.includes('quantum-sense-ZraQQjnwG6Xiy9vaPamEwB.webp')),
+              researchButton: !!document.querySelector('button[aria-label="Open Tamerian research progress"]')
+            };
+          })()`);
+          console.log('INITIAL='+JSON.stringify(initial,null,2));
+          if (!initial?.titleCorrect) throw new Error('Production title incorrect');
+          for (const image of initial.images||[]) if (!image.present||!image.correct||!image.loaded) throw new Error('Topic image failure: '+JSON.stringify(image));
+          if (!initial.quantumSectionUsesQuantum) throw new Error('Quantum section visual mismatch');
+          if (!initial.researchButton) throw new Error('Research Progress control missing');
+          await evalJS(`(() => { document.querySelector('button[aria-label="Open Tamerian research progress"]')?.click(); document.getElementById('tech')?.scrollIntoView({block:'center'}); return true; })()`);
+          await new Promise(r => setTimeout(r, 2200));
+          const gamification = await evalJS(`(() => {
+            let stored=[]; try { stored=JSON.parse(localStorage.getItem('tamerian-research-progress-v1')||'[]'); } catch {}
+            const text=document.body?.innerText||'';
+            return {
+              panel:!!document.querySelector('aside[aria-label="Tamerian research progress"]'),
+              hasSevenMissionFraming:text.includes('/7 missions'),
+              missionLabels:['Core Innovation','Composite Architecture','Energy Harvesting','Manufacturing','Quantum Sensing','Applications','Patent Intelligence'].map(x=>[x,text.includes(x)]),
+              techAwarded:Array.isArray(stored)&&stored.includes('tech'), stored
+            };
+          })()`);
+          console.log('GAMIFICATION='+JSON.stringify(gamification,null,2));
+          if (!gamification.panel||!gamification.hasSevenMissionFraming) throw new Error('Research Progress panel framing failure');
+          for (const [label,present] of gamification.missionLabels||[]) if (!present) throw new Error('Missing mission label: '+label);
+          if (!gamification.techAwarded) throw new Error('tech mission persistence failure: '+JSON.stringify(gamification.stored));
+          console.log('TAMERIAN_PUBLIC_VISUAL_SEMANTICS=PASS');
+          console.log('TAMERIAN_PUBLIC_GAMIFICATION=PASS');
+          ws.close();
+          NODE
+          node /tmp/recheck.mjs
