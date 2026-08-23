@@ -1551,6 +1551,166 @@ function ManufacturingSection() {
   );
 }
 
+// ─── Quantum Sensing Section ───
+function QuantumSection() {
+  return (
+    <Section
+      id="quantum"
+      eyebrow="Quantum Sensing — Claim 7"
+      title="Room-Temperature Quantum Coherence"
+    >
+      <FloatingElements count={6} color="#ff7eb6" type="ring" />
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-10 mt-8 items-center">
+        {/* Quantum image */}
+        <motion.div
+          className="relative overflow-hidden aspect-square max-w-[440px]"
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1 }}
+        >
+          <motion.img
+            src={IMAGES.quantum}
+            alt="Rare-earth quantum sensing visualization"
+            className="w-full h-full object-cover"
+            style={{ opacity: 0.7 }}
+            whileInView={{ scale: [1.05, 1] }}
+            viewport={{ once: true }}
+            transition={{ duration: 2 }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                "radial-gradient(circle at center, transparent 25%, var(--void) 100%)",
+            }}
+          />
+          {/* Floating labels with pulse */}
+          {[
+            { label: "Eu³⁺", top: "18%", left: "22%", color: "#ff7eb6" },
+            { label: "Nd³⁺", top: "32%", left: "68%", color: "#a485ff" },
+            { label: "Er³⁺", top: "58%", left: "38%", color: "#45e8d8" },
+            { label: "T₂ > 500ns", top: "76%", left: "56%", color: "#e8c44a" },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              className="absolute text-[0.6rem] font-semibold tracking-[0.1em] uppercase px-2.5 py-1"
+              style={{
+                top: item.top,
+                left: item.left,
+                fontFamily: "'JetBrains Mono', monospace",
+                color: item.color,
+                border: `1px solid ${item.color}40`,
+                background: `${item.color}0c`,
+                backdropFilter: "blur(4px)",
+              }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{
+                delay: 0.4 + i * 0.15,
+                type: "spring",
+                stiffness: 200,
+              }}
+              whileHover={{
+                scale: 1.15,
+                boxShadow: `0 0 20px ${item.color}30`,
+              }}
+            >
+              {item.label}
+              {/* Pulse ring */}
+              <motion.span
+                className="absolute inset-0 rounded-sm"
+                style={{ border: `1px solid ${item.color}` }}
+                animate={{ opacity: [0.4, 0, 0.4], scale: [1, 1.3, 1] }}
+                transition={{ duration: 2, repeat: Infinity, delay: i * 0.5 }}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+
+        {/* Content */}
+        <div>
+          <motion.p
+            className="text-lg leading-[1.9] mb-6"
+            style={{ color: "var(--t2)" }}
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            Rare-earth doped crystalline particles embedded in the composite
+            host quantum spin centers that exhibit coherence at room
+            temperature. Because the composite itself harvests energy, the
+            quantum sensors are entirely self-powered — no external batteries or
+            cables required.
+          </motion.p>
+
+          {/* Specs grid */}
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { label: "Dopants", value: "Eu³⁺, Nd³⁺, Er³⁺, Yb³⁺, Ce³⁺" },
+              { label: "Host Matrix", value: "Quartz (SiO₂)" },
+              { label: "Coherence T₂", value: "> 500 ns (target 1–10 μs)" },
+              { label: "Operating Temp", value: "Room Temperature (300K)" },
+              { label: "Self-Powered", value: "Yes — same composite" },
+              { label: "Sensing", value: "Magnetic, Temp, Strain" },
+            ].map((spec, i) => (
+              <motion.div
+                key={i}
+                className="px-3 py-2.5 relative overflow-hidden group"
+                style={{ background: "var(--lat)" }}
+                initial={{ opacity: 0, x: -15 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.06 }}
+                whileHover={{ background: "rgba(255,255,255,0.04)" }}
+              >
+                <div
+                  className="text-[0.55rem] font-semibold tracking-[0.08em] uppercase mb-0.5"
+                  style={{
+                    fontFamily: "'JetBrains Mono', monospace",
+                    color: "var(--t3)",
+                  }}
+                >
+                  {spec.label}
+                </div>
+                <div
+                  className="text-sm font-medium"
+                  style={{ color: "var(--qu)" }}
+                >
+                  {spec.value}
+                </div>
+                {/* Left accent on hover */}
+                <div className="absolute left-0 top-0 bottom-0 w-[2px] bg-[#ff7eb6] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Insight */}
+          <motion.div
+            className="mt-6 p-4 text-sm leading-[1.8] relative overflow-hidden"
+            style={{
+              color: "var(--t1)",
+              background: "rgba(255,126,182,0.04)",
+              borderLeft: "3px solid rgba(255,126,182,0.25)",
+            }}
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.3 }}
+          >
+            Europium ions substituted into the quartz lattice create optically
+            addressable quantum centers. Under optical pumping, these centers
+            exhibit spin coherence sensitive to local magnetic fields,
+            temperature shifts, and mechanical strain — enabling quantum-limited
+            sensing powered by the composite's own energy harvesting.
+          </motion.div>
+        </div>
+      </div>
+    </Section>
+  );
+}
+
 // ─── Applications Section ───
 function ApplicationsSection() {
   const [activeApp, setActiveApp] = useState(0);
