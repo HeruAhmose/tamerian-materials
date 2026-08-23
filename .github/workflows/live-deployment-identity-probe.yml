@@ -1,0 +1,97 @@
+name: Live Deployment Identity Probe
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 1703645424238788bcd6de4181270bb495e273c3
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.22.0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Build exact protected candidate
+        run: |
+          set -euo pipefail
+          pnpm install --frozen-lockfile
+          pnpm run ci
+          printf 'SOURCE_SHA=%s\n' "$(git rev-parse HEAD)"
+          test "$(git rev-parse HEAD)" = "1703645424238788bcd6de4181270bb495e273c3"
+          test -s dist/public/index.html
+
+      - name: Compare built assets to live production
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://tamerian-materials.com'
+          curl --fail --show-error --silent --location --compressed \
+            -D /tmp/live-headers.txt "$base/" -o /tmp/live-index.html
+
+          grep -qi '<html' /tmp/live-index.html
+          printf '%s\n' '=== LIVE RESPONSE HEADERS ==='
+          sed -n '1,60p' /tmp/live-headers.txt
+
+          mapfile -t local_assets < <(grep -oE '/assets/[^[:space:]\"'\''<>]+\.(js|css)' dist/public/index.html | sort -u)
+          mapfile -t live_assets  < <(grep -oE '/assets/[^[:space:]\"'\''<>]+\.(js|css)' /tmp/live-index.html | sort -u)
+
+          printf 'LOCAL_ASSET_COUNT=%s\n' "${#local_assets[@]}"
+          printf 'LIVE_ASSET_COUNT=%s\n' "${#live_assets[@]}"
+          printf '%s\n' '=== LOCAL ASSETS ==='
+          printf '%s\n' "${local_assets[@]}"
+          printf '%s\n' '=== LIVE ASSETS ==='
+          printf '%s\n' "${live_assets[@]}"
+
+          test "${#local_assets[@]}" -gt 0
+          test "${#local_assets[@]}" -eq "${#live_assets[@]}"
+          diff -u <(printf '%s\n' "${local_assets[@]}") <(printf '%s\n' "${live_assets[@]}")
+
+          : > /tmp/asset-hashes.txt
+          for asset in "${local_assets[@]}"; do
+            local_file="dist/public${asset}"
+            test -s "$local_file"
+            curl --fail --show-error --silent --location --compressed \
+              "$base$asset" -o /tmp/live-asset
+            local_sha="$(sha256sum "$local_file" | awk '{print $1}')"
+            live_sha="$(sha256sum /tmp/live-asset | awk '{print $1}')"
+            printf '%s LOCAL=%s LIVE=%s\n' "$asset" "$local_sha" "$live_sha" | tee -a /tmp/asset-hashes.txt
+            test "$local_sha" = "$live_sha"
+          done
+
+          local_index_sha="$(sha256sum dist/public/index.html | awk '{print $1}')"
+          live_index_sha="$(sha256sum /tmp/live-index.html | awk '{print $1}')"
+          printf 'LOCAL_INDEX_SHA256=%s\n' "$local_index_sha"
+          printf 'LIVE_INDEX_SHA256=%s\n' "$live_index_sha"
+          printf 'TAMERIAN_LIVE_ASSET_IDENTITY=PASS\n'
+          printf 'TAMERIAN_DEPLOYED_SHA_EQUALS_MAIN=PASS\n'
+
+      - name: Browser-level public smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v chromium || command -v chromium-browser || true)"
+          test -n "$chrome"
+          "$chrome" --headless --no-sandbox --disable-gpu --virtual-time-budget=12000 \
+            --dump-dom https://tamerian-materials.com/ > /tmp/public-dom.html
+          grep -qi '<html' /tmp/public-dom.html
+          grep -Fq 'Tamerian' /tmp/public-dom.html
+          if grep -qiE '(application error|uncaught error|internal server error)' /tmp/public-dom.html; then
+            echo 'TAMERIAN_PUBLIC_BROWSER_SMOKE=FAIL_ERROR_SURFACE' >&2
+            exit 1
+          fi
+          printf 'TAMERIAN_PUBLIC_BROWSER_SMOKE=PASS\n'
