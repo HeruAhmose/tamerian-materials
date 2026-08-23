@@ -1,0 +1,50 @@
+name: Cloudflare Production Capability Probe
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.22.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Report Cloudflare credential availability without exposing values
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          present() { if [ -n "${1:-}" ]; then echo PRESENT; else echo ABSENT; fi; }
+          echo "CLOUDFLARE_API_TOKEN=$(present "$CLOUDFLARE_API_TOKEN")"
+          echo "CLOUDFLARE_ACCOUNT_ID=$(present "$CLOUDFLARE_ACCOUNT_ID")"
+          echo "CF_API_TOKEN=$(present "$CF_API_TOKEN")"
+          echo "CF_ACCOUNT_ID=$(present "$CF_ACCOUNT_ID")"
+          token="${CLOUDFLARE_API_TOKEN:-${CF_API_TOKEN:-}}"
+          account="${CLOUDFLARE_ACCOUNT_ID:-${CF_ACCOUNT_ID:-}}"
+          if [ -z "$token" ]; then
+            echo 'CLOUDFLARE_AUTH_CAPABILITY=ABSENT'
+            exit 0
+          fi
+          echo 'CLOUDFLARE_AUTH_CAPABILITY=PRESENT'
+          export CLOUDFLARE_API_TOKEN="$token"
+          if [ -n "$account" ]; then export CLOUDFLARE_ACCOUNT_ID="$account"; fi
+          pnpm exec wrangler whoami
+          echo 'WRANGLER_AUTH=PASS'
