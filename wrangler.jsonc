@@ -2,7 +2,7 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "tamerian-materials",
   "compatibility_date": "2026-08-17",
-  // Production redeploy evidence trigger: no runtime semantics changed.
+  // Production rebuild trigger after Workers Builds configuration was corrected.
   "assets": {
     "directory": "./dist/public",
     "not_found_handling": "single-page-application",
