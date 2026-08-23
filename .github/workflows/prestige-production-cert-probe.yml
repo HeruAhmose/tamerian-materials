@@ -10,6 +10,11 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: b455f7b44cde8186c3b7c1235b11a1486be5c715
+          persist-credentials: false
+      - name: Prove checkout is literal current main
+        run: test "$(git rev-parse HEAD)" = 'b455f7b44cde8186c3b7c1235b11a1486be5c715'
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
         with:
           version: 11.22.0
@@ -29,7 +34,7 @@ jobs:
           built_css="$(grep -oE '/assets/[^\" ]+\.css' dist/public/index.html | head -n1)"
           live_js="$(grep -oE '/assets/[^\" ]+\.js' /tmp/live-index.html | head -n1)"
           live_css="$(grep -oE '/assets/[^\" ]+\.css' /tmp/live-index.html | head -n1)"
-          echo "GITHUB_SHA=$GITHUB_SHA"
+          echo 'CHECKED_OUT_SHA=b455f7b44cde8186c3b7c1235b11a1486be5c715'
           echo "BUILT_JS=$built_js"
           echo "LIVE_JS=$live_js"
           echo "BUILT_CSS=$built_css"
