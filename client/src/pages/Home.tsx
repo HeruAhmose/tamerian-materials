@@ -95,7 +95,7 @@ function HeroSection() {
       <motion.div className="absolute inset-0 z-0" style={{ y, scale }}>
         <div
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url(${IMAGES.hero})`, opacity: 0.3 }}
+          style={{ backgroundImage: `url(${IMAGES.hero})`, opacity: 0.38 }}
         />
         <div
           className="absolute inset-0"
@@ -107,8 +107,8 @@ function HeroSection() {
       </motion.div>
 
       {/* Floating ambient hexagons */}
-      <FloatingElements count={8} color="#45e8d8" type="hex" />
-      <FloatingElements count={5} color="#a485ff" type="ring" />
+      <FloatingElements count={5} color="#45e8d8" type="hex" />
+      <FloatingElements count={2} color="#a485ff" type="ring" />
 
       <motion.div
         className="relative z-10 px-[5vw] md:px-[7vw] max-w-[900px]"
