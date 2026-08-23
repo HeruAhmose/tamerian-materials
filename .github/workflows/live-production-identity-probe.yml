@@ -1,0 +1,72 @@
+name: Live Production Identity Probe
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  certify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fa602d23777b1d070667b632d2e051206994d751
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.22.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Build exact main
+        run: pnpm build
+      - name: Compare immutable production assets byte-for-byte
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://tamerian-materials.com'
+          curl --fail --silent --show-error --location "$base/" > /tmp/live-index.html
+          test -s /tmp/live-index.html
+
+          built_js="$(grep -oE '/assets/[^\" ]+\.js' dist/public/index.html | head -n1)"
+          built_css="$(grep -oE '/assets/[^\" ]+\.css' dist/public/index.html | head -n1)"
+          live_js="$(grep -oE '/assets/[^\" ]+\.js' /tmp/live-index.html | head -n1)"
+          live_css="$(grep -oE '/assets/[^\" ]+\.css' /tmp/live-index.html | head -n1)"
+
+          echo "BUILT_JS=$built_js"
+          echo "LIVE_JS=$live_js"
+          echo "BUILT_CSS=$built_css"
+          echo "LIVE_CSS=$live_css"
+          test -n "$built_js" && test -n "$built_css" && test -n "$live_js" && test -n "$live_css"
+
+          curl --fail --silent --show-error --location "$base$live_js" > /tmp/live.js
+          curl --fail --silent --show-error --location "$base$live_css" > /tmp/live.css
+          built_js_file="dist/public${built_js}"
+          built_css_file="dist/public${built_css}"
+          test -f "$built_js_file" && test -f "$built_css_file"
+
+          sha256sum "$built_js_file" /tmp/live.js "$built_css_file" /tmp/live.css
+          cmp -s "$built_js_file" /tmp/live.js
+          cmp -s "$built_css_file" /tmp/live.css
+          test "$built_js" = "$live_js"
+          test "$built_css" = "$live_css"
+          echo 'LIVE_ASSET_IDENTITY=PASS'
+
+      - name: Public SPA smoke
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://tamerian-materials.com'
+          curl --fail --silent --show-error --location "$base/" > /tmp/root.html
+          curl --fail --silent --show-error --location "$base/remembered/world" > /tmp/deep.html
+          grep -qi '<html' /tmp/root.html
+          grep -qi '<html' /tmp/deep.html
+          cmp -s /tmp/root.html /tmp/deep.html
+          grep -Eiq 'Tamerian|Materials' /tmp/root.html
+          echo 'PUBLIC_SPA_SMOKE=PASS'
