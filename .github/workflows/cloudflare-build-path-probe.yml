@@ -1,0 +1,67 @@
+name: Cloudflare Build Path Probe
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  reproduce:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 1703645424238788bcd6de4181270bb495e273c3
+          persist-credentials: false
+
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.22.0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install exact main dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Compare npm and pnpm build paths
+        shell: bash
+        run: |
+          set -u
+
+          rm -rf dist
+          set +e
+          npm run build >/tmp/npm-build.log 2>&1
+          npm_rc=$?
+          set -e
+          echo "=== npm run build ==="
+          cat /tmp/npm-build.log
+          echo "NPM_BUILD_EXIT=$npm_rc"
+
+          rm -rf dist
+          set +e
+          pnpm run build >/tmp/pnpm-build.log 2>&1
+          pnpm_rc=$?
+          set -e
+          echo "=== pnpm run build ==="
+          cat /tmp/pnpm-build.log
+          echo "PNPM_BUILD_EXIT=$pnpm_rc"
+
+          if [ "$pnpm_rc" -ne 0 ]; then
+            echo "PNPM_CONTROL_BUILD=FAIL"
+            exit 1
+          fi
+
+          echo "PNPM_CONTROL_BUILD=PASS"
+
+          if [ "$npm_rc" -ne 0 ]; then
+            echo "CLOUDFLARE_STYLE_NPM_BUILD=FAIL"
+            exit 2
+          fi
+
+          echo "CLOUDFLARE_STYLE_NPM_BUILD=PASS"
