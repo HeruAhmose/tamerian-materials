@@ -38,7 +38,7 @@ jobs:
           matched=0
 
           for attempt in $(seq 1 18); do
-            curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "$base/?post-purge=$attempt" > /tmp/live-index.html
+            curl --fail --silent --show-error --location -H 'Cache-Control: no-cache' "$base/" > /tmp/live-index.html
             live_js="$(grep -oE '/assets/[^\" ]+\.js' /tmp/live-index.html | head -n1 || true)"
             live_css="$(grep -oE '/assets/[^\" ]+\.css' /tmp/live-index.html | head -n1 || true)"
             echo "ATTEMPT=$attempt BUILT_JS=$built_js LIVE_JS=$live_js BUILT_CSS=$built_css LIVE_CSS=$live_css"
@@ -78,7 +78,7 @@ jobs:
           done
 
           cat > /tmp/cert.mjs <<'NODE'
-          const target = 'https://tamerian-materials.com/?post-purge-browser=1';
+          const target = 'https://tamerian-materials.com/';
           const expected = {
             'Hemp-Carbon Matrix visualization': 'hemp-carbon-XqwmAz4AyBgZgmkGUnrUBH.webp',
             'Crystalline Phases visualization': 'crystal-structure-K4PL8jwohk8roJbj9shQ2A.webp',
