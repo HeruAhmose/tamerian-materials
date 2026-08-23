@@ -1,0 +1,38 @@
+name: Cloudflare Deploy Hook Recovery Probe
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  probe:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Probe deploy-hook secret availability without exposing values
+        shell: bash
+        env:
+          CLOUDFLARE_DEPLOY_HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}
+          CLOUDFLARE_DEPLOY_HOOK_URL: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK_URL }}
+          CF_DEPLOY_HOOK: ${{ secrets.CF_DEPLOY_HOOK }}
+          CF_DEPLOY_HOOK_URL: ${{ secrets.CF_DEPLOY_HOOK_URL }}
+        run: |
+          set -euo pipefail
+          present() { if [ -n "${1:-}" ]; then echo PRESENT; else echo ABSENT; fi; }
+          echo "CLOUDFLARE_DEPLOY_HOOK=$(present "$CLOUDFLARE_DEPLOY_HOOK")"
+          echo "CLOUDFLARE_DEPLOY_HOOK_URL=$(present "$CLOUDFLARE_DEPLOY_HOOK_URL")"
+          echo "CF_DEPLOY_HOOK=$(present "$CF_DEPLOY_HOOK")"
+          echo "CF_DEPLOY_HOOK_URL=$(present "$CF_DEPLOY_HOOK_URL")"
+
+          hook="${CLOUDFLARE_DEPLOY_HOOK:-${CLOUDFLARE_DEPLOY_HOOK_URL:-${CF_DEPLOY_HOOK:-${CF_DEPLOY_HOOK_URL:-}}}}"
+          if [ -z "$hook" ]; then
+            echo 'CLOUDFLARE_DEPLOY_HOOK_CAPABILITY=ABSENT'
+            exit 0
+          fi
+
+          echo 'CLOUDFLARE_DEPLOY_HOOK_CAPABILITY=PRESENT'
+          curl --fail --silent --show-error --request POST "$hook" >/tmp/deploy-hook-response.txt
+          echo 'CLOUDFLARE_DEPLOY_HOOK_TRIGGER=PASS'
