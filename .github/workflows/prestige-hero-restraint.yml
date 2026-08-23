@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: style/prestige-hero-restraint-20260823
-      - uses: pnpm/action-setup@8573dd5e4d3b5682f2e7cccb42488af92a4b4993
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
         with:
           version: 11.22.0
       - name: Restrain ambient hero density
