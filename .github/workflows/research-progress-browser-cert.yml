@@ -1,0 +1,128 @@
+name: Research Progress Browser Certification
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  certify:
+    if: github.head_ref == 'fix/research-progress-intersection-20260823'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fix/research-progress-intersection-20260823
+          persist-credentials: false
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.22.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '22'
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - name: Start local production preview
+        shell: bash
+        run: |
+          pnpm preview --host 127.0.0.1 > /tmp/preview.log 2>&1 &
+          echo $! > /tmp/preview.pid
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:4173/ >/dev/null 2>&1; then exit 0; fi
+            sleep 1
+          done
+          cat /tmp/preview.log
+          exit 1
+      - name: Require all seven missions to persist in short viewport
+        shell: bash
+        run: |
+          set -euo pipefail
+          chrome="$(command -v google-chrome || command -v chromium || command -v chromium-browser)"
+          test -n "$chrome"
+          "$chrome" --headless=new --no-sandbox --disable-gpu --disable-dev-shm-usage --window-size=800,437 --remote-debugging-port=9222 --user-data-dir=/tmp/tamerian-research-cert about:blank >/tmp/chrome.log 2>&1 &
+          chrome_pid=$!
+          trap 'kill $chrome_pid 2>/dev/null || true; kill $(cat /tmp/preview.pid) 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            curl --fail --silent http://127.0.0.1:9222/json/version >/dev/null 2>&1 && break
+            sleep 1
+          done
+          cat >/tmp/cert.mjs <<'NODE'
+          const missions = [
+            ['tech','Core Innovation'],
+            ['comp','Composite Architecture'],
+            ['energy','Energy Harvesting'],
+            ['mfg','Manufacturing'],
+            ['quantum','Quantum Sensing'],
+            ['apps','Applications'],
+            ['ip','Patent Intelligence'],
+          ];
+          const list = await (await fetch('http://127.0.0.1:9222/json/list')).json();
+          const page = list.find(x => x.type === 'page');
+          if (!page?.webSocketDebuggerUrl) throw new Error('No Chrome page target');
+          const ws = new WebSocket(page.webSocketDebuggerUrl);
+          let id = 0; const pending = new Map();
+          ws.onmessage = e => {
+            const m = JSON.parse(e.data);
+            if (m.id && pending.has(m.id)) {
+              const p = pending.get(m.id); pending.delete(m.id);
+              m.error ? p.reject(new Error(JSON.stringify(m.error))) : p.resolve(m.result);
+            }
+          };
+          await new Promise((resolve,reject)=>{ ws.onopen=resolve; ws.onerror=reject; });
+          const send = (method,params={}) => new Promise((resolve,reject)=>{
+            const callId=++id; pending.set(callId,{resolve,reject}); ws.send(JSON.stringify({id:callId,method,params}));
+          });
+          const ev = async expression => (await send('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true})).result?.value;
+          await send('Page.enable'); await send('Runtime.enable');
+          await send('Page.navigate',{url:'http://127.0.0.1:4173/'});
+          for (let i=0;i<30;i++) {
+            await new Promise(r=>setTimeout(r,500));
+            const ready=await ev(`Boolean(document.querySelector('button[aria-label="Open Tamerian research progress"]'))`);
+            if (ready) break;
+            if (i===29) throw new Error('Research Progress control never became available');
+          }
+          await ev(`localStorage.removeItem('tamerian-research-progress-v1')`);
+          await new Promise(r=>setTimeout(r,300));
+          const panelOpened = await ev(`(() => { const b=document.querySelector('button[aria-label="Open Tamerian research progress"]'); if(!b)return false; b.click(); return true; })()`);
+          if (!panelOpened) throw new Error('Research Progress panel did not open');
+          await new Promise(r=>setTimeout(r,800));
+          const panel = await ev(`(() => { const a=document.querySelector('aside[aria-label="Tamerian research progress"]'); return {present:!!a,text:a?.textContent||''}; })()`);
+          console.log('PANEL='+JSON.stringify(panel));
+          if (!panel.present) throw new Error('Research Progress aside missing');
+          if (!panel.text.includes('/7 missions')) throw new Error('/7 missions framing missing');
+          for (const [,label] of missions) if (!panel.text.includes(label)) throw new Error('Mission label missing: '+label);
+
+          for (const [missionId,label] of missions) {
+            const clicked = await ev(`(() => {
+              const a=document.querySelector('aside[aria-label="Tamerian research progress"]');
+              const b=Array.from(a?.querySelectorAll('button')||[]).find(x=>(x.textContent||'').includes(${JSON.stringify(label)}));
+              if(!b)return false; b.click(); return true;
+            })()`);
+            if (!clicked) throw new Error('Could not click mission: '+label);
+            let awarded = false;
+            for (let attempt=0; attempt<30; attempt++) {
+              await new Promise(r=>setTimeout(r,200));
+              const stored = await ev(`(() => { try{return JSON.parse(localStorage.getItem('tamerian-research-progress-v1')||'[]')}catch{return []} })()`);
+              if (Array.isArray(stored) && stored.includes(missionId)) {
+                console.log(`MISSION_${missionId}=PASS stored=${JSON.stringify(stored)}`);
+                awarded = true;
+                break;
+              }
+            }
+            if (!awarded) {
+              const state = await ev(`(() => { let stored=[];try{stored=JSON.parse(localStorage.getItem('tamerian-research-progress-v1')||'[]')}catch{}; const e=document.getElementById(${JSON.stringify(missionId)});const r=e?.getBoundingClientRect();return {stored,scrollY:scrollY,viewport:innerHeight,rect:r?{top:r.top,bottom:r.bottom,height:r.height}:null}; })()`);
+              throw new Error('Mission did not persist: '+label+' '+JSON.stringify(state));
+            }
+          }
+          const final = await ev(`(() => { try{return JSON.parse(localStorage.getItem('tamerian-research-progress-v1')||'[]')}catch{return []} })()`);
+          console.log('FINAL_STORED='+JSON.stringify(final));
+          for (const [missionId] of missions) if (!final.includes(missionId)) throw new Error('Final persistence missing '+missionId);
+          if (final.length !== 7) throw new Error('Expected exactly seven completed missions, got '+JSON.stringify(final));
+          console.log('TAMERIAN_RESEARCH_PROGRESS_ALL_SEVEN=PASS');
+          ws.close();
+          NODE
+          node /tmp/cert.mjs
