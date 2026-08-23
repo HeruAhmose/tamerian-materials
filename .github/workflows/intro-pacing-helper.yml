@@ -1,0 +1,51 @@
+name: Intro Pacing Helper
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: github.head_ref == 'fix/cinematic-intro-pacing-20260822'
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      - name: Slow existing intro phase timing only
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('client/src/components/CinematicIntro.tsx')
+          s = p.read_text()
+          replacements = {
+              '    }, 500);': '    }, 650);',
+              '    }, 1800);': '    }, 2150);',
+              '    }, 3000);': '    }, 3500);',
+              '    }, 3800);': '    }, 4600);',
+          }
+          for old, new in replacements.items():
+              if old not in s:
+                  raise SystemExit(f'missing expected timing: {old}')
+              s = s.replace(old, new, 1)
+          p.write_text(s)
+      - name: Verify timing-only semantic contract
+        run: |
+          set -euo pipefail
+          grep -q '}, 650);' client/src/components/CinematicIntro.tsx
+          grep -q '}, 2150);' client/src/components/CinematicIntro.tsx
+          grep -q '}, 3500);' client/src/components/CinematicIntro.tsx
+          grep -q '}, 4600);' client/src/components/CinematicIntro.tsx
+          git diff -- client/src/components/CinematicIntro.tsx
+      - name: Commit pacing patch
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add client/src/components/CinematicIntro.tsx
+          git commit -m 'style(intro): slow cinematic phase pacing'
+          git push origin HEAD:${{ github.head_ref }}
