@@ -186,6 +186,21 @@ export default function TechModal({ card, onClose }: Props) {
               {card.num}. {card.title}
             </motion.h2>
 
+            <motion.div
+              className="mb-5 border px-4 py-3 text-sm leading-relaxed"
+              style={{
+                color: "var(--t2)",
+                borderColor: `${card.color}35`,
+                background: `${card.color}08`,
+              }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              Application-defined architecture and target ranges. Integrated
+              performance has not been independently validated.
+            </motion.div>
+
             {/* Overview */}
             <motion.p
               className="text-base leading-[1.85] mb-6"
@@ -208,7 +223,7 @@ export default function TechModal({ card, onClose }: Props) {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              ── Technical Specifications
+              ── Application Ranges &amp; Inputs
             </motion.div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 mb-6">
               {card.specs.map(([key, val], i) => (

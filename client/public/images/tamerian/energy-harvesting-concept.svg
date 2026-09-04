@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Multi-modal energy harvesting concept</title>
+  <desc id="desc">Conceptual mechanical, thermal, and magnetic inputs converging on one material architecture.</desc>
+  <defs>
+    <radialGradient id="bg"><stop stop-color="#222018"/><stop offset="1" stop-color="#030308"/></radialGradient>
+    <linearGradient id="core" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#45e8d8"/><stop offset=".5" stop-color="#a485ff"/><stop offset="1" stop-color="#e8c44a"/></linearGradient>
+    <filter id="g" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0l8 4-8 4z" fill="#e8c44a"/></marker>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g fill="none" stroke="#e8c44a" stroke-width="3" marker-end="url(#a)" opacity=".72"><path d="M130 190C320 230 350 330 470 370"/><path d="M1070 190C880 230 850 330 730 370"/><path d="M150 640C310 570 370 500 480 450"/></g>
+  <g fill="none" stroke="#45e8d8" stroke-opacity=".28"><path d="M70 150h230M900 150h230M70 680h230" stroke-dasharray="7 12"/><circle cx="600" cy="410" r="190"/><circle cx="600" cy="410" r="240" stroke-dasharray="5 16"/></g>
+  <path d="M600 245l142 82v164l-142 82-142-82V327z" fill="#0a1018" stroke="url(#core)" stroke-width="5" filter="url(#g)"/>
+  <path d="M535 410h130M600 345v130" stroke="#f0e8d8" stroke-opacity=".65" stroke-width="3"/>
+  <g filter="url(#g)"><circle cx="135" cy="190" r="11" fill="#45e8d8"/><circle cx="1065" cy="190" r="11" fill="#ff7eb6"/><circle cx="145" cy="640" r="11" fill="#e8c44a"/></g>
+  <path d="M760 410h260" stroke="#45e8d8" stroke-width="6" opacity=".5"/><path d="M1015 392l36 18-36 18z" fill="#45e8d8"/>
+</svg>
