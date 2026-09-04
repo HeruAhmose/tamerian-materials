@@ -31,6 +31,8 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Build exact main revision
         run: pnpm build
+      - name: Certify first-party visuals and evidence boundaries
+        run: pnpm check:truth -- --dist
       - name: Require live immutable assets to equal exact main build
         shell: bash
         run: |

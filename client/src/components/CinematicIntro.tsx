@@ -1,6 +1,9 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import { soundEngine } from "@/lib/soundEngine";
+
+const INTRO_SESSION_KEY = "tamerian-intro-complete-v1";
+const LAST_PHASE = 2;
 
 function IntroParticles() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -121,9 +124,50 @@ export default function CinematicIntro({
   const [phase, setPhase] = useState(0);
   const [show, setShow] = useState(true);
   const onCompleteRef = useRef(onComplete);
+  const skipButtonRef = useRef<HTMLButtonElement>(null);
+  const continueButtonRef = useRef<HTMLButtonElement>(null);
   onCompleteRef.current = onComplete;
 
+  const completeIntro = useCallback(() => {
+    try {
+      window.sessionStorage.setItem(INTRO_SESSION_KEY, "true");
+    } catch {
+      // Session persistence is optional.
+    }
+
+    if (soundEngine.initialized) {
+      soundEngine.play("whoosh");
+      soundEngine.play("reveal");
+      window.setTimeout(() => soundEngine.play("ambient"), 800);
+    }
+
+    setShow(false);
+    onCompleteRef.current();
+  }, []);
+
+  const advance = useCallback(() => {
+    if (phase >= LAST_PHASE) {
+      completeIntro();
+      return;
+    }
+
+    setPhase(current => current + 1);
+    if (phase === 0 && soundEngine.initialized) {
+      soundEngine.play("crystallize");
+    }
+  }, [completeIntro, phase]);
+
   useEffect(() => {
+    try {
+      if (window.sessionStorage.getItem(INTRO_SESSION_KEY) === "true") {
+        setShow(false);
+        onCompleteRef.current();
+        return;
+      }
+    } catch {
+      // Continue with the intro when session storage is unavailable.
+    }
+
     // Initialize sound on first interaction during intro
     const initAndPlay = async () => {
       await soundEngine.init();
@@ -142,37 +186,48 @@ export default function CinematicIntro({
     // Also try immediately
     initAndPlay().catch(() => {});
 
-    const t1 = setTimeout(() => {
-      setPhase(1);
-    }, 650);
-    const t2 = setTimeout(() => {
-      setPhase(2);
-      // Crystallize sound when text appears
-      if (soundEngine.initialized) soundEngine.play("crystallize");
-    }, 2150);
-    const t3 = setTimeout(() => {
-      setPhase(3);
-    }, 3500);
-    const t4 = setTimeout(() => {
-      // Whoosh + reveal sound on exit
-      if (soundEngine.initialized) {
-        soundEngine.play("whoosh");
-        soundEngine.play("reveal");
-        // Start ambient after intro
-        setTimeout(() => soundEngine.play("ambient"), 800);
-      }
-      setShow(false);
-      onCompleteRef.current();
-    }, 4600);
     return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t4);
       window.removeEventListener("click", handleInteraction);
       window.removeEventListener("touchstart", handleInteraction);
     };
   }, []);
+
+  useEffect(() => {
+    if (!show) return;
+
+    const focusTimer = window.setTimeout(
+      () => skipButtonRef.current?.focus(),
+      0
+    );
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Tab") {
+        const first = skipButtonRef.current;
+        const last = continueButtonRef.current;
+        if (!first || !last) return;
+
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      } else if (event.key === "ArrowRight") {
+        event.preventDefault();
+        advance();
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        completeIntro();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.clearTimeout(focusTimer);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [advance, completeIntro, show]);
 
   return (
     <AnimatePresence>
@@ -180,10 +235,34 @@ export default function CinematicIntro({
         <motion.div
           className="fixed inset-0 flex items-center justify-center"
           style={{ zIndex: 9999, background: "#030308" }}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Tamerian cinematic introduction"
+          aria-describedby="tamerian-intro-instructions"
+          onClick={advance}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
         >
-          <IntroParticles />
+          <div aria-hidden="true">
+            <IntroParticles />
+          </div>
+
+          <p id="tamerian-intro-instructions" className="sr-only">
+            Use Skip intro to enter immediately, or advance through the three
+            user-paced phases with the continue button or Right Arrow key.
+          </p>
+
+          <button
+            ref={skipButtonRef}
+            type="button"
+            className="absolute right-5 top-5 z-20 border border-white/15 bg-black/25 px-4 py-2 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-white/70 transition hover:border-[#45e8d8]/55 hover:text-[#45e8d8]"
+            onClick={event => {
+              event.stopPropagation();
+              completeIntro();
+            }}
+          >
+            Skip intro
+          </button>
 
           <div className="relative flex flex-col items-center gap-6 z-10">
             {/* Hexagonal logo with orbital dots */}
@@ -331,7 +410,7 @@ export default function CinematicIntro({
               </motion.div>
             </div>
 
-            {/* Loading bar */}
+            {/* User-paced progress */}
             <motion.div
               className="w-52 h-[2px] mt-5 overflow-hidden relative"
               style={{ background: "rgba(240,232,216,0.06)" }}
@@ -342,9 +421,11 @@ export default function CinematicIntro({
                   background:
                     "linear-gradient(90deg, #45e8d8, #a485ff, #e8c44a, #ff7eb6)",
                 }}
-                initial={{ width: "0%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 3.3, ease: [0.16, 1, 0.3, 1] }}
+                initial={false}
+                animate={{
+                  width: `${((phase + 1) / (LAST_PHASE + 1)) * 100}%`,
+                }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
               />
               <motion.div
                 className="absolute top-0 h-full w-12"
@@ -353,9 +434,23 @@ export default function CinematicIntro({
                     "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)",
                 }}
                 animate={{ left: ["-20%", "120%"] }}
-                transition={{ duration: 1.5, repeat: 3, ease: "linear" }}
+                transition={{ duration: 1.8, repeat: Infinity, ease: "linear" }}
               />
             </motion.div>
+
+            <button
+              ref={continueButtonRef}
+              type="button"
+              className="mt-1 font-mono text-[0.62rem] uppercase tracking-[0.16em] text-white/48 transition hover:text-[#45e8d8]"
+              onClick={event => {
+                event.stopPropagation();
+                advance();
+              }}
+            >
+              {phase < LAST_PHASE
+                ? "Click or press → to advance"
+                : "Enter the material system →"}
+            </button>
           </div>
         </motion.div>
       )}

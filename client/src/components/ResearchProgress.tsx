@@ -31,7 +31,7 @@ const MISSIONS = [
   {
     id: "quantum",
     label: "Quantum Sensing",
-    detail: "Room-Temperature Quantum Coherence",
+    detail: "Room-Temperature Coherence Hypothesis",
     color: "#ff7eb6",
   },
   {

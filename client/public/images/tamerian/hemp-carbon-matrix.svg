@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" role="img" aria-labelledby="title desc">
+  <title id="title">Hemp-carbon matrix concept</title>
+  <desc id="desc">Abstract woven bio-derived carbon fibers with conductive junctions.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="50%" r="75%"><stop stop-color="#15222a"/><stop offset="1" stop-color="#030308"/></radialGradient>
+    <linearGradient id="f" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#182c31"/><stop offset=".5" stop-color="#45e8d8"/><stop offset="1" stop-color="#121723"/></linearGradient>
+    <filter id="g"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1200" height="800" fill="url(#bg)"/>
+  <g fill="none" stroke="url(#f)" stroke-linecap="round" opacity=".72">
+    <path d="M-60 650C220 560 290 220 610 170S960 390 1260 180" stroke-width="26"/>
+    <path d="M-40 210C270 360 400 100 690 300s300 330 570 250" stroke-width="18"/>
+    <path d="M80 840C260 610 500 650 650 470s330-260 590-150" stroke-width="13"/>
+    <path d="M160-40c50 250 320 260 390 500s190 310 420 370" stroke-width="9" opacity=".55"/>
+  </g>
+  <g fill="#45e8d8" filter="url(#g)">
+    <circle cx="282" cy="435" r="8"/><circle cx="505" cy="260" r="7"/><circle cx="684" cy="505" r="8"/><circle cx="940" cy="330" r="7"/>
+  </g>
+  <g fill="none" stroke="#f0e8d8" stroke-opacity=".18"><circle cx="282" cy="435" r="48"/><circle cx="684" cy="505" r="62"/><circle cx="940" cy="330" r="40"/></g>
+</svg>

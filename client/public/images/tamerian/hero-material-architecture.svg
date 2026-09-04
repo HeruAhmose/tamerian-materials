@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Tamerian material architecture</title>
+  <desc id="desc">Abstract hemp-carbon fibers, crystalline phases, and energy pathways.</desc>
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="46%" r="72%">
+      <stop offset="0" stop-color="#172133"/>
+      <stop offset=".52" stop-color="#080b14"/>
+      <stop offset="1" stop-color="#030308"/>
+    </radialGradient>
+    <linearGradient id="fiber" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#45e8d8" stop-opacity=".08"/>
+      <stop offset=".5" stop-color="#45e8d8" stop-opacity=".9"/>
+      <stop offset="1" stop-color="#a485ff" stop-opacity=".12"/>
+    </linearGradient>
+    <linearGradient id="crystal" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#f5f0df"/>
+      <stop offset=".42" stop-color="#a485ff"/>
+      <stop offset="1" stop-color="#45e8d8"/>
+    </linearGradient>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="12" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+      <path d="M80 0H0V80" fill="none" stroke="#45e8d8" stroke-opacity=".035"/>
+    </pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <g fill="none" stroke="url(#fiber)" stroke-linecap="round">
+    <path d="M-80 780C240 640 270 260 610 190S1110 520 1690 110" stroke-width="20" opacity=".32"/>
+    <path d="M-60 680C320 520 390 790 760 580S1240 180 1660 300" stroke-width="11" opacity=".52"/>
+    <path d="M-20 250C310 410 450 110 780 270S1240 730 1660 570" stroke-width="7" opacity=".48"/>
+    <path d="M120 930C420 690 530 540 840 680S1260 890 1570 610" stroke-width="5" opacity=".36"/>
+  </g>
+  <g opacity=".88">
+    <path d="M790 250l118 68 0 136-118 68-118-68V318z" fill="#0d1320" stroke="#45e8d8" stroke-width="2"/>
+    <path d="M790 285l88 51v101l-88 51-88-51V336z" fill="none" stroke="#a485ff" stroke-opacity=".55"/>
+    <circle cx="790" cy="386" r="18" fill="#45e8d8" filter="url(#glow)"/>
+    <path d="M790 250V140M908 318l116-67M908 454l116 67M672 454l-116 67M672 318l-116-67" stroke="#45e8d8" stroke-opacity=".32"/>
+  </g>
+  <g fill="url(#crystal)" filter="url(#glow)">
+    <path d="M420 300l42-66 54 48-16 78-72 8z" opacity=".74"/>
+    <path d="M1110 290l56-78 70 70-30 94-82-12z" opacity=".58"/>
+    <path d="M1160 690l38-72 72 31-5 92-82 18z" opacity=".66"/>
+    <path d="M480 650l28-50 54 26-8 66-60 10z" opacity=".46"/>
+  </g>
+  <g fill="#e8c44a" filter="url(#glow)">
+    <circle cx="310" cy="510" r="5"/><circle cx="605" cy="145" r="4"/><circle cx="1020" cy="540" r="6"/><circle cx="1340" cy="420" r="4"/>
+  </g>
+  <g fill="none" stroke="#ff7eb6" stroke-opacity=".32">
+    <circle cx="1160" cy="690" r="96"/><circle cx="1160" cy="690" r="128" stroke-dasharray="6 14"/>
+    <circle cx="420" cy="300" r="76" stroke-dasharray="4 12"/>
+  </g>
+</svg>

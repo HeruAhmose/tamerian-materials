@@ -9,9 +9,10 @@
     "start": "NODE_ENV=production node dist/index.js",
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
+    "check:truth": "node scripts/check-public-truth.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "ci": "pnpm check && pnpm format:check && pnpm build"
+    "ci": "pnpm check:truth && pnpm check && pnpm format:check && pnpm build && pnpm check:truth -- --dist"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

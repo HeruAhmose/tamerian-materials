@@ -14,9 +14,9 @@ export const TECH_CARDS = [
     vol: "40–70 vol%",
     claim: "Claim 1",
     short:
-      "Pyrolysis at 700–1400°C. Conductivity 10²–10⁶ S/m. Fiber Ø 5–50 μm, aspect ratios >100:1.",
+      "Application architecture: hemp fibers pyrolyzed at 700–1400°C with claimed conductivity and geometry ranges.",
     overview:
-      "The carbonaceous matrix forms the structural and electrical backbone. Industrial hemp bast fibers are pyrolyzed at 700–1400°C in oxygen-depleted atmosphere (90–98% N₂, 2–10% H₂) for 0.5–6 hours, yielding a carbon matrix retaining original fibrous morphology with electrical conductivities ranging from 10² to 10⁶ Siemens per meter.",
+      "The provisional application defines a carbonaceous structural and electrical backbone made from hemp bast fibers pyrolyzed in an oxygen-depleted atmosphere. The temperatures, durations, gas composition, morphology, and conductivity below are application-defined ranges, not independently validated integrated-composite measurements.",
     specs: [
       ["Conductivity", "10² – 10⁶ S/m"],
       ["Fiber Diameter", "5 – 50 μm"],
@@ -34,7 +34,7 @@ export const TECH_CARDS = [
       "Claim 4: Fibrous morphology retained, fiber Ø 5–50 μm, length 0.5–20 mm, aspect >100:1",
     ],
     insight:
-      "Percolation threshold occurs at approximately 15% carbon content by volume. Above this threshold, conductivity jumps from less than 10 S/m to over 100 S/m as continuous conductive pathways form through the fiber network. This is the fundamental mechanism enabling the composite's electrical functionality.",
+      "The design premise is that a continuous carbon-fiber network can create conductive pathways after a percolation threshold is reached. The threshold and resulting conductivity must be measured for each formulation; this interface does not present those values as completed test results.",
   },
   {
     id: "crystals",
@@ -45,9 +45,9 @@ export const TECH_CARDS = [
     vol: "Multi-phase",
     claim: "Claim 15",
     short:
-      "Quartz SiO₂ (15–45%), tourmaline (3–25%), magnetite Fe₃O₄ (2–20%), rare-earth (0.3–10%).",
+      "Claimed multi-scale phase ranges for quartz, tourmaline, magnetite, and rare-earth-doped crystals.",
     overview:
-      "Four distinct crystalline phases are dispersed throughout the carbon matrix in a hierarchical microstructure spanning three length scales: millimeter-scale carbon fiber networks providing structural pathways, micrometer-scale quartz and rare-earth distributions at fiber interfaces, and nanometer-scale tourmaline and magnetite dispersions at grain boundaries and within the polymer binder.",
+      "The provisional application proposes four crystalline phases distributed through a carbon matrix across millimeter, micrometer, and nanometer scales. This is a claimed architecture awaiting fabrication, microscopy, and integrated performance validation.",
     specs: [
       ["Quartz (SiO₂)", "15–45 vol%, 0.5–100 μm"],
       ["Tourmaline (Schorl)", "3–25 vol%, 50–500 nm"],
@@ -62,7 +62,7 @@ export const TECH_CARDS = [
       "Claim 15: Hierarchical microstructure with mm/μm/nm-scale distributions",
     ],
     insight:
-      "At the millimeter scale, hemp-derived carbon fibers form the load-bearing and conduction backbone. At the micrometer scale, quartz and rare-earth particles sit at fiber interfaces. At the nanometer scale, tourmaline and magnetite fill grain boundaries and binder regions. This three-scale architecture is what enables multi-functional performance.",
+      "The proposed hierarchy assigns structural and conductive roles to the carbon fibers and functional roles to particles at interfaces and grain boundaries. Whether those distributions produce the intended multifunctional response remains a testable research question.",
   },
   {
     id: "harvest",
@@ -70,12 +70,12 @@ export const TECH_CARDS = [
     title: "Multi-Modal Harvesting",
     color: "#e8c44a",
     colorName: "gold",
-    vol: "80–800 μW/cm²",
+    vol: "Claimed 80–800 μW/cm²",
     claim: "Claim 6",
     short:
-      "Simultaneous piezoelectric + thermoelectric + spin-Seebeck. Combined output at 250–350 K.",
+      "Application target: combine piezoelectric, thermoelectric, and spin-Seebeck mechanisms in one material.",
     overview:
-      "The composite harvests energy through three simultaneous mechanisms: (1) piezoelectric conversion from quartz and tourmaline under mechanical stress generating 50–500 μW/cm², (2) thermoelectric conversion from carbon-crystal interfaces with ZT of 1.0–2.5, and (3) spin-Seebeck effect from magnetite nanoparticles adding 40–60% additional thermal conversion.",
+      "The provisional application proposes three simultaneous mechanisms: piezoelectric conversion, thermoelectric conversion at carbon-crystal interfaces, and spin-Seebeck enhancement from magnetite. The numerical ranges below are claimed design targets and require integrated-device measurement.",
     specs: [
       ["Piezoelectric", "50–500 μW/cm²"],
       ["Stress Range", "10–100 MPa cyclic"],
@@ -92,7 +92,7 @@ export const TECH_CARDS = [
       "Claim 6(c): Combined 80–800 μW/cm² under simultaneous mechanical + thermal loading",
     ],
     insight:
-      "Under cyclic compressive stress, the quartz and tourmaline phases generate charge via the direct piezoelectric effect. Simultaneously, any thermal gradient across the composite drives both conventional Seebeck and spin-Seebeck currents through the magnetite-carbon network. All three mechanisms operate in parallel from the same material.",
+      "The research hypothesis is that mechanical stress and a thermal gradient could drive multiple conversion pathways in parallel. Demonstrating additive output, stable interfaces, and a useful net power budget is part of the validation program.",
     hasCharts: true,
   },
   {
@@ -101,20 +101,20 @@ export const TECH_CARDS = [
     title: "Quantum Sensing",
     color: "#ff7eb6",
     colorName: "pink",
-    vol: "T₂ > 500 ns",
+    vol: "Target T₂ 1–10 μs",
     claim: "Claim 7",
     short:
-      "Eu, Nd, Er, Yb, Ce in quartz host. Self-powered quantum sensors at room temperature.",
+      "Proposed rare-earth-doped quartz sensing centers with a room-temperature coherence target.",
     overview:
-      "Rare-earth doped crystalline particles embedded in the composite host quantum spin or optical centers that exhibit quantum coherence at or near room temperature. These centers are interrogated by a quantum readout circuit using optical excitation, microwave, or radio-frequency control fields. Because the composite itself harvests energy, the quantum sensors are entirely self-powered.",
+      "The provisional application proposes rare-earth-doped crystalline particles as quantum spin or optical centers, interrogated through optical, microwave, or radio-frequency control. Room-temperature coherence and operation from energy harvested by the same composite are hypotheses, not demonstrated system performance.",
     specs: [
       ["Dopants", "Eu³⁺, Nd³⁺, Er³⁺, Yb³⁺, Ce³⁺"],
       ["Host Matrix", "Quartz (SiO₂)"],
       ["Dopant Concentration", "0.1–5 atomic %"],
-      ["Coherence Time T₂", "> 500 ns (target 1–10 μs)"],
-      ["Operating Temp", "Room temperature (300K)"],
+      ["Coherence Hypothesis", "> 500 ns at 300K"],
+      ["Application Target", "T₂ of 1–10 μs"],
       ["Sensing Targets", "Magnetic field, temperature, strain"],
-      ["Self-Powered", "Yes — energy from same composite"],
+      ["Self-Power Goal", "Energy from same composite"],
     ],
     claims: [
       "Claim 7: Quantum spin coherence T₂ of 1–10 μs at room temperature",
@@ -122,7 +122,7 @@ export const TECH_CARDS = [
       "Claim 24: Device with quantum readout circuit measuring magnetic field, temp, or strain",
     ],
     insight:
-      "Europium ions substituted into the quartz lattice at controlled concentrations create optically addressable quantum centers. Under optical pumping, these centers exhibit spin coherence that is sensitive to local magnetic fields, temperature shifts, and mechanical strain — enabling quantum-limited sensing powered by the composite's own energy harvesting.",
+      "Rare-earth ions in a crystal host are candidate addressable centers whose response may be sensitive to magnetic field, temperature, and strain. The proposed host, coherence window, readout method, and self-power budget all require experimental validation in the integrated material.",
   },
 ];
 
@@ -130,37 +130,37 @@ export const MFG_STEPS = [
   {
     n: "710",
     t: "Fiber Preparation",
-    d: "Source, clean, and cut industrial hemp bast fibers. Pre-condition for optimal pyrolysis. Select hemp varieties with high cellulose and lignin content for maximum carbon yield and fiber quality.",
+    d: "The application process begins by sourcing, cleaning, cutting, and pre-conditioning industrial hemp bast fibers. Feedstock selection and its effect on carbon yield and fiber quality require controlled characterization.",
   },
   {
     n: "720",
     t: "Pyrolysis",
-    d: "Heat hemp fibers to 700–1400°C in oxygen-depleted atmosphere (nitrogen, argon, or forming gas: 90–98% N₂ + 2–10% H₂) for 0.5–6 hours. This produces a carbonaceous matrix retaining the original fibrous morphology with electrical conductivities of 10²–10⁶ S/m.",
+    d: "The application specifies heating hemp fibers to 700–1400°C in an oxygen-depleted atmosphere for 0.5–6 hours. Retained morphology and conductivity of 10²–10⁶ S/m are claimed outcomes to be measured for each process window.",
   },
   {
     n: "730",
     t: "Crystal Synthesis",
-    d: "Prepare or procure: quartz microcrystals via sol-gel or hydrothermal methods, tourmaline and magnetite nanoparticles, and rare-earth doped crystals (e.g., europium-doped quartz synthesized by hydrolyzing TEOS with europium nitrate, then calcining at 1100–1200°C).",
+    d: "The proposed method prepares or procures quartz microcrystals, tourmaline and magnetite nanoparticles, and rare-earth-doped crystals. Phase identity, dopant concentration, and reproducibility require analytical verification.",
   },
   {
     n: "740",
     t: "Dispersion",
-    d: "Disperse the carbonaceous matrix and all crystalline particles in a solvent (water, ethanol, isopropanol, or NMP) with a surfactant or polymeric dispersing agent. Apply ultrasonication at 20–40 kHz frequency and 100–1000 watts power for 15–60 minutes to de-agglomerate particles and achieve homogeneous dispersion.",
+    d: "The application proposes solvent dispersion with a compatible surfactant or polymeric agent, followed by ultrasonication within stated frequency, power, and duration windows. Homogeneity must be confirmed by microscopy and sampling.",
   },
   {
     n: "750",
     t: "Binder Addition",
-    d: "Introduce polymer binder (epoxy resin, polyimide, silicone elastomer, or polyurethane at 5–30% by weight) into the dispersed mixture. Mechanical stirring and/or additional ultrasonication ensures uniform distribution. Degass the composite precursor mixture under vacuum to remove trapped air and solvent bubbles.",
+    d: "The proposed process introduces a polymer binder at an application-defined weight fraction, mixes the precursor, and degasses it under vacuum. Uniformity, residual solvent, and void fraction remain process-control measurements.",
   },
   {
     n: "760",
     t: "Forming & Curing",
-    d: "Form the degassed mixture into desired geometry — panels, tiles, films, or flexible strips — via casting, molding, extrusion, or other forming processes. Cure or consolidate through heat curing, room-temperature curing, pressure consolidation, or a combination thereof to yield the final composite material.",
+    d: "The application contemplates casting, molding, extrusion, and multiple curing or consolidation paths for panels, tiles, films, or flexible strips. Geometry-specific process parameters require validation.",
   },
   {
     n: "770",
     t: "QC & Electrodes",
-    d: "Machine to final dimensions. Attach electrodes of conductive metals (copper, silver, aluminum) or conductive coatings (graphene, carbon-based) to opposing surfaces. Test electrical conductivity, piezoelectric response, thermoelectric performance, and mechanical properties. If QC fails, rework formulation at step 740.",
+    d: "The proposed final stage adds electrodes and measures electrical, piezoelectric, thermoelectric, and mechanical behavior. Acceptance criteria and rework rules must be established from reproducible experimental data.",
   },
 ];
 
@@ -169,31 +169,31 @@ export const APPS = [
     icon: "⬡",
     t: "Energy Harvesting Tiles",
     cl: "Claims 19, 20, 22",
-    d: "Floor tiles with active composite layer, electrodes, and protective layers. Installed in buildings where foot traffic and ambient thermal gradients generate energy to power local sensors, lighting, or wireless nodes. Panel area: 10–400 cm².",
+    d: "Proposed floor-tile architecture with a composite layer, electrodes, protective layers, and energy management. Claims 19, 20, and 22 define a 10–400 cm² panel intended to harvest foot traffic and thermal gradients; delivered power remains to be measured.",
   },
   {
     icon: "◎",
     t: "Wearable Devices",
     cl: "Claims 11b, 23",
-    d: "Composite integrated into flexible bands or garments. Silicone elastomer binder provides >50% elongation at break for comfort. Harvests body motion and heat to power wearable sensors or communication modules.",
+    d: "Proposed integration into flexible bands or garments using an elastomeric binder. Harvesting body motion and heat to support a wearable load is an application goal, not a demonstrated device result.",
   },
   {
     icon: "△",
     t: "Structural Health Monitoring",
     cl: "Claim 25",
-    d: "Composite bonded to or embedded within bridge girders, building beams, pipelines, or roadways. Harvests vibrations and thermal cycling while providing strain and magnetic field sensing. No external cables or battery replacement needed.",
+    d: "Claim 25 proposes bonding or embedding the composite in infrastructure for vibration and thermal harvesting alongside sensing. Cable-free and battery-free operation depends on a validated energy budget and field testing.",
   },
   {
     icon: "◇",
-    t: "Self-Powered Quantum Sensors",
+    t: "Proposed Self-Powered Quantum Sensors",
     cl: "Claim 24",
-    d: "Rare-earth doped regions define quantum sensing zones. A quantum readout circuit interrogates these regions to measure magnetic field, temperature, or strain — all powered by energy harvested from the same composite.",
+    d: "Claim 24 proposes rare-earth-doped sensing zones and a readout circuit for magnetic field, temperature, or strain. Room-temperature coherence and same-composite power remain unvalidated targets.",
   },
   {
     icon: "⊡",
     t: "Wireless IoT Nodes",
     cl: "Claim 21",
-    d: "Complete battery-free sensor nodes: sensor + microcontroller + wireless communication module. Powered entirely by the composite. Transmits structural health data without external power cables or battery replacement.",
+    d: "Claim 21 proposes a sensor, microcontroller, and wireless transmitter supported by the composite. Battery-free operation is contingent on measured harvesting output, storage losses, duty cycle, and load demand.",
   },
 ];
 
@@ -207,7 +207,7 @@ export const CLAIMS = {
     "6. Performance: (a) piezoelectric 50–500 μW/cm², (b) ZT 1.0–2.5 at 250–350K, (c) combined 80–800 μW/cm²",
     "7. Quantum spin coherence time T₂ of 1–10 microseconds at room temperature",
     "8. Mechanical: tensile strength 30–200 MPa, Young's modulus 3–40 GPa, elongation 1–8%",
-    "9. Carbon-negative production: net sequestration >0.5 tons CO₂ per ton composite produced",
+    "9. Application claim: carbon-negative production with net sequestration >0.5 tons CO₂ per ton composite; lifecycle validation pending",
     "10–11. Binder: epoxy resin for rigid applications, silicone elastomer for flexible wearable applications",
     "12. Magnetite nanoparticles form percolating network enhancing conductivity and spin-Seebeck response",
     "13. Tourmaline is black tourmaline (schorl), 50–500 nm particle size, present at 5–15 vol%",
@@ -235,7 +235,7 @@ export const COMPOSITION = [
     m: "q",
     n: "Hemp-Carbon Matrix",
     p: "40–70 vol%",
-    d: "Structural backbone. Pyrolyzed at 700–1400°C. Fiber Ø 5–50 μm. Conductivity 10²–10⁶ S/m. Carbon-negative feedstock.",
+    d: "Claimed structural backbone: pyrolysis at 700–1400°C, fiber Ø 5–50 μm, and conductivity 10²–10⁶ S/m. Hemp is a bio-derived feedstock; lifecycle impact is not yet quantified.",
     w: 60,
     c: "#f0e8d8",
   },
@@ -267,7 +267,7 @@ export const COMPOSITION = [
     m: "c",
     n: "Rare-Earth Crystals",
     p: "0.3–10 vol%",
-    d: "Europium/neodymium-doped quartz at 0.1–5 atomic percent. Quantum spin coherence T₂ >500 ns at 300K for sensing.",
+    d: "Proposed europium/neodymium-doped quartz at 0.1–5 atomic percent, with a coherence hypothesis above 500 ns at 300K. Not yet confirmed in the integrated composite.",
     w: 6,
     c: "#ff7eb6",
   },
@@ -286,61 +286,34 @@ export const ORBITAL_NODES = [
   { a: 324, r: 33, c: "#ff7eb6", m: "c" },
 ];
 
-export const PIEZO_DATA = [
-  [0, 0, "0V @ 0 MPa"],
-  [0.1, 0.8, "0.8V @ 10"],
-  [0.2, 2.2, "2.2V @ 20"],
-  [0.3, 3.5, "3.5V @ 30"],
-  [0.4, 5.5, "5.5V @ 40"],
-  [0.5, 7.8, "7.8V @ 50"],
-  [0.6, 9.5, "9.5V @ 60"],
-  [0.7, 11, "11V @ 70"],
-  [0.8, 12.5, "12.5V @ 80"],
-  [0.9, 14, "14V @ 90"],
-  [1, 15, "15V @ 100"],
-] as const;
-
-export const ZT_DATA = [
-  [0, 0.95, "ZT 0.95 @ 250K"],
-  [0.125, 1.05, "ZT 1.05 @ 275K"],
-  [0.25, 1.15, "ZT 1.15 @ 300K"],
-  [0.375, 1.35, "ZT 1.35 @ 325K"],
-  [0.5, 1.55, "ZT 1.55 @ 350K"],
-  [0.625, 1.75, "ZT 1.75 @ 375K"],
-  [0.75, 1.9, "ZT 1.9 @ 400K"],
-  [0.875, 2.05, "ZT 2.05 @ 425K"],
-  [1, 2.2, "ZT 2.2 @ 450K"],
-] as const;
-
-export const ZT_REF = [
-  [0, 0.12],
-  [0.25, 0.18],
-  [0.5, 0.24],
-  [0.75, 0.32],
-  [1, 0.4],
-] as const;
-
 export const IMAGES = {
-  hero: "https://d2xsxph8kpxj0f.cloudfront.net/310419663029216973/6A6PRiSc2SBdMKdQGVopRa/hero-bg-C5xwpUWTF6pTR9o6HLbCm5.webp",
-  crystal:
-    "https://d2xsxph8kpxj0f.cloudfront.net/310419663029216973/6A6PRiSc2SBdMKdQGVopRa/crystal-structure-K4PL8jwohk8roJbj9shQ2A.webp",
-  energy:
-    "https://d2xsxph8kpxj0f.cloudfront.net/310419663029216973/6A6PRiSc2SBdMKdQGVopRa/energy-harvest-PNBq2sGEGtqLx4VHNfzbvQ.webp",
-  quantum:
-    "https://d2xsxph8kpxj0f.cloudfront.net/310419663029216973/6A6PRiSc2SBdMKdQGVopRa/quantum-sense-ZraQQjnwG6Xiy9vaPamEwB.webp",
-  hemp: "https://d2xsxph8kpxj0f.cloudfront.net/310419663029216973/6A6PRiSc2SBdMKdQGVopRa/hemp-carbon-XqwmAz4AyBgZgmkGUnrUBH.webp",
+  hero: "/images/tamerian/hero-material-architecture.svg",
+  crystal: "/images/tamerian/crystalline-phases.svg",
+  energy: "/images/tamerian/energy-harvesting-concept.svg",
+  quantum: "/images/tamerian/quantum-sensing-hypothesis.svg",
+  hemp: "/images/tamerian/hemp-carbon-matrix.svg",
 };
 
 export const STATS = [
   {
     value: "40–70",
     suffix: "%",
-    label: "Hemp-Carbon by Vol",
+    label: "Claimed Hemp-Carbon Vol",
     countFrom: 40,
     countTo: 70,
   },
-  { value: "10²–10⁶", suffix: "", label: "S/m Conductivity", isStatic: true },
+  {
+    value: "10²–10⁶",
+    suffix: "",
+    label: "Claimed S/m Range",
+    isStatic: true,
+  },
   { value: "25", suffix: "", label: "Patent Claims", countTo: 25 },
   { value: "5", suffix: "", label: "Crystal Systems", countTo: 5 },
-  { value: ">0.5", suffix: "", label: "t CO₂/Ton Sequestered", isStatic: true },
+  {
+    value: ">0.5",
+    suffix: "",
+    label: "LCA Target · Unverified",
+    isStatic: true,
+  },
 ];

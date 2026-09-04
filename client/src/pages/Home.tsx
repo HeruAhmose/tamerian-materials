@@ -119,7 +119,7 @@ function HeroSection() {
           className="flex items-center gap-2.5 mb-6"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 4.2 }}
+          transition={{ duration: 0.8, delay: 0.15 }}
         >
           <span
             className="w-2 h-2 rounded-full inline-block animate-pulse"
@@ -140,7 +140,7 @@ function HeroSection() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 0.01, delay: 4.3 }}
+          transition={{ duration: 0.01, delay: 0.2 }}
         >
           <h1
             className="text-5xl md:text-6xl lg:text-[5.5rem] font-bold leading-[1.06] mb-6"
@@ -149,7 +149,7 @@ function HeroSection() {
             <TextReveal
               text="Where Carbon"
               style={{ color: "var(--qg)" }}
-              delay={4.4}
+              delay={0.25}
               stagger={0.03}
               force
             />
@@ -157,13 +157,13 @@ function HeroSection() {
             <TextReveal
               text="Meets "
               style={{ color: "var(--qg)" }}
-              delay={4.7}
+              delay={0.45}
               stagger={0.03}
               force
             />
             <TextReveal
               text="Crystal"
-              delay={4.9}
+              delay={0.65}
               stagger={0.04}
               force
               style={{ fontStyle: "italic" }}
@@ -183,12 +183,12 @@ function HeroSection() {
           style={{ color: "var(--t2)" }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 5.5 }}
+          transition={{ duration: 1, delay: 0.85 }}
         >
-          Hemp-derived carbon matrices with embedded piezoelectric,
-          thermoelectric, magnetic, and quantum-active crystalline phases — a
-          single composite for simultaneous energy harvesting and
-          room-temperature quantum sensing.
+          Bio-derived multifunctional composites for self-powered sensing — a
+          patent-pending research direction combining hemp-derived carbon with
+          functional crystalline phases. Integrated performance remains to be
+          experimentally validated.
         </motion.p>
 
         {/* Buttons */}
@@ -196,7 +196,7 @@ function HeroSection() {
           className="flex gap-4 flex-wrap"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 5.8 }}
+          transition={{ duration: 1, delay: 1.05 }}
         >
           <motion.a
             href="#tech"
@@ -254,7 +254,7 @@ function HeroSection() {
         className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 5.8, duration: 1 }}
+        transition={{ delay: 1.2, duration: 1 }}
       >
         <span
           className="text-[0.6rem] tracking-[0.2em] uppercase"
@@ -433,7 +433,7 @@ function TechSection({ onCardClick }: { onCardClick: (idx: number) => void }) {
       id="tech"
       eyebrow="Core Innovation"
       title="Four Technologies, One Material"
-      subtitle="Click any card to explore specs, patent claims, and performance data."
+      subtitle="Explore the application-defined architecture and target ranges. These are patent claims and research hypotheses, not completed integrated-composite results."
       dark
     >
       <FloatingElements count={4} color="#45e8d8" type="hex" />
@@ -531,7 +531,7 @@ function TechCard({
                       ? IMAGES.energy
                       : IMAGES.quantum
               }
-              alt={`${card.title} visualization`}
+              alt={`${card.title} concept illustration`}
               className="w-full h-full object-cover"
               style={{ opacity: hovered ? 0.78 : 0.58 }}
               animate={{ scale: hovered ? 1.04 : 1 }}
@@ -653,7 +653,7 @@ function CompositionSection() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#45e8d8]/80">
-                  MATERIAL ATLAS /// LIVE PHASE MAP
+                  MATERIAL ATLAS /// INTERACTIVE PHASE MAP
                 </p>
                 <h3 className="mt-2 font-serif text-2xl font-semibold text-white md:text-3xl">
                   {selected?.n}
@@ -811,8 +811,8 @@ function EnergySection() {
     <Section
       id="energy"
       eyebrow="Energy Harvesting — Claim 6"
-      title="Three Conversion Modes"
-      subtitle="Hover chart data points for exact values."
+      title="Three Proposed Conversion Modes"
+      subtitle="Application targets and illustrative design envelopes — not measured performance data."
       dark
     >
       <FloatingElements count={4} color="#e8c44a" type="dot" />
@@ -827,7 +827,7 @@ function EnergySection() {
       >
         <motion.img
           src={IMAGES.energy}
-          alt="Energy harvesting visualization"
+          alt="Energy harvesting concept illustration"
           className="w-full h-full object-cover"
           style={{ opacity: 0.4 }}
           whileInView={{ scale: [1.05, 1] }}
@@ -856,26 +856,26 @@ function EnergySection() {
           {
             icon: "⚡",
             title: "Piezoelectric",
-            range: "50–500 μW/cm²",
-            desc: "Quartz + tourmaline under 10–100 MPa cyclic stress at 0.1–100 Hz",
+            range: "Claimed 50–500 μW/cm²",
+            desc: "Application target for quartz + tourmaline under specified cyclic stress",
             color: "#45e8d8",
-            detail: "d₃₃ ~2.3–10 pC/N",
+            detail: "INTEGRATED TEST PENDING",
           },
           {
             icon: "🔥",
             title: "Thermoelectric",
-            range: "ZT 1.0–2.5",
-            desc: "Carbon-crystal interfaces at 250–350K with spin-Seebeck enhancement",
+            range: "Claimed ZT 1.0–2.5",
+            desc: "Application target for carbon-crystal interfaces at 250–350 K",
             color: "#a485ff",
-            detail: "5–10× Bi₂Te₃",
+            detail: "INTEGRATED TEST PENDING",
           },
           {
             icon: "🧲",
             title: "Spin-Seebeck",
-            range: "+40–60%",
-            desc: "Magnetite nanoparticle network adds thermal conversion beyond conventional",
+            range: "Claimed +40–60%",
+            desc: "Proposed magnetite-network contribution to thermal conversion",
             color: "#e8c44a",
-            detail: "Fe₃O₄ 10–200nm",
+            detail: "INTEGRATED TEST PENDING",
           },
         ].map((mech, i) => (
           <motion.div
@@ -944,15 +944,15 @@ function EnergySection() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <ChartBox
-          title="Piezoelectric — Claim 6(a)"
+          title="Illustrative Piezoelectric Envelope — Claim 6(a)"
           color="#45e8d8"
-          note="Formulation D (30% quartz, 15% tourmaline, optimized)"
+          note="Concept curve only. No formulation-specific voltage series is represented as measured."
           type="piezo"
         />
         <ChartBox
-          title="Thermoelectric — Claim 6(b)"
+          title="Illustrative Thermoelectric Envelope — Claim 6(b)"
           color="#a485ff"
-          note="12% magnetite optimized vs Bi₂Te₃ reference"
+          note="Concept curve only. Comparative ZT performance remains to be measured independently."
           type="thermo"
         />
       </div>
@@ -987,10 +987,10 @@ function EnergySection() {
               color: "var(--qg)",
             }}
           >
-            Combined Output — Claim 6(c)
+            Combined Output Target — Claim 6(c)
           </h3>
           <p className="text-base" style={{ color: "var(--t2)" }}>
-            Simultaneous mechanical + thermal loading
+            Application range; integrated measurement pending
           </p>
         </div>
         <div className="text-right">
@@ -1012,7 +1012,7 @@ function EnergySection() {
               color: "var(--t3)",
             }}
           >
-            μW/cm² Combined
+            μW/cm² Claimed Range
           </div>
         </div>
       </motion.div>
@@ -1174,6 +1174,18 @@ function ChartBox({
         {title}
       </h4>
 
+      <div
+        className="mb-3 inline-flex border px-2 py-1 text-[0.52rem] font-semibold uppercase tracking-[0.12em]"
+        style={{
+          fontFamily: "'JetBrains Mono', monospace",
+          color,
+          borderColor: `${color}40`,
+          background: `${color}08`,
+        }}
+      >
+        Illustrative · Not measured data
+      </div>
+
       <div className="relative">
         <svg viewBox={`0 0 ${w} ${h}`} className="w-full">
           {/* Y label */}
@@ -1261,7 +1273,7 @@ function ChartBox({
                 fontSize="7"
                 fontWeight="500"
               >
-                Bi₂Te₃ ref
+                Illustrative reference
               </text>
             </>
           )}
@@ -1370,7 +1382,7 @@ function ManufacturingSection() {
       id="mfg"
       eyebrow="Manufacturing — Claim 16"
       title="Seven Controlled Transformations"
-      subtitle="Manufacturing is presented as a state-changing process chain: feedstock becomes conductive architecture, crystals become functional phases, and the composite becomes a qualified device material."
+      subtitle="The provisional application defines this proposed process chain. Process windows, repeatability, safety, and resulting material performance require experimental qualification."
     >
       <div
         className="grid gap-7 lg:grid-cols-[.72fr_1.28fr]"
@@ -1557,7 +1569,7 @@ function QuantumSection() {
     <Section
       id="quantum"
       eyebrow="Quantum Sensing — Claim 7"
-      title="Room-Temperature Quantum Coherence"
+      title="Room-Temperature Coherence Hypothesis"
     >
       <FloatingElements count={6} color="#ff7eb6" type="ring" />
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-10 mt-8 items-center">
@@ -1571,7 +1583,7 @@ function QuantumSection() {
         >
           <motion.img
             src={IMAGES.quantum}
-            alt="Rare-earth quantum sensing visualization"
+            alt="Rare-earth sensing hypothesis illustration"
             className="w-full h-full object-cover"
             style={{ opacity: 0.7 }}
             whileInView={{ scale: [1.05, 1] }}
@@ -1590,7 +1602,12 @@ function QuantumSection() {
             { label: "Eu³⁺", top: "18%", left: "22%", color: "#ff7eb6" },
             { label: "Nd³⁺", top: "32%", left: "68%", color: "#a485ff" },
             { label: "Er³⁺", top: "58%", left: "38%", color: "#45e8d8" },
-            { label: "T₂ > 500ns", top: "76%", left: "56%", color: "#e8c44a" },
+            {
+              label: "T₂ hypothesis >500ns",
+              top: "76%",
+              left: "48%",
+              color: "#e8c44a",
+            },
           ].map((item, i) => (
             <motion.div
               key={i}
@@ -1638,11 +1655,11 @@ function QuantumSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            Rare-earth doped crystalline particles embedded in the composite
-            host quantum spin centers that exhibit coherence at room
-            temperature. Because the composite itself harvests energy, the
-            quantum sensors are entirely self-powered — no external batteries or
-            cables required.
+            The application proposes rare-earth-doped crystalline particles as
+            candidate sensing centers in the composite. Room-temperature
+            coherence above 500 ns, a 1–10 μs target window, and operation from
+            energy harvested by the same material all require experimental
+            validation.
           </motion.p>
 
           {/* Specs grid */}
@@ -1650,10 +1667,10 @@ function QuantumSection() {
             {[
               { label: "Dopants", value: "Eu³⁺, Nd³⁺, Er³⁺, Yb³⁺, Ce³⁺" },
               { label: "Host Matrix", value: "Quartz (SiO₂)" },
-              { label: "Coherence T₂", value: "> 500 ns (target 1–10 μs)" },
-              { label: "Operating Temp", value: "Room Temperature (300K)" },
-              { label: "Self-Powered", value: "Yes — same composite" },
-              { label: "Sensing", value: "Magnetic, Temp, Strain" },
+              { label: "Coherence Hypothesis", value: "> 500 ns at 300 K" },
+              { label: "Application Target", value: "T₂ of 1–10 μs" },
+              { label: "Self-Power Goal", value: "Same composite" },
+              { label: "Proposed Sensing", value: "Magnetic, Temp, Strain" },
             ].map((spec, i) => (
               <motion.div
                 key={i}
@@ -1699,11 +1716,10 @@ function QuantumSection() {
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
           >
-            Europium ions substituted into the quartz lattice create optically
-            addressable quantum centers. Under optical pumping, these centers
-            exhibit spin coherence sensitive to local magnetic fields,
-            temperature shifts, and mechanical strain — enabling quantum-limited
-            sensing powered by the composite's own energy harvesting.
+            Rare-earth ions in a crystal host are candidate addressable centers
+            whose response may be sensitive to magnetic field, temperature, and
+            strain. The proposed host, readout path, coherence window, and
+            self-power budget are part of the validation program.
           </motion.div>
         </div>
       </div>
@@ -1721,7 +1737,7 @@ function ApplicationsSection() {
       id="apps"
       eyebrow="Applications — Claims 19–25"
       title="From Material System to Device Architecture"
-      subtitle="The composite is not presented as a generic material catalog. Each application is framed as a distinct device topology with a different load, environment, and sensing or energy role."
+      subtitle="Each application is a claimed device concept with a distinct load, environment, and sensing or energy role. None is represented here as a fielded product."
     >
       <div
         className="grid gap-7 lg:grid-cols-[1.12fr_.88fr]"
@@ -1890,7 +1906,7 @@ function PatentsSection() {
       id="ip"
       eyebrow="Intellectual Property"
       title="25 Claims, Patent Pending"
-      subtitle="Expand each category below to read every claim."
+      subtitle="Expand each category to read the provisional application's claims. A filed claim is not evidence of achieved performance."
     >
       {/* Patent cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mt-8">
@@ -1916,7 +1932,7 @@ function PatentsSection() {
               background: "rgba(69,232,216,0.06)",
             }}
           >
-            USPTO Filed
+            USPTO Provisional Filed
           </span>
           <h3
             className="text-lg font-semibold leading-[1.35] mb-3"
@@ -2170,10 +2186,10 @@ function AboutSection() {
               text: "Jonathan Peoples brings U.S. Navy service (Operation Enduring Freedom), IT, and cybersecurity — currently in cohort for CompTIA Security+ alongside materials science research. He applies operational discipline to rational composite design.",
             },
             {
-              text: "His research produced patent application No. 63/934,269 — 25 claims with no prior art combining all four technologies, validated across 51 peer-reviewed papers.",
+              text: "His research produced provisional application No. 63/934,269 with 25 claims. Fifty-one peer-reviewed papers inform constituent mechanisms; they do not validate the integrated Tamerian composite.",
             },
             {
-              text: "Every Tamerian composite starts carbon-negative. Hemp sequesters CO₂ during growth; the composite locks it into stable material with net sequestration exceeding 0.5 tons CO₂ per ton produced.",
+              text: "Hemp growth supports a carbon-negative design direction. Net product sequestration, processing emissions, service life, and end-of-life impacts must be established through a measured lifecycle assessment.",
             },
           ].map((p, i) => (
             <motion.p
