@@ -26,7 +26,7 @@ class SoundEngine {
   private masterGain: GainNode | null = null;
   private ambientOsc: OscillatorNode | null = null;
   private ambientGain: GainNode | null = null;
-  private _muted = false;
+  private _muted = true;
   private _initialized = false;
   private _volume = 0.35;
 
@@ -43,7 +43,7 @@ class SoundEngine {
     try {
       this.ctx = new AudioContext();
       this.masterGain = this.ctx.createGain();
-      this.masterGain.gain.value = this._volume;
+      this.masterGain.gain.value = this._muted ? 0 : this._volume;
       this.masterGain.connect(this.ctx.destination);
       this._initialized = true;
     } catch {

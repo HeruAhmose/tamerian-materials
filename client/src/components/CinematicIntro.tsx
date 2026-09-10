@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useCallback, useState, useEffect, useRef } from "react";
 import { soundEngine } from "@/lib/soundEngine";
 
@@ -126,6 +126,7 @@ export default function CinematicIntro({
   const onCompleteRef = useRef(onComplete);
   const skipButtonRef = useRef<HTMLButtonElement>(null);
   const continueButtonRef = useRef<HTMLButtonElement>(null);
+  const shouldReduceMotion = useReducedMotion();
   onCompleteRef.current = onComplete;
 
   const completeIntro = useCallback(() => {
@@ -158,6 +159,12 @@ export default function CinematicIntro({
   }, [completeIntro, phase]);
 
   useEffect(() => {
+    if (shouldReduceMotion) {
+      setShow(false);
+      onCompleteRef.current();
+      return;
+    }
+
     try {
       if (window.sessionStorage.getItem(INTRO_SESSION_KEY) === "true") {
         setShow(false);
@@ -168,29 +175,10 @@ export default function CinematicIntro({
       // Continue with the intro when session storage is unavailable.
     }
 
-    // Initialize sound on first interaction during intro
-    const initAndPlay = async () => {
-      await soundEngine.init();
-      soundEngine.play("intro_rumble");
-    };
-
-    // Try to init sound immediately (may need user gesture)
-    const handleInteraction = () => {
-      initAndPlay();
-      window.removeEventListener("click", handleInteraction);
-      window.removeEventListener("touchstart", handleInteraction);
-    };
-    window.addEventListener("click", handleInteraction);
-    window.addEventListener("touchstart", handleInteraction);
-
-    // Also try immediately
-    initAndPlay().catch(() => {});
-
-    return () => {
-      window.removeEventListener("click", handleInteraction);
-      window.removeEventListener("touchstart", handleInteraction);
-    };
-  }, []);
+    // Sound remains dormant throughout the cinematic introduction.
+    // The dedicated sound control is the only authority allowed to create
+    // and enable Web Audio for this session.
+  }, [shouldReduceMotion]);
 
   useEffect(() => {
     if (!show) return;
