@@ -58,7 +58,22 @@ p.write_text(s, encoding="utf-8")
 
 p = Path("client/src/components/CinematicIntro.tsx")
 s = p.read_text(encoding="utf-8")
-old_intro = """    // Initialize sound on first interaction during intro
+s = s.replace(
+    'import { motion, AnimatePresence } from "framer-motion";',
+    'import { motion, AnimatePresence, useReducedMotion } from "framer-motion";',
+    1,
+)
+s = s.replace(
+    "  const continueButtonRef = useRef<HTMLButtonElement>(null);\n  onCompleteRef.current = onComplete;",
+    "  const continueButtonRef = useRef<HTMLButtonElement>(null);\n  const shouldReduceMotion = useReducedMotion();\n  onCompleteRef.current = onComplete;",
+    1,
+)
+s = s.replace(
+    "  useEffect(() => {\n    try {\n      if (window.sessionStorage.getItem(INTRO_SESSION_KEY) === \"true\") {",
+    "  useEffect(() => {\n    if (shouldReduceMotion) {\n      setShow(false);\n      onCompleteRef.current();\n      return;\n    }\n\n    try {\n      if (window.sessionStorage.getItem(INTRO_SESSION_KEY) === \"true\") {",
+    1,
+)
+old_intro = """    // Initialize sound on first user interaction during intro
     const initAndPlay = async () => {
       await soundEngine.init();
       soundEngine.play(\"intro_rumble\");
@@ -88,6 +103,10 @@ new_intro = """    // Sound remains dormant throughout the cinematic introductio
 if old_intro not in s:
     raise SystemExit("CinematicIntro audio auto-init block not found")
 s = s.replace(old_intro, new_intro, 1)
+marker = new_intro + "  }, []);\n"
+if marker not in s:
+    raise SystemExit("CinematicIntro effect dependency marker not found")
+s = s.replace(marker, new_intro + "  }, [shouldReduceMotion]);\n", 1)
 p.write_text(s, encoding="utf-8")
 
 print("TAMERIAN_EXPERIENCE_PATCH=APPLIED")
