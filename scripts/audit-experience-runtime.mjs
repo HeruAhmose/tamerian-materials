@@ -139,7 +139,7 @@ try {
   }
 
   await cdp.eval(
-    `sessionStorage.setItem('tamerian-intro-complete-v1','1'); location.reload(); true`
+    `sessionStorage.setItem('tamerian-intro-complete-v1','true'); location.reload(); true`
   );
   await sleep(1400);
 
@@ -244,7 +244,7 @@ try {
   }))()`);
   if (
     !reduced.media ||
-    reduced.remembered !== "1" ||
+    reduced.remembered !== "true" ||
     reduced.sound !== "off" ||
     reduced.probe.contexts !== 0 ||
     reduced.probe.oscillators !== 0 ||
