@@ -18,6 +18,7 @@ replace_exact(
 p = Path("client/src/contexts/SoundContext.tsx")
 s = p.read_text(encoding="utf-8")
 s = s.replace("  useEffect,\n  useRef,\n", "")
+s = s.replace("  muted: false,\n  initialized: false,", "  muted: true,\n  initialized: false,")
 s = s.replace("  const [muted, setMuted] = useState(false);", "  const [muted, setMuted] = useState(true);")
 s = s.replace("  const initRef = useRef(false);\n\n", "")
 start = s.find("  // Initialize on first user interaction")
@@ -33,6 +34,7 @@ old = """  const toggleMute = useCallback(() => {
 new = """  const toggleMute = useCallback(() => {
     const activate = async () => {
       if (!soundEngine.initialized) await soundEngine.init();
+      setInitialized(soundEngine.initialized);
       const newMuted = soundEngine.toggleMute();
       setMuted(newMuted);
       if (!newMuted) soundEngine.play(\"click\");
@@ -52,6 +54,40 @@ s = s.replace(
     "      title={muted ? \"Unmute sounds\" : \"Mute sounds\"}\n",
     "      aria-label={!initialized ? \"Enable sounds\" : muted ? \"Enable sounds\" : \"Mute sounds\"}\n      aria-pressed={!muted}\n      data-tamerian-sound={muted ? \"off\" : \"on\"}\n      title={!initialized ? \"Enable sounds\" : muted ? \"Enable sounds\" : \"Mute sounds\"}\n",
 )
+p.write_text(s, encoding="utf-8")
+
+p = Path("client/src/components/CinematicIntro.tsx")
+s = p.read_text(encoding="utf-8")
+old_intro = """    // Initialize sound on first interaction during intro
+    const initAndPlay = async () => {
+      await soundEngine.init();
+      soundEngine.play(\"intro_rumble\");
+    };
+
+    // Try to init sound immediately (may need user gesture)
+    const handleInteraction = () => {
+      initAndPlay();
+      window.removeEventListener(\"click\", handleInteraction);
+      window.removeEventListener(\"touchstart\", handleInteraction);
+    };
+    window.addEventListener(\"click\", handleInteraction);
+    window.addEventListener(\"touchstart\", handleInteraction);
+
+    // Also try immediately
+    initAndPlay().catch(() => {});
+
+    return () => {
+      window.removeEventListener(\"click\", handleInteraction);
+      window.removeEventListener(\"touchstart\", handleInteraction);
+    };
+"""
+new_intro = """    // Sound remains dormant throughout the cinematic introduction.
+    // The dedicated sound control is the only authority allowed to create
+    // and enable Web Audio for this session.
+"""
+if old_intro not in s:
+    raise SystemExit("CinematicIntro audio auto-init block not found")
+s = s.replace(old_intro, new_intro, 1)
 p.write_text(s, encoding="utf-8")
 
 print("TAMERIAN_EXPERIENCE_PATCH=APPLIED")
