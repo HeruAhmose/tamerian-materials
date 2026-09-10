@@ -42,7 +42,7 @@ jobs:
       - name: Dependency audit
         run: pnpm audit --audit-level=high
       - name: Full CI
-        run: pnpm ci
+        run: pnpm run ci
       - name: Browser-certify explicit opt-in, SFX, mute, reduced motion, and favicon
         shell: bash
         run: |
