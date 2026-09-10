@@ -68,7 +68,8 @@ async function movePointerToHoverEnabledNavigation(cdp) {
     const rect = element.getBoundingClientRect();
     return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
   })()`);
-  if (!point) throw new Error("no visible Tamerian hover-enabled navigation target");
+  if (!point)
+    throw new Error("no visible Tamerian hover-enabled navigation target");
   await cdp.send("Input.dispatchMouseEvent", {
     type: "mouseMoved",
     x: point.x,
@@ -237,13 +238,17 @@ try {
   const reduced = await cdp.eval(`(() => ({
     media: matchMedia('(prefers-reduced-motion: reduce)').matches,
     remembered: sessionStorage.getItem('tamerian-intro-complete-v1'),
+    intro: !!document.querySelector('[aria-label="Tamerian cinematic introduction"]'),
+    introCanvas: !!document.querySelector('[aria-label="Tamerian cinematic introduction"] canvas'),
     sound: document.querySelector('[data-tamerian-sound]')?.dataset.tamerianSound,
     probe: window.__tmAudioProbe,
     overflow: Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth)
   }))()`);
   if (
     !reduced.media ||
-    reduced.remembered !== "true" ||
+    reduced.remembered !== null ||
+    reduced.intro ||
+    reduced.introCanvas ||
     reduced.sound !== "off" ||
     reduced.probe.contexts !== 0 ||
     reduced.probe.oscillators !== 0 ||
