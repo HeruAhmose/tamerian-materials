@@ -1,0 +1,56 @@
+name: Validate Tamerian experience runtime
+
+on:
+  push:
+    branches:
+      - fix/experience-runtime-20260910
+
+permissions:
+  contents: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86
+        with:
+          version: 11.22.0
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: "22"
+          cache: pnpm
+      - name: Apply exact repair
+        run: python3 scripts/apply-experience-runtime-repair.py
+      - name: Verify exact scope and source contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --check
+          changed="$(git diff --name-only | sort)"
+          expected=$'client/src/components/SoundToggle.tsx\nclient/src/contexts/SoundContext.tsx\nclient/src/lib/soundEngine.ts'
+          printf '%s\n' "$changed"
+          test "$changed" = "$expected"
+          grep -Fq 'private _muted = true;' client/src/lib/soundEngine.ts
+          grep -Fq 'data-tamerian-sound' client/src/components/SoundToggle.tsx
+          ! grep -Fq 'Initialize on first user interaction' client/src/contexts/SoundContext.tsx
+      - name: Install locked graph
+        run: pnpm install --frozen-lockfile
+      - name: Dependency audit
+        run: pnpm audit --audit-level=high
+      - name: Full CI
+        run: pnpm ci
+      - name: Browser-certify explicit opt-in, SFX, mute, reduced motion, and favicon
+        run: node scripts/audit-experience-runtime.mjs
+      - name: Commit verified production changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Heru_Ahmose'
+          git config user.email 'aitconsult22@gmail.com'
+          git add client/src/components/SoundToggle.tsx client/src/contexts/SoundContext.tsx client/src/lib/soundEngine.ts
+          git commit -m 'fix(experience): require explicit Tamerian audio opt-in'
+          git push origin HEAD:fix/experience-runtime-20260910
