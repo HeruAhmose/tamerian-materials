@@ -73,7 +73,7 @@ s = s.replace(
     "  useEffect(() => {\n    if (shouldReduceMotion) {\n      setShow(false);\n      onCompleteRef.current();\n      return;\n    }\n\n    try {\n      if (window.sessionStorage.getItem(INTRO_SESSION_KEY) === \"true\") {",
     1,
 )
-intro_audio_start = s.find("    // Initialize sound on first user interaction during intro")
+intro_audio_start = s.find("    // Initialize sound on first interaction during intro")
 intro_effect_close = s.find("  }, []);", intro_audio_start)
 if intro_audio_start < 0 or intro_effect_close < 0:
     raise SystemExit("CinematicIntro audio effect boundary not found")
