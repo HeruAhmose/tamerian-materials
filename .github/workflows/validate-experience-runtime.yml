@@ -31,16 +31,18 @@ jobs:
           set -euo pipefail
           git diff --check
           changed="$(git diff --name-only | sort)"
-          expected=$'client/src/components/SoundToggle.tsx\nclient/src/contexts/SoundContext.tsx\nclient/src/lib/soundEngine.ts'
+          expected=$'client/src/components/CinematicIntro.tsx\nclient/src/components/SoundToggle.tsx\nclient/src/contexts/SoundContext.tsx\nclient/src/lib/soundEngine.ts'
           printf '%s\n' "$changed"
           test "$changed" = "$expected"
           grep -Fq 'private _muted = true;' client/src/lib/soundEngine.ts
           grep -Fq 'data-tamerian-sound' client/src/components/SoundToggle.tsx
           ! grep -Fq 'Initialize on first user interaction' client/src/contexts/SoundContext.tsx
+          ! grep -Fq 'initAndPlay' client/src/components/CinematicIntro.tsx
+          ! grep -Fq 'soundEngine.init()' client/src/components/CinematicIntro.tsx
       - name: Install locked graph
         run: pnpm install --frozen-lockfile
       - name: Format permanent runtime repair
-        run: pnpm exec prettier --write client/src/components/SoundToggle.tsx client/src/contexts/SoundContext.tsx scripts/audit-experience-runtime.mjs
+        run: pnpm exec prettier --write client/src/components/CinematicIntro.tsx client/src/components/SoundToggle.tsx client/src/contexts/SoundContext.tsx scripts/audit-experience-runtime.mjs
       - name: Dependency audit
         run: pnpm audit --audit-level=high
       - name: Full CI
@@ -74,6 +76,6 @@ jobs:
           set -euo pipefail
           git config user.name 'Heru_Ahmose'
           git config user.email 'aitconsult22@gmail.com'
-          git add client/src/components/SoundToggle.tsx client/src/contexts/SoundContext.tsx client/src/lib/soundEngine.ts scripts/audit-experience-runtime.mjs
+          git add client/src/components/CinematicIntro.tsx client/src/components/SoundToggle.tsx client/src/contexts/SoundContext.tsx client/src/lib/soundEngine.ts scripts/audit-experience-runtime.mjs
           git commit -m 'fix(experience): require explicit Tamerian audio opt-in'
           git push origin HEAD:fix/experience-runtime-20260910
