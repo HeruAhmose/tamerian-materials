@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 
-const BASE = process.env.TAMERIAN_BASE_URL || "http://127.0.0.1:4188/";
-const CDP_HTTP = process.env.TAMERIAN_CDP_URL || "http://127.0.0.1:9238";
+const BASE = "http://127.0.0.1:4188/";
+const CDP_HTTP = "http://127.0.0.1:9238";
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 async function waitFor(url, attempts = 80) {
