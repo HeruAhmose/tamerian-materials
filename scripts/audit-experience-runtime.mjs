@@ -158,7 +158,9 @@ try {
     initial.pressed !== "false" ||
     initial.label !== "Enable sounds"
   ) {
-    throw new Error(`sound control not explicitly off: ${JSON.stringify(initial)}`);
+    throw new Error(
+      `sound control not explicitly off: ${JSON.stringify(initial)}`
+    );
   }
   if (initial.probe.contexts !== 0 || initial.probe.oscillators !== 0) {
     throw new Error(
@@ -184,7 +186,9 @@ try {
     enabled.probe.contexts < 1 ||
     enabled.probe.oscillators < 1
   ) {
-    throw new Error(`opt-in did not activate audio: ${JSON.stringify(enabled)}`);
+    throw new Error(
+      `opt-in did not activate audio: ${JSON.stringify(enabled)}`
+    );
   }
 
   const beforeHover = enabled.probe.oscillators;

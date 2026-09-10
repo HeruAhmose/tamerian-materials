@@ -7,8 +7,6 @@ import { useSound } from "@/contexts/SoundContext";
 export default function SoundToggle() {
   const { toggleMute, muted, initialized } = useSound();
 
-  if (!initialized) return null;
-
   return (
     <motion.button
       className="fixed bottom-6 left-6 z-50 w-10 h-10 flex items-center justify-center group"
@@ -25,7 +23,14 @@ export default function SoundToggle() {
         borderColor: "rgba(69,232,216,0.4)",
         boxShadow: "0 0 20px rgba(69,232,216,0.15)",
       }}
-      title={muted ? "Unmute sounds" : "Mute sounds"}
+      aria-label={
+        !initialized ? "Enable sounds" : muted ? "Enable sounds" : "Mute sounds"
+      }
+      aria-pressed={!muted}
+      data-tamerian-sound={muted ? "off" : "on"}
+      title={
+        !initialized ? "Enable sounds" : muted ? "Enable sounds" : "Mute sounds"
+      }
     >
       <AnimatePresence mode="wait">
         {muted ? (
