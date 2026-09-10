@@ -61,15 +61,14 @@ class CDP {
   }
 }
 
-async function movePointerToFirstNavigation(cdp) {
+async function movePointerToHoverEnabledNavigation(cdp) {
   const point = await cdp.eval(`(() => {
-    const element = [...document.querySelectorAll('nav a, header a')]
-      .find(item => item.getClientRects().length > 0);
-    if (!element) return null;
+    const element = document.querySelector('nav a[href="#tech"]');
+    if (!element || element.getClientRects().length === 0) return null;
     const rect = element.getBoundingClientRect();
     return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
   })()`);
-  if (!point) throw new Error("no visible Tamerian navigation target");
+  if (!point) throw new Error("no visible Tamerian hover-enabled navigation target");
   await cdp.send("Input.dispatchMouseEvent", {
     type: "mouseMoved",
     x: point.x,
@@ -188,7 +187,7 @@ try {
   }
 
   const beforeHover = enabled.probe.oscillators;
-  const hoverPoint = await movePointerToFirstNavigation(cdp);
+  const hoverPoint = await movePointerToHoverEnabledNavigation(cdp);
   await sleep(250);
   const afterHover = await cdp.eval(`window.__tmAudioProbe.oscillators`);
   if (afterHover <= beforeHover) {
