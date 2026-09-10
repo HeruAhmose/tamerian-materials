@@ -73,40 +73,23 @@ s = s.replace(
     "  useEffect(() => {\n    if (shouldReduceMotion) {\n      setShow(false);\n      onCompleteRef.current();\n      return;\n    }\n\n    try {\n      if (window.sessionStorage.getItem(INTRO_SESSION_KEY) === \"true\") {",
     1,
 )
-old_intro = """    // Initialize sound on first user interaction during intro
-    const initAndPlay = async () => {
-      await soundEngine.init();
-      soundEngine.play(\"intro_rumble\");
-    };
-
-    // Try to init sound immediately (may need user gesture)
-    const handleInteraction = () => {
-      initAndPlay();
-      window.removeEventListener(\"click\", handleInteraction);
-      window.removeEventListener(\"touchstart\", handleInteraction);
-    };
-    window.addEventListener(\"click\", handleInteraction);
-    window.addEventListener(\"touchstart\", handleInteraction);
-
-    // Also try immediately
-    initAndPlay().catch(() => {});
-
-    return () => {
-      window.removeEventListener(\"click\", handleInteraction);
-      window.removeEventListener(\"touchstart\", handleInteraction);
-    };
-"""
+intro_audio_start = s.find("    // Initialize sound on first user interaction during intro")
+intro_effect_close = s.find("  }, []);", intro_audio_start)
+if intro_audio_start < 0 or intro_effect_close < 0:
+    raise SystemExit("CinematicIntro audio effect boundary not found")
 new_intro = """    // Sound remains dormant throughout the cinematic introduction.
     // The dedicated sound control is the only authority allowed to create
     // and enable Web Audio for this session.
 """
-if old_intro not in s:
-    raise SystemExit("CinematicIntro audio auto-init block not found")
-s = s.replace(old_intro, new_intro, 1)
-marker = new_intro + "  }, []);\n"
-if marker not in s:
-    raise SystemExit("CinematicIntro effect dependency marker not found")
-s = s.replace(marker, new_intro + "  }, [shouldReduceMotion]);\n", 1)
+s = s[:intro_audio_start] + new_intro + s[intro_effect_close:]
+intro_effect_close = s.find("  }, []);", intro_audio_start)
+if intro_effect_close < 0:
+    raise SystemExit("CinematicIntro effect close not found")
+s = (
+    s[:intro_effect_close]
+    + "  }, [shouldReduceMotion]);"
+    + s[intro_effect_close + len("  }, []);"):]
+)
 p.write_text(s, encoding="utf-8")
 
 print("TAMERIAN_EXPERIENCE_PATCH=APPLIED")
