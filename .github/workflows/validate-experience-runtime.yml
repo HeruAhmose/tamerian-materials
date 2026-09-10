@@ -39,6 +39,8 @@ jobs:
           ! grep -Fq 'Initialize on first user interaction' client/src/contexts/SoundContext.tsx
       - name: Install locked graph
         run: pnpm install --frozen-lockfile
+      - name: Format permanent runtime repair
+        run: pnpm exec prettier --write client/src/components/SoundToggle.tsx client/src/contexts/SoundContext.tsx scripts/audit-experience-runtime.mjs
       - name: Dependency audit
         run: pnpm audit --audit-level=high
       - name: Full CI
@@ -72,6 +74,6 @@ jobs:
           set -euo pipefail
           git config user.name 'Heru_Ahmose'
           git config user.email 'aitconsult22@gmail.com'
-          git add client/src/components/SoundToggle.tsx client/src/contexts/SoundContext.tsx client/src/lib/soundEngine.ts
+          git add client/src/components/SoundToggle.tsx client/src/contexts/SoundContext.tsx client/src/lib/soundEngine.ts scripts/audit-experience-runtime.mjs
           git commit -m 'fix(experience): require explicit Tamerian audio opt-in'
           git push origin HEAD:fix/experience-runtime-20260910
