@@ -34,37 +34,7 @@ jobs:
       - name: Certify first-party visuals and evidence boundaries
         run: pnpm check:truth -- --dist
       - name: Require live immutable assets to equal exact main build
-        shell: bash
-        run: |
-          set -euo pipefail
-          base='https://tamerian-materials.com'
-          curl --fail --silent --show-error --location "$base/" > /tmp/live-index.html
-
-          built_js="$(grep -oE '/assets/[^\" ]+\.js' dist/public/index.html | head -n1)"
-          built_css="$(grep -oE '/assets/[^\" ]+\.css' dist/public/index.html | head -n1)"
-          live_js="$(grep -oE '/assets/[^\" ]+\.js' /tmp/live-index.html | head -n1)"
-          live_css="$(grep -oE '/assets/[^\" ]+\.css' /tmp/live-index.html | head -n1)"
-
-          echo "GITHUB_SHA=$GITHUB_SHA"
-          echo "BUILT_JS=$built_js"
-          echo "LIVE_JS=$live_js"
-          echo "BUILT_CSS=$built_css"
-          echo "LIVE_CSS=$live_css"
-
-          test -n "$built_js" && test -n "$built_css" && test -n "$live_js" && test -n "$live_css"
-          curl --fail --silent --show-error --location "$base$live_js" > /tmp/live.js
-          curl --fail --silent --show-error --location "$base$live_css" > /tmp/live.css
-
-          built_js_file="dist/public${built_js}"
-          built_css_file="dist/public${built_css}"
-          test -f "$built_js_file" && test -f "$built_css_file"
-
-          sha256sum "$built_js_file" /tmp/live.js "$built_css_file" /tmp/live.css
-          cmp -s "$built_js_file" /tmp/live.js
-          cmp -s "$built_css_file" /tmp/live.css
-          test "$built_js" = "$live_js"
-          test "$built_css" = "$live_css"
-          echo 'TAMERIAN_PUBLIC_PRODUCTION=PASS'
+        run: node scripts/certify-production.mjs
 
       - name: Public SPA smoke
         shell: bash
