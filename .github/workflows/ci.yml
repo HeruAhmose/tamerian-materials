@@ -35,8 +35,14 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      - name: Audit all dependency severities
+        run: pnpm audit --audit-level=low
+
       - name: CI
         run: pnpm run ci
+
+      - name: Production certification convergence and negative controls
+        run: node --test scripts/certify-production.test.mjs
 
       - name: Production SPA server smoke
         run: |
